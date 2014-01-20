@@ -1,0 +1,14 @@
+Package: MSnID
+Type: Package
+Title: What the package does (short line)
+Package: MSnID
+Type: Package
+Title: Utility package for handling proteomics LC-MSn identifications
+Version: 1.0
+Date: 2013-12-11
+Author: Vlad Petyuk 
+Maintainer: Who to complain to <yourfault@somewhere.net>
+Description: More about what it does (maybe more than one line)
+License: What license is it under?
+Depends: MSnbase (>= 1.9.4)
+Imports: mzID, R.cache, foreach, doParallel 

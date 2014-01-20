@@ -1,0 +1,46 @@
+# exportPattern("^[[:alpha:]]+")
+
+import(R.cache)
+import(foreach)
+import(doParallel)
+import(iterators)
+
+
+export(MSnID)
+export(read_mzIDs)
+export(assess_termini)
+export(assess_missed_cleavages)
+export(apply_filter)
+#exportMethods("apply_filter")
+export(evaluate_filter)
+export(id_quality)
+export(optimize_filter)
+export(correct_peak_selection)
+export(mass_measurement_error)
+export(recalibrate)
+
+export(get_peptides)
+export(get_accessions)
+export(get_psm_parameter)
+export(set_psm_parameter)
+export(delete_psm_parameter)
+
+
+export(names)
+export(get_starting_parameters)
+
+export(MSnIDFilter)
+exportMethods("$", "$<-", "[[", "[[<-")
+exportMethods("as.numeric")
+exportMethods("as.vector")
+exportMethods("length")
+exportMethods("update")
+exportMethods("names")
+exportMethods("show")
+exportMethods("dim")
+
+export(combineFeatures)
+
+exportMethods("psms", "psms<-")
+
+
