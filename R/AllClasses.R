@@ -3,7 +3,7 @@
 setClass(Class="MSnID",
          representation(
             workDir="character", # working directory
-            psms="data.frame" # peptide-to-spectra matches
+            psms="data.table" # peptide-to-spectra matches
 #             filter="MSnIDFilter" # keeps record of the applied filter
             )
          )

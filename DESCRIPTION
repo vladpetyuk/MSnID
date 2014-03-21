@@ -9,6 +9,6 @@ Date: 2013-12-11
 Author: Vlad Petyuk 
 Maintainer: Who to complain to <yourfault@somewhere.net>
 Description: More about what it does (maybe more than one line)
-License: What license is it under?
-Depends: MSnbase (>= 1.9.4)
-Imports: mzID, R.cache, foreach, doParallel 
+License: GPL (>= 2)
+Depends: MSnbase (>= 1.9.4), mzID
+Imports: R.cache, foreach, doParallel, reshape2, methods, iterators, XML, data.table

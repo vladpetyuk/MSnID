@@ -247,39 +247,37 @@ setMethod("evaluate_filter",
 
 
 #----Getters and Setters--------------------------------------------------------
-setMethod("set_psm_parameter", 
-          signature(.Object="MSnID"),
-          definition=function(.Object, ...)
-          {
-             e <- eval(substitute(list(...)), .Object@psms, parent.frame())
-             stopifnot(length(e) == 1)
-             stopifnot(length(newPar) == nrow(.Object@psms))
-             .Object@psms[[names(e)]] <- e[[1]]
-             return(.Object)
-          }
-)
+# setMethod("set_psm_parameter", 
+#           signature(.Object="MSnID"),
+#           definition=function(.Object, ...)
+#           {
+#              e <- eval(substitute(list(...)), .Object@psms, parent.frame())
+#              stopifnot(length(e) == 1)
+#              stopifnot(length(newPar) == nrow(.Object@psms))
+#              .Object@psms[[names(e)]] <- e[[1]]
+#              return(.Object)
+#           }
+# )
 
 
-
-setMethod("get_psm_parameter", 
-          signature(.Object="MSnID", parName="character"),
-          definition=function(.Object, parName)
-          {
-             return(.Object@psms[[parName]])
-          }
-)
-
+# setMethod("get_psm_parameter", 
+#           signature(.Object="MSnID", parName="character"),
+#           definition=function(.Object, parName)
+#           {
+#              return(.Object@psms[[parName]])
+#           }
+# )
 
 
-setMethod("delete_psm_parameter", 
-          signature(.Object="MSnID"),
-          definition=function(.Object, ...)
-          {
-             parNames <- sapply(as.list(substitute(list(...)))[-1L], as.character)
-             for( i in parNames) {.Object@psms[[i]] <- NULL}
-             return(.Object)
-          }
-)
+# setMethod("delete_psm_parameter", 
+#           signature(.Object="MSnID"),
+#           definition=function(.Object, ...)
+#           {
+#              parNames <- sapply(as.list(substitute(list(...)))[-1L], as.character)
+#              for( i in parNames) {.Object@psms[[i]] <- NULL}
+#              return(.Object)
+#           }
+# )
 
 
 
@@ -319,19 +317,19 @@ MSnID <- function(workDir='.', cleanCache=FALSE)
        "peptide-to-spectrum matching results are:\n",
        paste(.mustBeColumns, collapse=', '),
        sep='')
-   msnidObj <- new("MSnID", workDir=workDir)
+   msnidObj <- new("MSnID", workDir=workDir, psms=data.table())
 }
 #-------------------------------------------------------------------------------
 
 .mustBeColumns <- c("Peptide", "Accession", "isDecoy", 
                     "calculatedMassToCharge",
                     "experimentalMassToCharge", 
-                    "SpectrumFile")
+                    "spectrumFile", "spectrumID")
 
 setGeneric("psms",
            function(.Object, ...) standardGeneric("psms"))
 setMethod("psms","MSnID", 
-          function(.Object) .Object@psms)
+          function(.Object) as.data.frame(.Object@psms))
 
 setGeneric("psms<-",
            function(.Object, value) standardGeneric("psms<-"))
@@ -347,11 +345,11 @@ setReplaceMethod("psms",
                                           '.\n',
                                           collapse='', sep='')
                        warning(promptStr, call. = FALSE, immediate. = TRUE)
-                       ANSWER <- readline("Proceed? (Y/N): ")
-                       if (substr(ANSWER, 1, 1) == "n")
-                          return(.Object)
+#                        ANSWER <- readline("Proceed? (Y/N): ")
+#                        if (substr(ANSWER, 1, 1) == "n")
+#                           return(.Object)
                     }
-                    .Object@psms <- value
+                    .Object@psms <- data.table(value)
                     return(.Object)
                  })
 
@@ -392,7 +390,7 @@ setMethod("show", "MSnID",
              cat("Working directory: \"", object@workDir, "\"\n", sep='')
              try(
                 cat("#Spectrum Files: ", 
-                    length(unique(as.character(object@psms$SpectrumFile))), '\n'),
+                    length(unique(as.character(object@psms$spectrumFile))), '\n'),
                 silent=TRUE)
              #
              for(i in c("PSM", "Peptide", "Accession")){
@@ -532,11 +530,10 @@ setMethod("recalibrate", "MSnID",
 
 .convert_MSnID_to_MSnSet <- function(msnid)
 {
-   library("reshape2") # this may be taken care of by package
    #--- exprs data. peptide level
    # call to unique to remove inflation due to peptide-protein mapping redundancy
-   quant <- unique(msnid@psms[, c("Peptide","SpectrumFile","spectrumID")])
-   exprs.data <- acast(quant, Peptide ~ SpectrumFile, 
+   quant <- unique(psms(msnid)[, c("Peptide","spectrumFile","spectrumID")])
+   exprs.data <- acast(quant, Peptide ~ spectrumFile, 
                        value.var="spectrumID", 
                        fun.aggregate=length)
    
@@ -560,40 +557,40 @@ setAs("MSnID", "MSnSet",
 
 
 
-combineFeatures <- function(object, groupBy, redundancy.handler=c("ignore","unique.only"), ...)
-{
-   # wrapper to combineFeatures to handle redundancy in feature to factor mapping
-   # e.g. peptide-to-protein redundancy
-   if(!is.list(groupBy)){
-      result <- MSnbase::combineFeatures(object, groupBy, ...)
-   }else{
-      # handling of the redundancy
-      if(any(names(groupBy) != rownames(fData(object))))
-         stop("names of groupBy list do not match fData of the MSnSet object")
-      redundancy.handler <- match.arg(redundancy.handler)
-      if(redundancy.handler == "ignore"){
-         
-         expansion.index <- rep(seq_len(nrow(object)), sapply(groupBy, length))
-         new.exprs <- exprs(object)[expansion.index,]
-         rownames(new.exprs) <- NULL
-         groupBy.idx <- sapply(fData(object), identical, groupBy)
-         new.feature.data <- fData(object)[expansion.index,]
-         new.feature.data[,groupBy.idx] <- unlist(groupBy)
-         rownames(new.feature.data) <- NULL
-         new.object <- new("MSnSet", exprs = new.exprs, 
-                           featureData = new("AnnotatedDataFrame", 
-                                             data = new.feature.data),
-                           phenoData=phenoData(object))
-         result <- MSnbase::combineFeatures(new.object, unlist(groupBy), ...)
-      }else if(redundancy.handler == "unique.only"){
-         idx.unique <- sapply(groupBy, length) < 2
-         object <- object[idx.unique,]
-         groupBy <- unlist(groupBy[idx.unique])
-         result <- MSnbase::combineFeatures(object, groupBy, ...)
-      }else{
-         stop("Method \"", redundancy.handler, 
-              "\" for handing the redundancy is not implemented!", sep='')
-      }
-      return(result)
-   }
-}
+# combineFeaturesBackup <- function(object, groupBy, redundancy.handler=c("ignore","unique.only"), ...)
+# {
+#    # wrapper to combineFeatures to handle redundancy in feature to factor mapping
+#    # e.g. peptide-to-protein redundancy
+#    if(!is.list(groupBy)){
+#       result <- MSnbase::combineFeatures(object, groupBy, ...)
+#    }else{
+#       # handling of the redundancy
+#       if(any(names(groupBy) != rownames(fData(object))))
+#          stop("names of groupBy list do not match fData of the MSnSet object")
+#       redundancy.handler <- match.arg(redundancy.handler)
+#       if(redundancy.handler == "ignore"){
+#          
+#          expansion.index <- rep(seq_len(nrow(object)), sapply(groupBy, length))
+#          new.exprs <- exprs(object)[expansion.index,]
+#          rownames(new.exprs) <- NULL
+#          groupBy.idx <- sapply(fData(object), identical, groupBy)
+#          new.feature.data <- fData(object)[expansion.index,]
+#          new.feature.data[,groupBy.idx] <- unlist(groupBy)
+#          rownames(new.feature.data) <- NULL
+#          new.object <- new("MSnSet", exprs = new.exprs, 
+#                            featureData = new("AnnotatedDataFrame", 
+#                                              data = new.feature.data),
+#                            phenoData=phenoData(object))
+#          result <- MSnbase::combineFeatures(new.object, unlist(groupBy), ...)
+#       }else if(redundancy.handler == "unique.only"){
+#          idx.unique <- sapply(groupBy, length) < 2
+#          object <- object[idx.unique,]
+#          groupBy <- unlist(groupBy[idx.unique])
+#          result <- MSnbase::combineFeatures(object, groupBy, ...)
+#       }else{
+#          stop("Method \"", redundancy.handler, 
+#               "\" for handing the redundancy is not implemented!", sep='')
+#       }
+#       return(result)
+#    }
+# }

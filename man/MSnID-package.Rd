@@ -3,40 +3,43 @@
 \alias{MSnID}
 \docType{package}
 \title{
-What the package does (short line)
-~~ package title ~~
+MSnID: Utilities for handling MS/MS identifications
 }
+
 \description{
-More about what it does (maybe more than one line)
-~~ A concise (1-5 lines) description of the package ~~
+Extracts MS/MS ID data from mzIdentML (leveraging mzID package) or text files. After collating the search results from multiple datasets it assesses their identification quality and optimize filtering criteria to achieve the maximal identifications at a user specified false discovery rate. Additional utilities include:
+   \enumerate{
+      \item{
+         post-experimental recalibration of mass measurement accuracy 
+      }
+      \item{
+         assessment of irregular and missed cleavages given the enzyme cleavage pattern 
+      }
+      \item{
+         assessment of false discovery rates at peptide-to-spectrum match, unique peptide and protein levels
+      }
+      \item{
+         leverages brute-force and sophisticated optimization routines (Nelder-Mead and simulated annealing) for finding the filtering criteria that provide the maximum spectrum, peptide or protein identifications while not exceeding a corresponding preset threshold of false discovery rate}
+      \item{
+         converts the results into MSnSet class object as spectral counting data
+      }
+   }
 }
+
+
 \details{
 \tabular{ll}{
 Package: \tab MSnID\cr
 Type: \tab Package\cr
-Version: \tab 1.0\cr
+Version: \tab 0.0.0\cr
 Date: \tab 2013-12-11\cr
-License: \tab What license is it under?\cr
+License: \tab GPL (>= 2)\cr
 }
-~~ An overview of how to use the package, including the most important ~~
-~~ functions ~~
-}
-\author{
-Who wrote it
 
-Maintainer: Who to complain to <yourfault@somewhere.net>
-~~ The author and/or maintainer of the package ~~
+%~~ An overview of how to use the package, including the most important ~~
+%~~ functions ~~
 }
-\references{
-~~ Literature or other references for background information ~~
-}
-~~ Optionally other standard keywords, one per line, from file KEYWORDS in ~~
-~~ the R documentation directory ~~
-\keyword{ package }
-\seealso{
-~~ Optional links to other man pages, e.g. ~~
-~~ \code{\link[<pkg>:<pkg>-package]{<pkg>}} ~~
-}
-\examples{
-~~ simple examples of the most important functions ~~
+
+\author{
+   Vladislav A. Petyuk (\email{vladislav.petyuk@pnnl.gov})
 }

@@ -3,7 +3,13 @@
 import(R.cache)
 import(foreach)
 import(doParallel)
+#import(mzID)
+import(reshape2)
+import(methods)
 import(iterators)
+import(XML)
+import(data.table)
+
 
 
 export(MSnID)
@@ -39,7 +45,7 @@ exportMethods("names")
 exportMethods("show")
 exportMethods("dim")
 
-export(combineFeatures)
+#export(combineFeaturesBackup)
 
 exportMethods("psms", "psms<-")
 
