@@ -200,7 +200,11 @@ msnset.prot <- msnset.prot[rowSums(exprs(msnset.prot) > 0) >= 6,]
 
 
 # --- STATISTICAL TESTS ----------------
-library("msmsTests")
+if(!require("msmsTests")){
+   library("BiocInstaller")
+   biocLite("msmsTests")
+   library("msmsTests")
+}
 alt.f <- "y ~ Daf.16.type + 1"
 null.f <- "y ~ 1"
 div <- colSums(exprs(msnset.prot))
