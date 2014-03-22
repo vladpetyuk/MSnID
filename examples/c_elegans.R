@@ -1,5 +1,5 @@
-
 # --- DOWNLOADING MS/MS SEARCH RESULTS ---
+try(setInternet2(FALSE),silent=TRUE)
 ftp <- "ftp://PASS00308:PJ5348t@ftp.peptideatlas.org/"
 meta <- read.delim(sprintf("%sSample_Metadata.txt", ftp), as.is=T)
 meta <- subset(meta, Age == 'young' & Diet == 'ff') # explore the effect of daf-16
