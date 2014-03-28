@@ -1,5 +1,7 @@
 
 
+.PROTON_MASS <- 1.007276466812
+
 setClass(Class="MSnID",
          representation(
             workDir="character", # working directory

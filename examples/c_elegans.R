@@ -20,6 +20,10 @@ msnid <- read_mzIDs(msnid, mzids)
 #---------------------------------------
 
 
+
+
+
+
 #--- CHECKING WHAT IS INSIDE -----------
 head(psms(msnid))
 names(msnid)
@@ -40,6 +44,7 @@ msnid$Accession <- msnid$accession
 msnid$isDecoy <- msnid$isdecoy
 msnid$calculatedMassToCharge <- msnid$calculatedmasstocharge
 msnid$experimentalMassToCharge <- msnid$experimentalmasstocharge
+msnid$chargeState <- msnid$chargestate
 msnid$spectrumID <- msnid$spectrumid
 # tidying up. removing left-over columns
 msnid$accession <- NULL
@@ -50,21 +55,23 @@ msnid$idecoy <- NULL
 msnid$spectrumid <- NULL
 msnid$experimentalmasstocharge <- NULL
 msnid$calculatedmasstocharge <- NULL
+msnid$chargestate <- NULL
 #-------------------------------------
 show(msnid)
-
-
 
 
 # --- EXTRA INFO ABOUT PEPTIDE SEQUENCES ---
 msnid <- assess_termini(msnid, validCleavagePattern="[RK]\\.[^P]")
 msnid <- assess_missed_cleavages(msnid, missedCleavagePattern="[KR](?=[^P$])")
-# visualize distributions of missed cleavages and non-tryptic termini
-temp <- psms(msnid)[,c("NumMissCleavages", "NumIrregCleavages", "Peptide")]
-temp <- unique(temp)
-barplot(table(temp$NumMissCleavages), main="Number of Missed Cleavages")
-barplot(table(temp$NumIrregCleavages), main="Distribution of Non-Tryptic Termini")
-#------------------------------------------
+# visualize distributions of missed cleavages as an example
+library("ggplot2")
+pepCleav <- unique(psms(msnid)[,c("NumMissCleavages", "isDecoy", "Peptide")])
+pepCleav <- as.data.frame(table(pepCleav[,c("NumMissCleavages", "isDecoy")]))
+p <- ggplot(pepCleav, aes(x=NumMissCleavages, y=Freq, fill=isDecoy))
+p + geom_bar(stat='identity', position='dodge')
+#----------------------------------------
+
+
 
 
 # --- TRIM THE DATA -----------------------
@@ -78,7 +85,7 @@ show(msnid)
 #-----------------------------------------
 
 
-# --- CHECKING MASS MEASUREMENT ACCURACY ---
+# --- CHECKING PARENT MASS MEASUREMENT ACCURACY ---
 hist(mass_measurement_error(msnid), 100)
 # retain only those PSMs that have 
 # parent mass measurement accuracy less then 10 ppm
@@ -88,6 +95,8 @@ hist(mass_measurement_error(msnid), 100)
 msnid <- recalibrate(msnid)
 hist(mass_measurement_error(msnid), 100)
 #-------------------------------------------
+
+
 
 
 # ---- MS/MS FILTER ------------------------
@@ -146,7 +155,7 @@ evaluate_filter(msnid, filtObj.sann, level="Peptide")
 msnid <- apply_filter(msnid, filtObj.sann)
 show(msnid)
 # 5. let's remove reverse/decoy and Contaminants
-msnid <- apply_filter(msnid, "!grepl('XXX',Accession)")
+msnid <- apply_filter(msnid, "!isDecoy")
 show(msnid)
 msnid <- apply_filter(msnid, "!grepl('Contaminant',Accession)")
 show(msnid)

@@ -323,7 +323,8 @@ MSnID <- function(workDir='.', cleanCache=FALSE)
 
 .mustBeColumns <- c("Peptide", "Accession", "isDecoy", 
                     "calculatedMassToCharge",
-                    "experimentalMassToCharge", 
+                    "experimentalMassToCharge",
+                    "chargeState",
                     "spectrumFile", "spectrumID")
 
 setGeneric("psms",
