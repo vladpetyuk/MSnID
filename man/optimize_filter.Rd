@@ -78,7 +78,11 @@
 
 \examples{
 # see c_elegans demo for details 
+# system.file("demo", "c_elegans.R", package="MSnID")
+
+\dontrun{
+
 demo(c_elegans)
-}
+}}
 
 

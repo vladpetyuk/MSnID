@@ -34,7 +34,7 @@
 }
 
 \author{
-  Vladislav A Petyuk <vladislav.petyuk@pnnl.gov>
+  Vladislav A Petyuk \email{vladislav.petyuk@pnnl.gov}
 }
 
 \seealso{
@@ -45,6 +45,9 @@
 
 \examples{
 # see c_elegans demo for details 
-demo(c_elegans)
-}
+# system.file("demo", "c_elegans.R", package="MSnID")
 
+\dontrun{
+
+demo(c_elegans)
+}}
