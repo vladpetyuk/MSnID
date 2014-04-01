@@ -1,9 +1,12 @@
 # exportPattern("^[[:alpha:]]+")
 
+
+import(mzID)
+import(MSnbase)
+
 import(R.cache)
 import(foreach)
 import(doParallel)
-#import(mzID)
 import(reshape2)
 import(methods)
 import(iterators)
@@ -27,26 +30,28 @@ export(recalibrate)
 
 export(get_peptides)
 export(get_accessions)
-export(get_psm_parameter)
-export(set_psm_parameter)
-export(delete_psm_parameter)
+#export(get_psm_parameter)
+#export(set_psm_parameter)
+#export(delete_psm_parameter)
 
 
-export(names)
-export(get_starting_parameters)
+exportMethods(names)
+#export(get_starting_parameters)
 
 export(MSnIDFilter)
 exportMethods("$", "$<-", "[[", "[[<-")
 exportMethods("as.numeric")
-exportMethods("as.vector")
+#exportMethods("as.vector")
 exportMethods("length")
 exportMethods("update")
 exportMethods("names")
 exportMethods("show")
 exportMethods("dim")
 
-#export(combineFeaturesBackup)
-
 exportMethods("psms", "psms<-")
+
+
+
+
 
 

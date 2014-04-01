@@ -1,13 +1,12 @@
 \name{MSnID-package}
 \alias{MSnID-package}
-\alias{MSnID}
 \docType{package}
 \title{
-MSnID: Utilities for handling MS/MS identifications
+MSnID: Utilities for Handling MS/MS Identifications
 }
 
 \description{
-Extracts MS/MS ID data from mzIdentML (leveraging mzID package) or text files. After collating the search results from multiple datasets it assesses their identification quality and optimize filtering criteria to achieve the maximal identifications at a user specified false discovery rate. Additional utilities include:
+Extracts MS/MS ID data from mzIdentML (leveraging \link{mzID} package) or text files. After collating the search results from multiple datasets it assesses their identification quality and optimize filtering criteria to achieve the maximal identifications at a user specified false discovery rate. Additional utilities include:
    \enumerate{
       \item{
          post-experimental recalibration of mass measurement accuracy 
@@ -31,15 +30,14 @@ Extracts MS/MS ID data from mzIdentML (leveraging mzID package) or text files. A
 \tabular{ll}{
 Package: \tab MSnID\cr
 Type: \tab Package\cr
-Version: \tab 0.0.0\cr
-Date: \tab 2013-12-11\cr
-License: \tab GPL (>= 2)\cr
+Version: \tab 0.0.1\cr
+Date: \tab 2014-03-28\cr
+License: \tab Artistic-2.0\cr
 }
-
-%~~ An overview of how to use the package, including the most important ~~
-%~~ functions ~~
 }
 
 \author{
    Vladislav A. Petyuk (\email{vladislav.petyuk@pnnl.gov})
 }
+
+\keyword{package}

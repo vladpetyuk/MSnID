@@ -44,7 +44,7 @@
 
 
 .assess_missed_cleavages <- function(peptide, 
-                                    missedCleavagePattern="[KR](?=[^P$])")
+                                    missedCleavagePattern)
 {
    # the fastest approach
    peptide <- .get_clean_peptide_sequence(peptide)
@@ -57,11 +57,12 @@
 
 
 setMethod("assess_missed_cleavages", signature("MSnID"),
-          definition=function(.Object, ...)
+          definition=function(.Object, missedCleavagePattern)
           {
              .check_column(.Object, "Peptide")
              .Object@psms$NumMissCleavages <-
-                .assess_missed_cleavages(as.character(.Object@psms$Peptide), ...)
+                .assess_missed_cleavages(as.character(.Object@psms$Peptide), 
+                                         missedCleavagePattern)
              return(.Object)
           }
 )
@@ -69,7 +70,7 @@ setMethod("assess_missed_cleavages", signature("MSnID"),
 #---
 
 .assess_termini <- function(peptide, 
-                           validCleavagePattern="[RK]\\.[^P]")
+                           validCleavagePattern)
 {
    # "[RK]\\.[^P]" | "-\\."
    # It has to be sequence with flanking AAs e.g. K.XXXXXXXR.X
@@ -95,10 +96,11 @@ setMethod("assess_missed_cleavages", signature("MSnID"),
              
 
 setMethod("assess_termini", signature("MSnID"),
-          definition=function(.Object, ...)
+          definition=function(.Object, validCleavagePattern)
           {
              .Object@psms$NumIrregCleavages <- 
-                .assess_termini(as.character(.Object@psms$Peptide), ...)
+                .assess_termini(as.character(.Object@psms$Peptide), 
+                                validCleavagePattern)
              return(.Object)
           }
 )
@@ -327,13 +329,9 @@ MSnID <- function(workDir='.', cleanCache=FALSE)
                     "chargeState",
                     "spectrumFile", "spectrumID")
 
-setGeneric("psms",
-           function(.Object, ...) standardGeneric("psms"))
 setMethod("psms","MSnID", 
           function(.Object) as.data.frame(.Object@psms))
 
-setGeneric("psms<-",
-           function(.Object, value) standardGeneric("psms<-"))
 setReplaceMethod("psms",
                  signature(.Object="MSnID",
                            value="data.frame"),
@@ -355,8 +353,8 @@ setReplaceMethod("psms",
                  })
 
 
-setAs("MSnID", "data.frame",
-      def=function(from) return(.Object@psms))
+setAs("MSnID", "data.table",
+      def=function(from) return(from@psms))
 
 
 
@@ -406,11 +404,11 @@ setMethod("show", "MSnID",
 
 
 setMethod("read_mzIDs", "MSnID",
-          definition=function(.Object, pathToMzIDs)
+          definition=function(.Object, mzids)
           {
              # to check if files are indeed available by the provided path
-             stopifnot(all(sapply(pathToMzIDs, file.exists)))
-             .Object@psms <- .read_mzIDs.memoized(pathToMzIDs)
+             stopifnot(all(sapply(mzids, file.exists)))
+             .Object@psms <- .read_mzIDs.memoized(mzids)
              return(.Object)
           }
 )
@@ -463,12 +461,9 @@ setMethod("[[<-", "MSnID",
 # getMethod("[[<-", "eSet")
 
 
-#--------------------------------------------
-setGeneric("correct_peak_selection", 
-           function(.Object, ...) standardGeneric("correct_peak_selection"))
-           
+#--------------------------------------------           
 setMethod("correct_peak_selection", "MSnID",
-          definition=function(.Object, ...)
+          definition=function(.Object)
           {
              deltaMz <- .Object$experimentalMassToCharge - 
                 .Object$calculatedMassToCharge
@@ -482,11 +477,8 @@ setMethod("correct_peak_selection", "MSnID",
           }
 )
 
-setGeneric("mass_measurement_error",
-           function(.Object, ...) standardGeneric("mass_measurement_error"))
-
 setMethod("mass_measurement_error", "MSnID",
-          definition=function(.Object, ...)
+          definition=function(.Object)
           {
              ppm <- 1e6*(.Object$experimentalMassToCharge - 
                             .Object$calculatedMassToCharge)/
@@ -495,11 +487,8 @@ setMethod("mass_measurement_error", "MSnID",
           }
 )
 
-setGeneric("recalibrate",
-           function(.Object, ...) standardGeneric("recalibrate"))
-
 setMethod("recalibrate", "MSnID",
-          definition=function(.Object, ...)
+          definition=function(.Object)
           {
              # this is just a simple shift by a signle bias
              error.ppm <- mass_measurement_error(.Object)

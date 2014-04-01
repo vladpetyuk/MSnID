@@ -12,3 +12,5 @@ Description: More about what it does (maybe more than one line)
 License: GPL (>= 2)
 Depends: MSnbase (>= 1.9.4), mzID
 Imports: R.cache, foreach, doParallel, reshape2, methods, iterators, XML, data.table
+Suggests: BiocStyle, msmsTests, ggplot2
+

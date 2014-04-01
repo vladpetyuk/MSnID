@@ -58,12 +58,6 @@
    newFilter <- update(filterObj, as.numeric(optim.pars))
    return(newFilter)
 }
-
-
-
-
-setGeneric("optimize_filter",
-           function(.Filter, .Data, ...) stadardGeneric("optimize_filter"))
            
            
 setMethod("optimize_filter",

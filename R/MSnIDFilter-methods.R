@@ -2,32 +2,25 @@
 
 
 
-setGeneric("get_starting_parameters",
-           function(x, y, ...) standardGeneric("get_starting_parameters"))
+# setGeneric("get_starting_parameters",
+#            function(x, y, ...) standardGeneric("get_starting_parameters"))
+# 
+# setMethod("get_starting_parameters",
+#           signature(x="MSnIDFilter", y="MSnID"),
+#           definition=function(x, y, ...)
+#           {
+#              # let's assume we are taking median
+#              # update the filter list
+#              for( name_i in names(x@filterList)){
+#                 x@filterList[[name_i]]$threshold <- 
+#                    median(y[[name_i]],na.rm=TRUE)
+#              }
+#              return(x)
+#           }
+# )
 
 
 
-setMethod("get_starting_parameters",
-          signature(x="MSnIDFilter", y="MSnID"),
-          definition=function(x, y, ...)
-          {
-             # let's assume we are taking median
-             # update the filter list
-             for( name_i in names(x@filterList)){
-                x@filterList[[name_i]]$threshold <- 
-                   median(y[[name_i]],na.rm=TRUE)
-             }
-             return(x)
-          }
-)
-
-
-
-
-# # how about rule:
-# # if not exist - append,
-# # if exist - update threshold (leave comparison if exists)
-# # reset is separate function
 
 setMethod("set_filter", 
           signature(.Object="MSnIDFilter"), # dispatch just on the first argument
@@ -82,13 +75,13 @@ setAs("MSnIDFilter", "character",
 setAs("MSnIDFilter", "numeric",
       def=function(from) .get_filterValues(from, precision=Inf))
 
-# getGeneric("as.numeric")
 setMethod("as.numeric", "MSnIDFilter",
           definition=function(x, ...)
              as(x,"numeric"))
 
-setMethod("as.vector", "MSnIDFilter",
-          definition=function(x) as(x,"numeric"))
+# setMethod("as.vector", "MSnIDFilter",
+#           definition=function(x) 
+#              as(x,"numeric"))
 
 setMethod("length", "MSnIDFilter",
           definition=function(x) length(x@filterList))
@@ -101,15 +94,11 @@ setMethod("update", "MSnIDFilter",
           {
              #
              stopifnot(length(object) == length(newThresholds))
-             for(i in 1:length(object))
+             for(i in seq_along(object))
                 object@filterList[[i]]$threshold <- newThresholds[i]
              return(object)
           }
 )
-             
-
-
-
 
 setMethod("show", "MSnIDFilter",
           definition=function(object)
@@ -206,31 +195,3 @@ setMethod("$<-", "MSnIDFilter",
 )
 
 
-
-
-
-
-# 
-# ff = MSnIDFilter()
-# print(ff)
-# 
-# filterList <- list(ppm=list(comparison=">", threshold=pi),
-#                    score=list(comparison=">", threshold=0.00000000001),
-#                    hz=list(comparison="<", threshold=2/3))
-# ff=MSnIDFilter(filterList)
-# print(ff)
-# 
-# filterList <- list(ppm=list(threshold=5),
-#                    score=list(comparison=">", threshold=0.01),
-#                    hz=list())
-# # nice catch of error
-# ff=MSnIDFilter(filterList)
-# 
-# 
-# 
-# filterList <- list(ppm=list(comparison=">", threshold=pi),
-#                    score=list(comparison=">", threshold=0.00000000001),
-#                    name=list(comparison='=', threshold=0),
-#                    hz=list(comparison="<", threshold=2/3))
-# ff=MSnIDFilter(filterList)
-# print(ff)

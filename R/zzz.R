@@ -1,4 +1,4 @@
 
 .onLoad <- function(libname, pkgname) {
-   print("Starting MSnID...")
+#    packageStartupMessage("Starting MSnID...")
 }
