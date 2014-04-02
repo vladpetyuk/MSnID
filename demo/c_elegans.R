@@ -4,15 +4,9 @@ ftp <- "ftp://PASS00308:PJ5348t@ftp.peptideatlas.org/"
 meta <- read.delim(sprintf("%sSample_Metadata.txt", ftp), as.is=TRUE)
 meta <- subset(meta, Age == 'young' & Diet == 'ff') # explore the effect of daf-16
 for( dataset in meta$PNNL.Dataset.Name){
-<<<<<<< HEAD
    cel.path <- sprintf("%s/MSGFPlus_Results/MZID_Files/%s_msgfplus.mzid.gz", 
                        ftp, dataset)
    download.file(cel.path, sprintf("%s_msgfplus.mzid.gz", dataset))
-=======
- cel.path <- sprintf("%s/MSGFPlus_Results/MZID_Files/%s_msgfplus.mzid.gz", 
-                     ftp, dataset)
- download.file(cel.path, sprintf("%s_msgfplus.mzid.gz", dataset))
->>>>>>> 0e9d43c18841ea5ac87beb4af955441d64aa13ee
 }
 #----------------------------------------
 
@@ -260,7 +254,7 @@ res.volcanoplot(lst$tres, min.LFC=1, max.pval=0.05, ylbls=NULL, maxy=4)
 #--------------------------------------
 
 
-
+# --- work in progress ---
 regulated <- subset(lst$tres, adjp < 0.05 & abs(LogFC) > 1)
 selected.data <- exprs(msnset.prot[rownames(regulated),])
 library("gplots")
