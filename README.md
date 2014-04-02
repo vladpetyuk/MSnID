@@ -22,7 +22,7 @@ install_github("mzID", "thomasp85", quick=TRUE)
 as an example download and run c_elegans.R script into your working directory
 ```r
 library("RCurl")
-script.url <- "https://raw2.github.com/vladpetyuk/MSnID/master/examples/c_elegans.R"
+script.url <- "https://raw2.github.com/vladpetyuk/MSnID/master/demo/c_elegans.R"
 script <- getURL(script.url, ssl.verifypeer=0L, followlocation=1L)
 writeLines(script, "c_elegans.R")
 ```
