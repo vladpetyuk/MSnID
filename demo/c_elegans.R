@@ -3,11 +3,11 @@ try(setInternet2(FALSE),silent=TRUE)
 ftp <- "ftp://PASS00308:PJ5348t@ftp.peptideatlas.org/"
 meta <- read.delim(sprintf("%sSample_Metadata.txt", ftp), as.is=TRUE)
 meta <- subset(meta, Age == 'young' & Diet == 'ff') # explore the effect of daf-16
-for( dataset in meta$PNNL.Dataset.Name){
-   cel.path <- sprintf("%s/MSGFPlus_Results/MZID_Files/%s_msgfplus.mzid.gz", 
-                       ftp, dataset)
-   download.file(cel.path, sprintf("%s_msgfplus.mzid.gz", dataset))
-}
+# for( dataset in meta$PNNL.Dataset.Name){
+#    cel.path <- sprintf("%s/MSGFPlus_Results/MZID_Files/%s_msgfplus.mzid.gz", 
+#                        ftp, dataset)
+#    download.file(cel.path, sprintf("%s_msgfplus.mzid.gz", dataset))
+# }
 #----------------------------------------
 
 
@@ -20,17 +20,11 @@ msnid <- read_mzIDs(msnid, mzids)
 #---------------------------------------
 
 
-
-
-
-
 #--- CHECKING WHAT IS INSIDE -----------
 head(psms(msnid))
 names(msnid)
-show(msnid) # Key columns are not set
+show(msnid) # Key columns are not set yet.
 #---------------------------------------
-
-
 
 
 # --- UPDATES TO INCLUDE KEY COLUMNS ---
@@ -56,25 +50,35 @@ msnid$spectrumid <- NULL
 msnid$experimentalmasstocharge <- NULL
 msnid$calculatedmasstocharge <- NULL
 msnid$chargestate <- NULL
-#-------------------------------------
 show(msnid)
+#-------------------------------------
 
 
 # --- EXTRA INFO ABOUT PEPTIDE SEQUENCES ---
 msnid <- assess_termini(msnid, validCleavagePattern="[RK]\\.[^P]")
 msnid <- assess_missed_cleavages(msnid, missedCleavagePattern="[KR](?=[^P$])")
 # visualize distributions of missed cleavages as an example
-library("ggplot2")
 pepCleav <- unique(psms(msnid)[,c("NumMissCleavages", "isDecoy", "Peptide")])
 pepCleav <- as.data.frame(table(pepCleav[,c("NumMissCleavages", "isDecoy")]))
+library("ggplot2")
 ggplot(pepCleav, aes(x=NumMissCleavages, y=Freq, fill=isDecoy)) + 
-   geom_bar(stat='identity', position='dodge')
-#----------------------------------------
-
-
+   geom_bar(stat="identity", position="dodge") + 
+   ggtitle("Number of Missed Cleavages")
+# number of cysteins per peptide sequence as an example of sequence analysis
+msnid$NumCys <- sapply(lapply(strsplit(msnid$Peptide,''),'==','C'),sum)
+# calculating peptide lengths
+msnid$PepLength <- nchar(msnid$Peptide) - 4
+pepLen <- unique(psms(msnid)[,c("PepLength", "isDecoy", "Peptide")])
+# distribution of peptide lengths in the dataset
+ggplot(pepLen, aes(x=PepLength, fill=isDecoy)) + 
+   geom_histogram(position='dodge', binwidth=3) +
+   ggtitle("Distribution on of Peptide Lengths")
+#------------------------------------------
 
 
 # --- TRIM THE DATA -----------------------
+# Let's take a look how filtering on irregular and
+# missed cleavages will affect the FDR.
 show(msnid)
 # 1. Leave only fully tryptic
 msnid <- apply_filter(msnid, "NumIrregCleavages == 0")
@@ -85,89 +89,112 @@ show(msnid)
 #-----------------------------------------
 
 
-# --- CHECKING PARENT MASS MEASUREMENT ACCURACY ---
-hist(mass_measurement_error(msnid), 100)
-# retain only those PSMs that have 
-# parent mass measurement accuracy less then 10 ppm
-msnid <- apply_filter(msnid, "abs(mass_measurement_error(msnid)) < 10")
-hist(mass_measurement_error(msnid), 100)
-# recalibrate parent mass measurement (if necessary)
-msnid <- recalibrate(msnid)
-hist(mass_measurement_error(msnid), 100)
-#-------------------------------------------
-
-
+# --- DEALING WITH PARENT ION MASS MEASUREMENT ACCURACY ---
+# original mass measurement error in ppm
+ppm <- mass_measurement_error(msnid)
+ggplot(as.data.frame(ppm), aes(x=ppm)) + 
+   geom_histogram(binwidth=100)
+# In this particular case the problem that it goes
+# far is that there was no certainity that the reported
+# masses are the masses of monoisotopic peaks.
+# Let's take a look at mass measurement error in Dalton units.
+dM <- with(psms(msnid), (experimentalMassToCharge-calculatedMassToCharge)*chargeState)
+x <- data.frame(dM, isDecoy=msnid$isDecoy)
+ggplot(x, aes(x=dM, fill=isDecoy)) + 
+   geom_histogram(position='stack', binwidth=0.1)
+# Fixing the peak picking problem
+msnid.fixed <- correct_peak_selection(msnid)
+# Now the errors are confined within 20 ppm
+ppm <- mass_measurement_error(msnid.fixed)
+ggplot(as.data.frame(ppm), aes(x=ppm)) + 
+   geom_histogram(binwidth=0.25)
+# alternatively we can ignore erroneously picked picks
+# simply filter the data +/- 20 ppm
+msnid.chopped <- apply_filter(msnid, "abs(mass_measurement_error(msnid)) < 20")
+ppm <- mass_measurement_error(msnid.chopped)
+ggplot(as.data.frame(ppm), aes(x=ppm)) + 
+   geom_histogram(binwidth=0.25)
+# The data can be recalibrated to remove any 
+# systematic components in the mass measurement error.
+msnid <- recalibrate(msnid.chopped)
+ppm <- mass_measurement_error(msnid)
+ggplot(as.data.frame(ppm), aes(x=ppm)) + 
+   geom_histogram(binwidth=0.25)
+#------------------------------------------------
 
 
 # ---- MS/MS FILTER ------------------------
-# 1. defining parameters that will be used for filtering
-msnid$absParentMassErrorPPM <- abs(mass_measurement_error(msnid))
+# First filtering criteria - MS-GF Spec E-value
 msnid$msmsScore <- -log10(msnid$`ms-gf:specevalue`)
-# 2. visualizing parameter distributions
-library("reshape2")
-library("ggplot2")
+# Second filtering criteria - absolute mass measurement error
+msnid$absParentMassErrorPPM <- abs(mass_measurement_error(msnid))
+# visualization
 params <- psms(msnid)[,c("msmsScore","absParentMassErrorPPM","isDecoy")]
-ggplot(params) +
+ggplot(params) + 
    geom_density(aes(x = msmsScore, color = isDecoy, ..count..))
-ggplot(params) +
+ggplot(params) + 
    geom_density(aes(x = absParentMassErrorPPM, color = isDecoy, ..count..))
-# 2. setting up filter object
+ggplot(data=params, aes(x=msmsScore, y=absParentMassErrorPPM, color=isDecoy)) +
+   geom_point(size=1.5)
+# Setting up filter object
 filtObj <- MSnIDFilter(msnid)
 filtObj$absParentMassErrorPPM <- list(comparison="<", threshold=10.0)
-filtObj$msmsScore <- list(comparison=">", threshold=7.0)
-# print filter
+filtObj$msmsScore <- list(comparison=">", threshold=10.0)
+# print and visualize filter
 show(filtObj)
-# evaluate filter
+ggplot(data=params, aes(x=msmsScore, y=absParentMassErrorPPM, color=isDecoy)) +
+   geom_point(size=1.5) + 
+   geom_hline(yintercept=filtObj$absParentMassErrorPPM$threshold, 
+              linetype='dashed') + 
+   geom_vline(xintercept=filtObj$msmsScore$threshold, 
+              linetype='dashed')
+# Evaluate filter. Check how well it performs at different levels.
 evaluate_filter(msnid, filtObj, level="PSM")
 evaluate_filter(msnid, filtObj, level="Peptide")
 evaluate_filter(msnid, filtObj, level="Accession")
-# 3. optimize filter
-# brute-force optimization by enumeration all the parameter combinations
-# these should be good starting parameters for follow-up optimizations
+# Brute-force optimization by enumeration the criteria combinations.
+# The results should be good starting parameters for follow-up 
+# fine tuning optimizations.
 system.time({
    filtObj.grid <- optimize_filter(filtObj, msnid, fdr.max=0.01, 
-                                  method="Grid", level="Peptide", n.iter=1000)})
+                                   method="Grid", level="Peptide", n.iter=500)})
 show(filtObj.grid)
-# (absParentMassErrorPPM < 2) & (msmsScore > 7.8) 
-
-# Nelder-Mead optimization
-set.seed(0)
+# Fine tuning. Nelder-Mead optimization.
 system.time({
    filtObj.nm <- optimize_filter(filtObj.grid, msnid, fdr.max=0.01, 
-                          method="Nelder-Mead", level="Peptide", n.iter=1000)})
+                                 method="Nelder-Mead", level="Peptide", n.iter=500)})
 show(filtObj.nm)
-# (absParentMassErrorPPM < 3) & (msmsScore > 7.8) 
-
-# simulated annealing optimization
-set.seed(0)
-system.time({
-   filtObj.sann <- optimize_filter(filtObj.grid, msnid, fdr.max=0.01, 
-                                  method="SANN", level="Peptide", n.iter=1000)})
-show(filtObj.sann)
-# (absParentMassErrorPPM < 2.2) & (msmsScore > 7.6)
-
-# check the results
+# visualize filter
+ggplot(data=params, aes(x=msmsScore, y=absParentMassErrorPPM, color=isDecoy)) +
+   geom_point(size=1.5) + 
+   geom_hline(yintercept=filtObj.nm$absParentMassErrorPPM$threshold, 
+              linetype='dashed') + 
+   geom_vline(xintercept=filtObj.nm$msmsScore$threshold, 
+              linetype='dashed')
+# compare original and optimized filters
 evaluate_filter(msnid, filtObj, level="Peptide")
-evaluate_filter(msnid, filtObj.grid, level="Peptide")
 evaluate_filter(msnid, filtObj.nm, level="Peptide")
-evaluate_filter(msnid, filtObj.sann, level="Peptide")
-# 4. filter main msnid object
-msnid <- apply_filter(msnid, filtObj.sann)
+# filtering the MSnID object
+msnid <- apply_filter(msnid, filtObj.nm)
 show(msnid)
-# 5. let's remove reverse/decoy and Contaminants
+# removing reverse/decoy and Contaminants
 msnid <- apply_filter(msnid, "!isDecoy")
 show(msnid)
 msnid <- apply_filter(msnid, "!grepl('Contaminant',Accession)")
 show(msnid)
-#--------------------------------------
+#---------------------------------------------
 
 
-# --- CONVERTING TO MSnSet -------------
+# --- CONVERTING TO MSnSet -------------------
 msnset <- as(msnid, "MSnSet")
 # Note, feature data is peptide-centric. Peptide to protein assigments
 # stored in feature data.
 head(fData(msnset))
-# setting up pheno data
+# Note, sample names in msnset are based on file names that were used as input
+# MS/MS search engine. Let's trim the file names to make them compatible with
+# dataset names.
+head(sampleNames(msnset))
+head(meta)
 # Update sample names. 
 # Retain only dataset name portion from spectrum file names, 
 # that were used as sample names
@@ -178,33 +205,33 @@ rownames(meta) <- meta$PNNL.Dataset.Name
 meta <- meta[,c("Letter.Replicate","Daf.16.type")]
 pData(msnset) <- meta[sampleNames(msnset),]
 validObject(msnset)
-#---------------------------------------
+#-------------------------------------------
+
+
+
+
+
 
 
 #--- ROLLING TO PROTEIN LEVEL ----------
 # assessing the extent of peptide/protein mapping redundancy problem
-redundancy <- table(sapply(fData(msnset)$Accession, length))
-barplot(redundancy, main='number of proteins containing peptide sequence')
-dim(msnset)
-# [1] 6440   10
-# summing by ignoring redundancy issue
-msnset.prot <- combineFeatures(msnset, fData(msnset)$Accession, 
-                                  redundancy.handler="multiple", 
-                                  fun="sum", cv=FALSE)
-# Combined 10130 features into 1892 using sum
+redundancy <- table(sapply(fData(msnset)$Accession, length), dnn="redundancy")
+redundancy <- 100 * prop.table(redundancy)
+ggplot(as.data.frame(redundancy), aes(x=factor(1), y=Freq, fill=redundancy)) +
+   geom_bar(stat='identity', width=1) + 
+   coord_polar(theta='y') + 
+   xlab('') + ylab('') +
+   labs(fill='Redundancy') +
+   scale_x_discrete(breaks = NULL)
+# original number of features/peptides in the data
+length(featureNames(msnset))
 # summing of uniquely matching peptides only
 msnset.prot <- combineFeatures(msnset, fData(msnset)$Accession, 
                                   redundancy.handler="unique", 
                                   fun="sum", cv=FALSE)
-# Combined 4157 features into 1093 using sum
-# We'll pick data from unique peptides for further analysis
-#---------------------------------------
-
-
-#--- SUBSET TO FREQUENTLY PRESENT ------
-# at least 6 samples have to have non-zero counts
+# subset proteins
+# at least 6 samples must have non-zero counts
 msnset.prot <- msnset.prot[rowSums(exprs(msnset.prot) > 0) >= 6,]
-# 566 proteins left
 #---------------------------------------
 
 
@@ -225,7 +252,5 @@ lst <- test.results(res,msnset.prot,pData(msnset.prot)$Daf.16.type,"wt","mut",di
                     method="BH")
 res.volcanoplot(lst$tres, min.LFC=1, max.pval=0.05, ylbls=NULL, maxy=4)
 #--------------------------------------
-
-
 
 
