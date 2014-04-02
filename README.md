@@ -12,10 +12,10 @@ options(repos=biocinstallRepos(character()))
 
 install.packages("devtools")
 library("devtools")
-install_github("MSnID", "vladpetyuk")
+install_github("MSnID", "vladpetyuk", quick=TRUE)
 
 # installing dependencies from GitHub to ensure latest versions
-install_github("MSnbase", "lgatto")
+install_github("MSnbase", "lgatto", quick=TRUE)
 install_github("mzID", "thomasp85", quick=TRUE)
 ```
 
