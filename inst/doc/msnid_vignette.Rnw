@@ -205,7 +205,8 @@ Note, although the MS/MS search was done with +/- 20ppm parent ion mass toleranc
 <<label=deltaMass, fig=TRUE, include=FALSE, width=9>>=
 dM <- with(psms(msnid), (experimentalMassToCharge-calculatedMassToCharge)*chargeState)
 x <- data.frame(dM, isDecoy=msnid$isDecoy)
-ggplot(x, aes(x=dM, fill=isDecoy)) + geom_histogram(position='stack')
+ggplot(x, aes(x=dM, fill=isDecoy)) + 
+   geom_histogram(position='stack', binwidth=0.1)
 @
 \begin{center}
 \includegraphics[width=0.8\textwidth]{graphics-deltaMass}
@@ -269,7 +270,7 @@ MS/MS fiters are handled by a special \Rclass{MSnIDFilter} class objects. Indivi
 <<>>=
 filtObj <- MSnIDFilter(msnid)
 filtObj$absParentMassErrorPPM <- list(comparison="<", threshold=10.0)
-filtObj$msmsScore <- list(comparison=">", threshold=7.0)
+filtObj$msmsScore <- list(comparison=">", threshold=10.0)
 # print filter
 show(filtObj)
 # evaluate filter
@@ -287,34 +288,25 @@ system.time({
 show(filtObj.grid)
 # (absParentMassErrorPPM < 2) & (msmsScore > 7.8)
 
-# Nelder-Mead optimization
-set.seed(0)
+# Fine tuning. Nelder-Mead optimization
 system.time({
    filtObj.nm <- optimize_filter(filtObj.grid, msnid, fdr.max=0.01, 
                           method="Nelder-Mead", level="Peptide", n.iter=500)})
 show(filtObj.nm)
 # (absParentMassErrorPPM < 3) & (msmsScore > 7.8)
-
-# simulated annealing optimization
-set.seed(0)
-system.time({
-   filtObj.sann <- optimize_filter(filtObj.grid, msnid, fdr.max=0.01, 
-                                  method="SANN", level="Peptide", n.iter=500)})
-show(filtObj.sann)
-# (absParentMassErrorPPM < 2.2) & (msmsScore > 7.6)
 @
-Let's check which filter turned out to be the best. The differece between the optimized filters is likely to be very small.
+Evaluating filter based on a good guess and optimization. Finally we'll apply
+optimized filter to proceed with further steps in the pipeline.
 <<>>=
+# comparing orignal and optimized filters
 evaluate_filter(msnid, filtObj, level="Peptide")
-evaluate_filter(msnid, filtObj.grid, level="Peptide")
 evaluate_filter(msnid, filtObj.nm, level="Peptide")
-evaluate_filter(msnid, filtObj.sann, level="Peptide")
-@
-We'll choose and apply filter produced by simulated annealing optimization procedure. Identifications that matched to decoy and contaminant protein sequences can be removed by providing filters in the forms of text strings that will be evaluated in the context of PSM table.
-<<>>=
 # apply the optimized filter
-msnid <- apply_filter(msnid, filtObj.sann)
+msnid <- apply_filter(msnid, filtObj.nm)
 show(msnid)
+@
+Identifications that matched to decoy and contaminant protein sequences can be removed by providing filters in the forms of text strings that will be evaluated in the context of PSM table.
+<<>>=
 # let's remove reverse/decoy and Contaminants
 msnid <- apply_filter(msnid, "!isDecoy")
 show(msnid)
@@ -364,7 +356,7 @@ length(featureNames(msnset))
 \begin{center}
 \includegraphics[width=0.8\textwidth]{graphics-assessingRedundancy}
 \end{center}
-\pagebreak[4]
+\pagebreak[0]
 <<label=rollingToProteinLevel>>==
 # summing allowing peptide to contribute multiple proteins
 msnset.prot.1 <- combineFeatures(msnset, fData(msnset)$Accession, 
