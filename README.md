@@ -6,17 +6,12 @@ utilities for handling MS/MS proteomic identifications
 to install run the `MSnID`:
 
 ```r
-# add path to Bioconductor repositories
-source("http://bioconductor.org/biocLite.R")
-options(repos=biocinstallRepos(character()))
-
-install.packages("devtools")
-library("devtools")
-install_github("MSnID", "vladpetyuk", quick=TRUE)
-
+require("devtools") || install.packages("devtools")
 # installing dependencies from GitHub to ensure latest versions
-install_github("MSnbase", "lgatto", quick=TRUE)
 install_github("mzID", "thomasp85", quick=TRUE)
+install_github("MSnbase", "lgatto", quick=TRUE)
+# installing the MSnID itself
+install_github("MSnID", "vladpetyuk", quick=TRUE)
 ```
 
 as an example download and run c_elegans.R script into your working directory
