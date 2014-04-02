@@ -15,4 +15,3 @@ License: Artistic-2.0
 Depends: MSnbase (>= 1.9.4)
 Imports: mzID, R.cache, foreach, doParallel, reshape2, methods, iterators, XML, data.table
 Suggests: BiocStyle, msmsTests, ggplot2
-
