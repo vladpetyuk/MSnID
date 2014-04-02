@@ -30,8 +30,8 @@ Extracts MS/MS ID data from mzIdentML (leveraging \link{mzID} package) or text f
 \tabular{ll}{
 Package: \tab MSnID\cr
 Type: \tab Package\cr
-Version: \tab 0.0.1\cr
-Date: \tab 2014-03-28\cr
+Version: \tab 0.1.0\cr
+Date: \tab 2014-04-02\cr
 License: \tab Artistic-2.0\cr
 }
 }

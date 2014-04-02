@@ -1,16 +1,18 @@
 Package: MSnID
 Type: Package
-Title: What the package does (short line)
-Package: MSnID
-Type: Package
-Title: Utility package for handling proteomics LC-MSn identifications
-Version: 1.0
-Date: 2013-12-11
+Title: Utilities for Exploration and Handling Proteomics LC-MSn Identifications.
+Version: 0.1.0
+Date: 2014-04-02
 Author: Vlad Petyuk 
-Maintainer: Who to complain to <yourfault@somewhere.net>
-Description: More about what it does (maybe more than one line)
-License: GPL (>= 2)
-Depends: MSnbase (>= 1.9.4), mzID
-Imports: R.cache, foreach, doParallel, reshape2, methods, iterators, XML, data.table
+Maintainer: Vlad Petyuk <vladislav.petyuk@pnnl.gov>
+Description: Extracts MS/MS ID data from mzIdentML (leveraging mzID package) or 
+   text files. After collating the search results from multiple datasets it 
+   assesses their identification quality and optimize filtering criteria to 
+   achieve the maximal identifications at a user specified false discovery rate. 
+   Also contains a number of utilities to explore the MS/MS results and assess
+   missed and irregular enzymatic cleavages, mass measurement accuracy, etc.
+License: Artistic-2.0
+Depends: MSnbase (>= 1.9.4)
+Imports: mzID, R.cache, foreach, doParallel, reshape2, methods, iterators, XML, data.table
 Suggests: BiocStyle, msmsTests, ggplot2
 
