@@ -1,9 +1,9 @@
 MSnID
 =====
 
-utilities for handling MS/MS proteomic identifications
+A Convenience Tool for Handling MS/MS Proteomics Identifications
 
-to install `MSnID` copy and run these commands from R prompt:
+To install `MSnID` copy, run these commands from R prompt:
 
 ```r
 require("devtools") || install.packages("devtools")
@@ -14,7 +14,7 @@ install_github("MSnbase", "lgatto", quick=TRUE)
 install_github("MSnID", "vladpetyuk", quick=TRUE)
 ```
 
-download an example c_elegans.R script
+Download an example c_elegans.R script:
 ```r
 library("RCurl")
 script.url <- "https://raw2.github.com/vladpetyuk/MSnID/master/demo/c_elegans.R"
