@@ -3,7 +3,7 @@ MSnID
 
 A Convenience Tool for Handling MS/MS Proteomics Identifications
 
-To install `MSnID` copy, run these commands from R prompt:
+To install `MSnID` package, run these commands from R prompt:
 
 ```r
 require("devtools") || install.packages("devtools")
