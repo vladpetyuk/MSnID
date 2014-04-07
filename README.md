@@ -9,7 +9,7 @@ To install `MSnID` package, run these commands from R prompt:
 require("devtools") || install.packages("devtools")
 # installing dependencies from GitHub to ensure latest versions
 install_github("mzID", "thomasp85", quick=TRUE)
-install_github("MSnbase", "lgatto", quick=TRUE)
+install_github("MSnbase", "vladpetyuk", quick=TRUE)
 # installing the MSnID itself
 install_github("MSnID", "vladpetyuk", quick=TRUE)
 ```
