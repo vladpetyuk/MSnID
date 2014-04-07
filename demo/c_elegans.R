@@ -254,11 +254,25 @@ res.volcanoplot(lst$tres, min.LFC=1, max.pval=0.05, ylbls=NULL, maxy=4)
 #--------------------------------------
 
 
-# --- work in progress ---
-regulated <- subset(lst$tres, adjp < 0.05 & abs(LogFC) > 1)
-selected.data <- exprs(msnset.prot[rownames(regulated),])
-library("gplots")
-heatmap.2(selected.data)
-library("Heatplus")
 
+# --- HEATMAP ---
+if(!require("Heatplus")){
+   library("BiocInstaller")
+   biocLite("Heatplus")
+   library("Heatplus")
+}
+regulated <- subset(lst$tres, adjp < 0.05 & abs(LogFC) > 1)
+# order MSnSet object the daf-16 status
+msnset <- msnset[,order(pData(msnset)$Daf.16.type)]
+# matrix with regulated proteins
+selected.data <- exprs(msnset[rownames(regulated),])
+# more meaningful sample names
+colnames(selected.data) <- with(pData(msnset), 
+                                paste(Daf.16.type, Letter.Replicate, sep='.'))
+# scaling counts from 0 to 1
+selected.data <- sweep(selected.data, 1, apply(selected.data, 1, min), '-')
+selected.data <- sweep(selected.data, 1, apply(selected.data, 1, max), '/')
+heatmap_plus(selected.data,
+             scale='none',
+             col=colorRampPalette(c("snow","steelblue"))(10))
 
