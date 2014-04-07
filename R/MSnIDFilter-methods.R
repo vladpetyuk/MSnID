@@ -1,6 +1,5 @@
 
 
-
 # setGeneric("get_starting_parameters",
 #            function(x, y, ...) standardGeneric("get_starting_parameters"))
 # 
@@ -102,7 +101,8 @@ setMethod("update", "MSnIDFilter",
 setMethod("show", "MSnIDFilter",
           definition=function(object)
           {
-             cat("An object of class \"",class(object),"\"\n",sep='')
+             #cat("An object of class \"",class(object),"\"\n",sep='')
+             cat(class(object)," object\n",sep='')
              #cat("Filter as string:\n")
              cat(.get_filterString(object),'\n')
              #cat(capture.output(str(filterList))[-1],sep='\n')
