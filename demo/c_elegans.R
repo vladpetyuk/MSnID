@@ -134,6 +134,9 @@ ggplot(params) +
    geom_density(aes(x = msmsScore, color = isDecoy, ..count..))
 ggplot(params) + 
    geom_density(aes(x = absParentMassErrorPPM, color = isDecoy, ..count..))
+# subsetting params to top 10000 to accelerate the plotting
+set.seed(0)
+params <- params[sample.int(nrow(msnid),10000),]
 ggplot(data=params, aes(x=msmsScore, y=absParentMassErrorPPM, color=isDecoy)) +
    geom_point(size=1.5)
 # Setting up filter object
