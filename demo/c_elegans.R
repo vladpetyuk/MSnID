@@ -266,11 +266,11 @@ if(!require("Heatplus")){
 }
 regulated <- subset(lst$tres, adjp < 0.05 & abs(LogFC) > 1)
 # order MSnSet object the daf-16 status
-msnset <- msnset[,order(pData(msnset)$Daf.16.type)]
+msnset.prot <- msnset.prot[,order(pData(msnset.prot)$Daf.16.type)]
 # matrix with regulated proteins
-selected.data <- exprs(msnset[rownames(regulated),])
+selected.data <- exprs(msnset.prot[rownames(regulated),])
 # more meaningful sample names
-colnames(selected.data) <- with(pData(msnset), 
+colnames(selected.data) <- with(pData(msnset.prot), 
                                 paste(Daf.16.type, Letter.Replicate, sep='.'))
 # scaling counts from 0 to 1
 selected.data <- sweep(selected.data, 1, apply(selected.data, 1, min), '-')
@@ -278,4 +278,3 @@ selected.data <- sweep(selected.data, 1, apply(selected.data, 1, max), '/')
 heatmap_plus(selected.data,
              scale='none',
              col=colorRampPalette(c("snow","steelblue"))(10))
-
