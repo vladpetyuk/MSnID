@@ -139,7 +139,7 @@ show(msnid)
 A particular properties of peptide sequences we are interested in are 1) irregular cleavages at the termini of the peptides and 2) missing cleavage site within the peptide sequences. The default regular expressions of valid and missed cleavage patterns correspond to trypsin.
 <<>>=
 # creates new column NumIrregCleavages
-msnid <- assess_termini(msnid, validCleavagePattern="[RK]\\.[^P]")
+msnid <- assess_termini(msnid, validCleavagePattern="[KR]\\.[^P]")
 # creates new column NumMissCleavages
 msnid <- assess_missed_cleavages(msnid, missedCleavagePattern="[KR](?=[^P$])")
 @

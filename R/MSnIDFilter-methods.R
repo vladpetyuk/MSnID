@@ -103,7 +103,7 @@ setMethod("update", "MSnIDFilter",
 setMethod("show", "MSnIDFilter",
           definition=function(object)
           {
-             cat("An object of calss \"",class(object),"\"\n",sep='')
+             cat("An object of class \"",class(object),"\"\n",sep='')
              cat("Filter as string:\n")
              cat(.get_filterString(object),'\n')
              #cat(capture.output(str(filterList))[-1],sep='\n')

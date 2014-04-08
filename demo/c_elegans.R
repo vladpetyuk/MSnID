@@ -185,6 +185,12 @@ show(msnid)
 #---------------------------------------------
 
 
+# msnid$msgfpepqvalue <- msnid$`ms-gf:pepqvalue`
+# ff <- MSnIDFilter(msnid)
+# ff$msgfpepqvalue <- list(comparison="<", threshold=0.01)
+# evaluate_filter(msnid, ff, level="Peptide")
+
+
 # --- CONVERTING TO MSnSet -------------------
 msnset <- as(msnid, "MSnSet")
 # Note, feature data is peptide-centric. Peptide to protein assigments
@@ -255,10 +261,32 @@ res.volcanoplot(lst$tres, min.LFC=1, max.pval=0.05, ylbls=NULL, maxy=4)
 
 
 # --- work in progress ---
+# selecting regulated only
 regulated <- subset(lst$tres, adjp < 0.05 & abs(LogFC) > 1)
+# order MSnSet object the daf-16 status
+msnset.prot <- msnset.prot[,order(pData(msnset.prot)$Daf.16.type)]
+# matrix with regulated proteins
 selected.data <- exprs(msnset.prot[rownames(regulated),])
+# more meaningful sample names
+colnames(selected.data) <- with(pData(msnset.prot), 
+                                paste(Daf.16.type, Letter.Replicate, sep='.'))
+# scaling counts from 0 to 1
+selected.data <- sweep(selected.data, 1, apply(selected.data, 1, min), '-')
+selected.data <- sweep(selected.data, 1, apply(selected.data, 1, max), '/')
+group.colors <- c('green','red')[as.factor(pData(msnset.prot)$Daf.16.type)]
 library("gplots")
-heatmap.2(selected.data)
-library("Heatplus")
+heatmap.2(selected.data,
+          Colv=FALSE,
+          dendrogram='row',
+          col=colorRampPalette(c("snow","steelblue"))(10),
+          ColSideColors=group.colors,
+          key=FALSE,
+          trace='none',
+          main='Scaled Spectral Counts for ')
+
+
+
+
+
 
 
