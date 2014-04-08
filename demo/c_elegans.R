@@ -134,6 +134,9 @@ ggplot(params) +
    geom_density(aes(x = msmsScore, color = isDecoy, ..count..))
 ggplot(params) + 
    geom_density(aes(x = absParentMassErrorPPM, color = isDecoy, ..count..))
+# subsetting params to top 10000 to accelerate the plotting
+set.seed(0)
+params <- params[sample.int(nrow(msnid),10000),]
 ggplot(data=params, aes(x=msmsScore, y=absParentMassErrorPPM, color=isDecoy)) +
    geom_point(size=1.5)
 # Setting up filter object
@@ -260,8 +263,18 @@ res.volcanoplot(lst$tres, min.LFC=1, max.pval=0.05, ylbls=NULL, maxy=4)
 #--------------------------------------
 
 
+<<<<<<< HEAD
 # --- work in progress ---
 # selecting regulated only
+=======
+
+# --- HEATMAP ---
+if(!require("Heatplus")){
+   library("BiocInstaller")
+   biocLite("Heatplus")
+   library("Heatplus")
+}
+>>>>>>> 96dc4166f307d747cdb7d9d9d4b2867c4cd40b45
 regulated <- subset(lst$tres, adjp < 0.05 & abs(LogFC) > 1)
 # order MSnSet object the daf-16 status
 msnset.prot <- msnset.prot[,order(pData(msnset.prot)$Daf.16.type)]
@@ -273,6 +286,7 @@ colnames(selected.data) <- with(pData(msnset.prot),
 # scaling counts from 0 to 1
 selected.data <- sweep(selected.data, 1, apply(selected.data, 1, min), '-')
 selected.data <- sweep(selected.data, 1, apply(selected.data, 1, max), '/')
+<<<<<<< HEAD
 group.colors <- c('green','red')[as.factor(pData(msnset.prot)$Daf.16.type)]
 library("gplots")
 heatmap.2(selected.data,
@@ -290,3 +304,8 @@ heatmap.2(selected.data,
 
 
 
+=======
+heatmap_plus(selected.data,
+             scale='none',
+             col=colorRampPalette(c("snow","steelblue"))(10))
+>>>>>>> 96dc4166f307d747cdb7d9d9d4b2867c4cd40b45
