@@ -5,14 +5,23 @@ A Convenience Tool for Handling MS/MS Proteomics Identifications
 
 To install `MSnID` package, run these commands from R prompt:
 
+
+
 ```r
-require("devtools") || install.packages("devtools")
-# installing dependencies from GitHub to ensure latest versions
+# add path to Bioconductor repositories
+source("http://bioconductor.org/biocLite.R")
+options(repos=biocinstallRepos(character()))
+if(!require("devtools")){
+	install.packages("devtools")
+	require("devtools")
+}
+# installing mzID from GitHub to ensure latest versions
 install_github("mzID", "thomasp85", quick=TRUE)
-install_github("MSnbase", "vladpetyuk", quick=TRUE)
 # installing the MSnID itself
 install_github("MSnID", "vladpetyuk", quick=TRUE)
 ```
+
+
 
 Download an example c_elegans.R script:
 ```r
