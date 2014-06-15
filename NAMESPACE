@@ -3,7 +3,9 @@
 
 importFrom(mzID, mzID)
 importMethodsFrom(mzID, flatten)
-# import(MSnbase)
+
+
+import(MSnbase)
 
 import(R.cache)
 import(foreach)
@@ -14,13 +16,15 @@ import(iterators)
 import(XML)
 import(data.table)
 
-importClassesFrom(MSnbase, MSnSet)
+importFrom(parallel, mclapply, detectCores)
+
+# importClassesFrom(MSnbase, MSnSet)
 importClassesFrom(Biobase, AnnotatedDataFrame)
 
 
-#exportClass(MSnbase, MSnSet)
-#export(MSnID)
-#export(MSnIDFilter)
+# these are initialization functions
+export(MSnID) 
+export(MSnIDFilter)
 
 export(read_mzIDs)
 export(assess_termini)

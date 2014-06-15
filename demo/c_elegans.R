@@ -1,21 +1,10 @@
-# --- DOWNLOADING MS/MS SEARCH RESULTS ---
-try(setInternet2(FALSE),silent=TRUE)
-ftp <- "ftp://PASS00308:PJ5348t@ftp.peptideatlas.org/"
-meta <- read.delim(sprintf("%sSample_Metadata.txt", ftp), as.is=TRUE)
-meta <- subset(meta, Age == 'young' & Diet == 'ff') # explore the effect of daf-16
-for( dataset in meta$PNNL.Dataset.Name){
-   cel.path <- sprintf("%s/MSGFPlus_Results/MZID_Files/%s_msgfplus.mzid.gz", 
-                       ftp, dataset)
-   download.file(cel.path, sprintf("%s_msgfplus.mzid.gz", dataset))
-}
-#----------------------------------------
 
 
-#--- READING MZID FILES ----------------
+#--- READING MZID FILE(S) ----------------
 library("MSnID")
 # start the project by providing work directory
 msnid <- MSnID(".")
-mzids <- list.files(".", pattern=".mzid.gz")
+mzids <- system.file("extdata","c_elegans.mzid.gz",package="MSnID")
 msnid <- read_mzIDs(msnid, mzids)
 #---------------------------------------
 
@@ -192,90 +181,6 @@ show(msnid)
 
 # --- CONVERTING TO MSnSet -------------------
 msnset <- as(msnid, "MSnSet")
-# Note, feature data is peptide-centric. Peptide to protein assigments
-# stored in feature data.
-head(fData(msnset))
-# Note, sample names in msnset are based on file names that were used as input
-# MS/MS search engine. Let's trim the file names to make them compatible with
-# dataset names.
-head(sampleNames(msnset))
-head(meta)
-# Update sample names. 
-# Retain only dataset name portion from spectrum file names, 
-# that were used as sample names
-sampleNames(msnset) <- sub("(.*)_dta\\.txt","\\1",sampleNames(msnset))
-show(msnset)
-# prepare pheno data
-rownames(meta) <- meta$PNNL.Dataset.Name
-meta <- meta[,c("Letter.Replicate","Daf.16.type")]
-pData(msnset) <- meta[sampleNames(msnset),]
-validObject(msnset)
-#-------------------------------------------
+#---------------------------------------------
 
 
-
-
-
-
-
-#--- ROLLING TO PROTEIN LEVEL ----------
-# assessing the extent of peptide/protein mapping redundancy problem
-redundancy <- table(sapply(fData(msnset)$Accession, length), dnn="redundancy")
-redundancy <- 100 * prop.table(redundancy)
-ggplot(as.data.frame(redundancy), aes(x=factor(1), y=Freq, fill=redundancy)) +
-   geom_bar(stat='identity', width=1) + 
-   coord_polar(theta='y') + 
-   xlab('') + ylab('') +
-   labs(fill='Redundancy') +
-   scale_x_discrete(breaks = NULL)
-# original number of features/peptides in the data
-length(featureNames(msnset))
-# summing of uniquely matching peptides only
-msnset.prot <- combineFeatures(msnset, fData(msnset)$Accession, 
-                                  redundancy.handler="unique", 
-                                  fun="sum", cv=FALSE)
-# subset proteins
-# at least 6 samples must have non-zero counts
-msnset.prot <- msnset.prot[rowSums(exprs(msnset.prot) > 0) >= 6,]
-#---------------------------------------
-
-
-# --- STATISTICAL TESTS ----------------
-if(!require("msmsTests")){
-   library("BiocInstaller")
-   biocLite("msmsTests")
-   library("msmsTests")
-}
-alt.f <- "y ~ Daf.16.type + 1"
-null.f <- "y ~ 1"
-div <- colSums(exprs(msnset.prot))
-res <- msms.glm.qlll(msnset.prot, alt.f, null.f, div=div)
-sum(p.adjust(res$p.value, "BH") < 0.05)
-# Post-test filter
-lst <- test.results(res,msnset.prot,pData(msnset.prot)$Daf.16.type,"wt","mut",div,
-                    alpha=0.05,minSpC=0,minLFC=1,
-                    method="BH")
-res.volcanoplot(lst$tres, min.LFC=1, max.pval=0.05, ylbls=NULL, maxy=4)
-#--------------------------------------
-
-
-# --- HEATMAP ---
-if(!require("Heatplus")){
-   library("BiocInstaller")
-   biocLite("Heatplus")
-   library("Heatplus")
-}
-regulated <- subset(lst$tres, adjp < 0.05 & abs(LogFC) > 1)
-# order MSnSet object the daf-16 status
-msnset.prot <- msnset.prot[,order(pData(msnset.prot)$Daf.16.type)]
-# matrix with regulated proteins
-selected.data <- exprs(msnset.prot[rownames(regulated),])
-# more meaningful sample names
-colnames(selected.data) <- with(pData(msnset.prot), 
-                                paste(Daf.16.type, Letter.Replicate, sep='.'))
-# scaling counts from 0 to 1
-selected.data <- sweep(selected.data, 1, apply(selected.data, 1, min), '-')
-selected.data <- sweep(selected.data, 1, apply(selected.data, 1, max), '/')
-heatmap_plus(selected.data,
-             scale='none',
-             col=colorRampPalette(c("snow","steelblue"))(10))

@@ -46,6 +46,7 @@
 .optimize_filter.grid.mclapply <- function(filterObj, msnidObj, fdr.max, level, n.iter)
 {
    par.grid <- .construct_optimization_grid(filterObj, msnidObj, n.iter)
+#    browser()
    evaluations <- mclapply(seq_len(nrow(par.grid)), 
                            function(i){
                               .get_num_pep_for_fdr( par.grid[i,],
@@ -103,6 +104,8 @@ setMethod("optimize_filter",
 }   
 .optimize_filter.memoized <- addMemoization(.optimize_filter)
 # .optimize_filter.memoized <- .optimize_filter
+
+
 
 # -- addMemoization
 # memArgs <- list(...)

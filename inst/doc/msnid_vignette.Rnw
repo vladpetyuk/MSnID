@@ -6,7 +6,7 @@
 
 
 <<style, eval=TRUE, echo=FALSE, results=tex>>=
-BiocStyle::latex()
+BiocStyle::latex(use.unsrturl=FALSE)
 @
 
 
@@ -40,20 +40,8 @@ is \Rclass{MSnIDFilter}.
 library("MSnID")
 @
 
-\subsection{Downloading example mzIdentML files}
-As an example we will use datasets from C.elegans proteomics study describing the effect of daf-16 mutation on the protein abundances \cite{Depuydt2013,Depuydt2014}. There will be 5 datasets corresponding to long-living glp-4; daf-2 strain and 5 datasets corresponding to the strain with compensatory mutation in daf-16 transcription factor that restores (shortens) life-span back to normal. Files available at PeptideAtlas repository \href{https://db.systemsbiology.net/sbeams/cgi/PeptideAtlas/PASS_View?identifier=PASS00308}{PASS00308}.
-<<>>=
-try(setInternet2(FALSE),silent=TRUE)
-ftp <- "ftp://PASS00308:PJ5348t@ftp.peptideatlas.org/"
-meta <- read.delim(sprintf("%sSample_Metadata.txt", ftp), as.is=TRUE)
-meta <- subset(meta, Age == 'young' & Diet == 'ff') # explore the effect of daf-16.
-for( dataset in meta$PNNL.Dataset.Name){
-   cel.path <- sprintf("%s/MSGFPlus_Results/MZID_Files/%s_msgfplus.mzid.gz", 
-                       ftp, dataset)
-   download.file(cel.path, sprintf("%s_msgfplus.mzid.gz", dataset))
-}
-@ 
-
+% \subsection{Downloading example mzIdentML files}
+% As an example we will use datasets from C.elegans proteomics study describing the effect of daf-16 mutation on the protein abundances \cite{Depuydt2013,Depuydt2014}. There will be 5 datasets corresponding to long-living glp-4; daf-2 strain and 5 datasets corresponding to the strain with compensatory mutation in daf-16 transcription factor that restores (shortens) life-span back to normal. Files available at PeptideAtlas repository \href{https://db.systemsbiology.net/sbeams/cgi/PeptideAtlas/PASS_View?identifier=PASS00308}{PASS00308}.
 
 
 \subsection{Setting up working directory}
@@ -62,7 +50,7 @@ path to the working directory. This directory will be used for storing cached
 analysis results. Caching/memoisation mechanism is based on \CRANpkg{R.cache}.
 <<>>=
 library("MSnID")
-# start the project by providing work directory
+# start the project (using constructor) by providing work directory
 msnid <- MSnID(".")
 @
 
@@ -71,8 +59,7 @@ msnid <- MSnID(".")
 \subsection{Reading MS/MS data}
 The main intended way to read MS/MS results is by parsing mzIdentML files (*.mzid or *.mzid.gz extensions) using \Biocpkg{mzID} package facilities.
 <<>>=
-mzids <- list.files(".", pattern=".mzid.gz")
-# in this case I read all *.mzid.gz files present in the current directory.
+mzids <- system.file("extdata", "c_elegans.mzid.gz", package="MSnID")
 msnid <- read_mzIDs(msnid, mzids)
 @
 Alternative way is to pass MS/MS search results as peptide-to-spectra matches (PSMs) \Rclass{data.frame}. Internally PSMs stored as \CRANpkg{data.table} object.
@@ -95,8 +82,8 @@ Trivial updates to some of the columns to make sure upper/lower letter cases are
 <<>>=
 msnid$Accession <- msnid$accession
 msnid$isDecoy <- msnid$isdecoy
-msnid$calculatedMassToCharge <- msnid$calculatedmasstocharge
-msnid$experimentalMassToCharge <- msnid$experimentalmasstocharge
+msnid$calculatedMassToCharge <- as.numeric(msnid$calculatedmasstocharge)
+msnid$experimentalMassToCharge <- as.numeric(msnid$experimentalmasstocharge)
 msnid$chargeState <- msnid$chargestate
 msnid$spectrumID <- msnid$spectrumid
 @
@@ -320,76 +307,7 @@ show(msnid)
 The \Rpackage{MSnID} package is aimed at providing convenience functionality to handle MS/MS identifications. Quantitation \textit{per se} is outside of the scope of the package. The only type of quantitation that can be seamlessly blended with MS/MS identification analysis is so-called \emph{spectral counting} approah. In such an approach a peptide abundance is considered to be directly proportional to the number of matched MS/MS spectra. In its turn protein abunance is proportional to the sum of the number of spectra of the matching peptides. The \Rclass{MSnID} object can be converted to \Rclass{MSnSet} object form \Biocpkg{MSnbase} that extends generic Bioconductor \Rclass{eSet} to quantitative proteomics data.
 <<label=convertingToMSnSet>>=
 msnset <- as(msnid, "MSnSet")
-# Note, feature data is peptide-centric. Peptide to protein assigments
-# stored in feature data.
-head(fData(msnset))
-# Note, sample names in msnset are based on file names that were used as input
-# MS/MS search engine. Let's trim the file names to make them compatible with
-# dataset names.
-head(sampleNames(msnset))
-head(meta)
-# Update sample names. 
-# Retain only dataset name portion from spectrum file names, 
-# that were used as sample names
-sampleNames(msnset) <- sub("(.*)_dta\\.txt","\\1",sampleNames(msnset))
-show(msnset)
-# prepare pheno data
-rownames(meta) <- meta$PNNL.Dataset.Name
-meta <- meta[,c("Letter.Replicate","Daf.16.type")]
-pData(msnset) <- meta[sampleNames(msnset),]
-validObject(msnset)
 @
-Currently the features in the \Rclass{MSnSet} object are peptides. However, we plan to quantify differences at level of relative protein abundances. Peptides can be rolled-up to protein level using \Rfunction{combineFeatures} function from \Biocpkg{MSnbase}. Ambiguity in peptide-to-protein assignment is handled by \Rcode{redundancy.handler} argument. It can allow ambiguity of peptide assignment to \emph{multiple} proteins or \emph{unique} mapping only by discarding peptide mapping two or more proteins.
-<<label=assessingRedundancy, fig=TRUE, include=FALSE>>=
-# assessing the extent of peptide/protein mapping redundancy problem
-redundancy <- table(sapply(fData(msnset)$Accession, length), dnn="redundancy")
-redundancy <- 100 * prop.table(redundancy)
-ggplot(as.data.frame(redundancy), aes(x=factor(1), y=Freq, fill=redundancy)) +
-   geom_bar(stat='identity', width=1) + 
-   coord_polar(theta='y') + 
-   xlab('') + ylab('') +
-   labs(fill='Redundancy') +
-   scale_x_discrete(breaks = NULL)
-# original number of features/peptides in the data
-length(featureNames(msnset))
-@
-\begin{center}
-\includegraphics[width=0.8\textwidth]{graphics-assessingRedundancy}
-\end{center}
-\pagebreak[0]
-<<label=rollingToProteinLevel>>==
-# summing allowing peptide to contribute multiple proteins
-msnset.prot.1 <- combineFeatures(msnset, fData(msnset)$Accession, 
-                                  redundancy.handler="multiple", 
-                                  fun="sum", cv=FALSE)
-# summing using only non-redundant peptides.
-# Note, in this case 1/3 of peptides will be discarded
-msnset.prot.2 <- combineFeatures(msnset, fData(msnset)$Accession, 
-                                  redundancy.handler="unique", 
-                                  fun="sum", cv=FALSE)
-# Subset to proteins that present in at least 6 samples out of 10.
-msnset <- msnset.prot.2[rowSums(exprs(msnset.prot.2) > 0) >= 6,]
-# check how many proteins left
-length(featureNames(msnset))
-@
-For statistical testing we will leverage functionality available in \Biocpkg{msmsTests}. Here we are comparing the difference between \textit{glp-4; daf-2} long-living strain with a strain that bears compensatory mutation within \textit{daf-16} transcription factor. For statistical testing of the count data we will use quasi-Poisson model \Rfunction{msms.glm.qlll}.
-<<label=statisticalTests, fig=TRUE, include=FALSE>>=
-library("msmsTests")
-alt.f <- "y ~ Daf.16.type + 1"
-null.f <- "y ~ 1"
-div <- colSums(exprs(msnset))
-res <- msms.glm.qlll(msnset, alt.f, null.f, div=div)
-sum(p.adjust(res$p.value, "BH") < 0.05)
-# Post-test filter
-lst <- test.results(res,msnset,pData(msnset)$Daf.16.type,"wt","mut",div,
-                    alpha=0.05,minSpC=0,minLFC=1,
-                    method="BH")
-res.volcanoplot(lst$tres, min.LFC=1, max.pval=0.05, ylbls=NULL, maxy=4)
-@
-\begin{center}
-\includegraphics[width=0.4\textwidth]{graphics-statisticalTests}
-\end{center}
-\pagebreak[0]
 
 \bibliographystyle{plainnat}
 \bibliography{msnid}

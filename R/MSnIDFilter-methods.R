@@ -1,24 +1,5 @@
 
 
-# setGeneric("get_starting_parameters",
-#            function(x, y, ...) standardGeneric("get_starting_parameters"))
-# 
-# setMethod("get_starting_parameters",
-#           signature(x="MSnIDFilter", y="MSnID"),
-#           definition=function(x, y, ...)
-#           {
-#              # let's assume we are taking median
-#              # update the filter list
-#              for( name_i in names(x@filterList)){
-#                 x@filterList[[name_i]]$threshold <- 
-#                    median(y[[name_i]],na.rm=TRUE)
-#              }
-#              return(x)
-#           }
-# )
-
-
-
 
 setMethod("set_filter", 
           signature(.Object="MSnIDFilter"), # dispatch just on the first argument
@@ -101,13 +82,8 @@ setMethod("update", "MSnIDFilter",
 setMethod("show", "MSnIDFilter",
           definition=function(object)
           {
-             cat("An object of class \"",class(object),"\"\n",sep='')
-             cat("Filter as string:\n")
-             #cat("An object of class \"",class(object),"\"\n",sep='')
              cat(class(object)," object\n",sep='')
-             #cat("Filter as string:\n")
              cat(.get_filterString(object),'\n')
-             #cat(capture.output(str(filterList))[-1],sep='\n')
           }
 )
 
