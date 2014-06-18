@@ -13,6 +13,6 @@ Description: Extracts MS/MS ID data from mzIdentML (leveraging mzID package) or
    explore the MS/MS results and assess missed and irregular enzymatic cleavages, 
    mass measurement accuracy, etc.
 License: Artistic-2.0
-Depends: MSnbase (>= 1.11.9)
-Imports: mzID (>= 1.1.5), R.cache, foreach, doParallel, parallel, reshape2, methods, iterators, XML, data.table, Biobase
+Depends: MSnbase (>= 1.12.1)
+Imports: R (>= 2.10), mzID (>= 1.1.5), R.cache, foreach, doParallel, parallel, reshape2, methods, iterators, XML, data.table, Biobase
 Suggests: BiocStyle, msmsTests, ggplot2, RUnit, BiocGenerics
