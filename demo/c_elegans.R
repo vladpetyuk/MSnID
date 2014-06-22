@@ -184,3 +184,7 @@ msnset <- as(msnid, "MSnSet")
 #---------------------------------------------
 
 
+
+# --- clean up the cache directory ---
+unlink(".Rcache", recursive=TRUE)
+#---------------------------------------------
