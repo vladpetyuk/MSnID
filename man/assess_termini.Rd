@@ -60,10 +60,9 @@
 
 
 \examples{
-# see c_elegans demo for details 
-# system.file("demo", "c_elegans.R", package="MSnID")
-
-\dontrun{
-
-demo(c_elegans)
-}}
+data(c_elegans)
+# adding column NumIrregCleavages containing count of irregularly cleaved termini
+msnidObj <- assess_termini(msnidObj, validCleavagePattern="[KR]\\\\.[^P]")
+# check the distribution
+table(msnidObj$NumIrregCleavages)
+}

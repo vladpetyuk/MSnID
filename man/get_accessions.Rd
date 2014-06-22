@@ -32,10 +32,6 @@ Returns the non-redundant list of accession (protein) identifiers from the
 
 
 \examples{
-# see c_elegans demo for details 
-# system.file("demo", "c_elegans.R", package="MSnID")
-
-\dontrun{
-
-demo(c_elegans)
-}}
+data(c_elegans)
+head(get_accessions(msnidObj))
+}

@@ -43,11 +43,8 @@
 
 
 \examples{
-# see c_elegans demo for details 
-# system.file("demo", "c_elegans.R", package="MSnID")
-
-\dontrun{
-
-demo(c_elegans)
-}}
+data(c_elegans)
+ppm <- mass_measurement_error(msnidObj)
+hist(ppm, 100)
+}
 

@@ -44,10 +44,10 @@
 
 
 \examples{
-# see c_elegans demo for details 
-# system.file("demo", "c_elegans.R", package="MSnID")
+data(c_elegans)
+id_quality(msnidObj, level="Peptide")
+id_quality(msnidObj, filter="`ms-gf:pepqvalue` < 0.01", level="Peptide")
+}
 
-\dontrun{
 
-demo(c_elegans)
-}}
+

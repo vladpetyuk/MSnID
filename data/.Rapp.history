@@ -1,2 +1,0 @@
-load("/Users/d3m629/SkyDrive/MSnID_dev/MSnID/data/c_elegans.RData")
-ls()

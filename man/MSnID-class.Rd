@@ -205,12 +205,11 @@
 }
 
 \examples{
-# see c_elegans demo for details 
-# system.file("demo", "c_elegans.R", package="MSnID")
-
-\dontrun{
-
-demo(c_elegans)
-}}
+msnidObj <- MSnID(".")
+mzids <- system.file("extdata","c_elegans.mzid.gz",package="MSnID")
+msnidObj <- read_mzIDs(msnidObj, mzids)
+# clean up the cache directory
+unlink(".Rcache", recursive=TRUE)
+}
 
 \keyword{classes}

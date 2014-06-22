@@ -32,10 +32,7 @@ Returns the non-redundant list of peptides from the
 
 
 \examples{
-# see c_elegans demo for details 
-# system.file("demo", "c_elegans.R", package="MSnID")
+data(c_elegans)
+head(get_peptides(msnidObj))
+}
 
-\dontrun{
-
-demo(c_elegans)
-}}

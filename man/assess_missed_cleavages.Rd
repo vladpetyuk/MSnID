@@ -54,10 +54,13 @@
 
 
 \examples{
-# see c_elegans demo for details 
-# system.file("demo", "c_elegans.R", package="MSnID")
+data(c_elegans)
+# adding column NumMissCleavages containing count of missed cleavages
+msnidObj <- assess_missed_cleavages(msnidObj, missedCleavagePattern="[KR](?=[^P$])")
+# check the distribution
+table(msnidObj$NumMissCleavages)
+}
 
-\dontrun{
 
-demo(c_elegans)
-}}
+
+
