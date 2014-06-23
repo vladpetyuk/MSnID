@@ -3,7 +3,7 @@
 \alias{c_elegans}
 \docType{data}
 \title{
-MSnID Object
+Example mzIdenML File and MSnID Object
 }
 
 \description{
@@ -22,7 +22,7 @@ msnidObj
 
 
 \dontrun{
-## The source of example mzID file:
+## How to download the example mzID file from PeptideAltas:
 try(setInternet2(FALSE),silent=TRUE)
 ftp.loc <- "ftp://PASS00308:PJ5348t@ftp.peptideatlas.org/MSGFPlus_Results/MZID_Files/c_elegans_A_3_1_21Apr10_Draco_10-03-04_msgfplus.mzid.gz"
 download.file(cel.path, "c_elegans.mzid.gz")}
