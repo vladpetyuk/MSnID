@@ -14,5 +14,8 @@ Description: Extracts MS/MS ID data from mzIdentML (leveraging mzID package) or
    mass measurement accuracy, etc.
 License: Artistic-2.0
 Depends: R (>= 2.10)
-Imports: MSnbase (>= 1.12.1), mzID (>= 1.1.5), R.cache, foreach, doParallel, parallel, reshape2, methods, iterators, XML, data.table, Biobase
+Imports: MSnbase (>= 1.12.1), mzID (>= 1.1.5), R.cache, 
+         foreach, doParallel, parallel, reshape2, methods, iterators, 
+         data.table, Biobase
 Suggests: BiocStyle, msmsTests, ggplot2, RUnit, BiocGenerics
+LazyData: yes

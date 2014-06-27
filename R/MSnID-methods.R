@@ -246,43 +246,6 @@ setMethod("evaluate_filter",
 
 
 
-
-
-#----Getters and Setters--------------------------------------------------------
-# setMethod("set_psm_parameter", 
-#           signature(.Object="MSnID"),
-#           definition=function(.Object, ...)
-#           {
-#              e <- eval(substitute(list(...)), .Object@psms, parent.frame())
-#              stopifnot(length(e) == 1)
-#              stopifnot(length(newPar) == nrow(.Object@psms))
-#              .Object@psms[[names(e)]] <- e[[1]]
-#              return(.Object)
-#           }
-# )
-
-
-# setMethod("get_psm_parameter", 
-#           signature(.Object="MSnID", parName="character"),
-#           definition=function(.Object, parName)
-#           {
-#              return(.Object@psms[[parName]])
-#           }
-# )
-
-
-# setMethod("delete_psm_parameter", 
-#           signature(.Object="MSnID"),
-#           definition=function(.Object, ...)
-#           {
-#              parNames <- sapply(as.list(substitute(list(...)))[-1L], as.character)
-#              for( i in parNames) {.Object@psms[[i]] <- NULL}
-#              return(.Object)
-#           }
-# )
-
-
-
 setMethod("names",
           signature(x="MSnID"),
           definition=function(x)
@@ -417,7 +380,12 @@ setMethod("read_mzIDs", "MSnID",
 
 
 
-
+# Getters and setters modelled after
+# library(Biobase)
+# getMethod("$", "eSet")
+# getMethod("$<-", "eSet")
+# getMethod("[[", "eSet")
+# getMethod("[[<-", "eSet")
 
 setMethod("$", "MSnID",
           definition=function(x, name)
@@ -442,8 +410,6 @@ setMethod("$<-", "MSnID",
           }
 )
 
-# getGeneric("[[<-")
-# getMethod("[[<-", "eSet")
 setMethod("[[<-", "MSnID",
           definition=function(x, i, j, ..., value)
           {
@@ -454,11 +420,6 @@ setMethod("[[<-", "MSnID",
 
 
 
-# library(Biobase)
-# getMethod("$", "eSet")
-# getMethod("$<-", "eSet")
-# getMethod("[[", "eSet")
-# getMethod("[[<-", "eSet")
 
 
 #--------------------------------------------           
@@ -546,41 +507,3 @@ setAs("MSnID", "MSnSet",
       def=function(from) .convert_MSnID_to_MSnSet(from))
 
 
-
-# combineFeaturesBackup <- function(object, groupBy, redundancy.handler=c("ignore","unique.only"), ...)
-# {
-#    # wrapper to combineFeatures to handle redundancy in feature to factor mapping
-#    # e.g. peptide-to-protein redundancy
-#    if(!is.list(groupBy)){
-#       result <- MSnbase::combineFeatures(object, groupBy, ...)
-#    }else{
-#       # handling of the redundancy
-#       if(any(names(groupBy) != rownames(fData(object))))
-#          stop("names of groupBy list do not match fData of the MSnSet object")
-#       redundancy.handler <- match.arg(redundancy.handler)
-#       if(redundancy.handler == "ignore"){
-#          
-#          expansion.index <- rep(seq_len(nrow(object)), sapply(groupBy, length))
-#          new.exprs <- exprs(object)[expansion.index,]
-#          rownames(new.exprs) <- NULL
-#          groupBy.idx <- sapply(fData(object), identical, groupBy)
-#          new.feature.data <- fData(object)[expansion.index,]
-#          new.feature.data[,groupBy.idx] <- unlist(groupBy)
-#          rownames(new.feature.data) <- NULL
-#          new.object <- new("MSnSet", exprs = new.exprs, 
-#                            featureData = new("AnnotatedDataFrame", 
-#                                              data = new.feature.data),
-#                            phenoData=phenoData(object))
-#          result <- MSnbase::combineFeatures(new.object, unlist(groupBy), ...)
-#       }else if(redundancy.handler == "unique.only"){
-#          idx.unique <- sapply(groupBy, length) < 2
-#          object <- object[idx.unique,]
-#          groupBy <- unlist(groupBy[idx.unique])
-#          result <- MSnbase::combineFeatures(object, groupBy, ...)
-#       }else{
-#          stop("Method \"", redundancy.handler, 
-#               "\" for handing the redundancy is not implemented!", sep='')
-#       }
-#       return(result)
-#    }
-# }

@@ -1,31 +1,18 @@
-# exportPattern("^[[:alpha:]]+")
-
-
-importFrom(mzID, mzID)
-importMethodsFrom(mzID, flatten)
-
-
-import(MSnbase)
-
 import(R.cache)
 import(foreach)
 import(doParallel)
 import(reshape2)
 import(methods)
 import(iterators)
-import(XML)
 import(data.table)
-
+importFrom(mzID, mzID)
+importMethodsFrom(mzID, flatten)
 importFrom(parallel, mclapply, detectCores)
-
-# importClassesFrom(MSnbase, MSnSet)
+importClassesFrom(MSnbase, MSnSet)
 importClassesFrom(Biobase, AnnotatedDataFrame)
-
-
-# these are initialization functions
+#-----------------------------------------------------------------------------
 export(MSnID) 
 export(MSnIDFilter)
-
 export(read_mzIDs)
 export(assess_termini)
 export(assess_missed_cleavages)
@@ -36,11 +23,8 @@ export(optimize_filter)
 export(correct_peak_selection)
 export(mass_measurement_error)
 export(recalibrate)
-
 export(get_peptides)
 export(get_accessions)
-
-
 exportMethods(names)
 exportMethods("$", "$<-", "[[", "[[<-")
 exportMethods("as.numeric")
@@ -50,9 +34,3 @@ exportMethods("names")
 exportMethods("show")
 exportMethods("dim")
 exportMethods("psms", "psms<-")
-
-
-
-
-
-

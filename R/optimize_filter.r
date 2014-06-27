@@ -1,7 +1,8 @@
-# Here will be methods for handling filter optimization.
+# Here will be the methods for handling filter optimization.
 # Since they apply both to MSnID and MSnIDFilter objects 
-# it probably make sense not to relate these methods exclusively
-# to either class. May be they migrate to MSnIDFilter-methods, though.
+# it probably make sense not to make these methods exclusively
+# for either of the classes. 
+# It may make some (minor) sense to make it as MSnIDFilter-method though.
 
 
 .get_num_pep_for_fdr <- function(filterThresholds, msmsdata, filter, fdr.max, ...) 
@@ -103,66 +104,4 @@ setMethod("optimize_filter",
    return(optimFilter)
 }   
 .optimize_filter.memoized <- addMemoization(.optimize_filter)
-# .optimize_filter.memoized <- .optimize_filter
-
-
-
-# -- addMemoization
-# memArgs <- list(...)
-# function(..., envir = parent.frame()) {
-#    args <- list(fcn, ..., envir = envir)
-#    args <- c(args, memArgs)
-#    do.call("memoizedCall", args = args)
-# }
-
-# -- memoizedCall
-# key <- list(what = what, ...)
-# if (!force) {
-#    res <- loadCache(key = key, dirs = dirs, sources = sources)
-#    if (!is.null(res)) {
-#       if (verbose) 
-#          cat("Returning cached results!")
-#       return(res)
-#    }
-# }
-# res <- do.call(what, args = list(...), quote = FALSE, envir = envir) # <- perhaps problem here!
-# saveCache(res, key = key, dirs = dirs, sources = sources)
-# res
-
-#===========================================================
-
-
-# .read_mzIDs <- function(mzids)
-# {
-#    cl <- makeCluster(detectCores(), outfile='')
-#    registerDoParallel(cl)
-#    timing <- system.time(
-#       psms <- foreach( i=icount(length(mzids)), 
-#                        .combine=rbind,
-#                        .inorder=FALSE,
-#                        .packages=c("mzID")) 
-#       %dopar% {
-#          # ans <- MSnID:::extract_mzID(mzids[i]) # extract_mzID is non-exported
-#          ans <- flatten(mzID(mzids[i]))
-#          print(paste(i, mzids[i], "done", sep=" ... "))
-#          gc()
-#          ans})
-#    print(timing)
-#    stopCluster(cl)
-#    return(psms)
-# }
-# 
-# 
-# .read_mzIDs.memoized <- addMemoization(.read_mzIDs)
-# 
-# setMethod("read_mzIDs", "MSnID",
-#           definition=function(.Object, pathToMzIDs)
-#           {
-#              # to check if files are indeed available by the provided path
-#              stopifnot(all(sapply(pathToMzIDs, file.exists)))
-#              .Object@psms <- .read_mzIDs.memoized(pathToMzIDs)
-#              return(.Object)
-#           }
-# )
-
 

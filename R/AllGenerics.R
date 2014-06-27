@@ -1,18 +1,6 @@
 
-# setGeneric("parameter_names",
-#            function(.Object) standardGeneric("parameter_names"))
-
 setGeneric("set_filter",
            function(.Object, ...) standardGeneric("set_filter"))
-
-# setGeneric("delete_psm_parameter",
-#            function(.Object, ...) standardGeneric("delete_psm_parameter"))
-
-# setGeneric("get_psm_parameter",
-#            function(.Object, parName) standardGeneric("get_psm_parameter"))
-
-# setGeneric("set_psm_parameter",
-#            function(.Object, ...) standardGeneric("set_psm_parameter"))
 
 setGeneric("assess_missed_cleavages",
            function(.Object, missedCleavagePattern="[KR](?=[^P$])") 
@@ -72,8 +60,6 @@ setGeneric("recalibrate",
 setGeneric("optimize_filter",
            function(.Filter, .Data, fdr.max, method, level, n.iter)
               stadardGeneric("optimize_filter"))
-
-
 
 setGeneric("psms",
            function(.Object) standardGeneric("psms"))
