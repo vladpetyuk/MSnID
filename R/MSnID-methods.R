@@ -130,8 +130,10 @@ setMethod("get_psm_fdr", "MSnID",
 setMethod("get_peptide_fdr", "MSnID",
           definition=function(.Object)
           {
-             peptideDecoy <- unique(subset(.Object@psms, select=c("Peptide","isDecoy")))
-             isDecoy <- table(factor(peptideDecoy$isDecoy, levels=c(FALSE, TRUE)))
+             peptideDecoy <- unique(subset(.Object@psms, 
+                                           select=c("Peptide","isDecoy")))
+             isDecoy <- table(factor(peptideDecoy$isDecoy, 
+                                     levels=c(FALSE, TRUE)))
              fdr <- isDecoy["TRUE"]/isDecoy["FALSE"]
              return(fdr)
           }
@@ -142,8 +144,10 @@ setMethod("get_peptide_fdr", "MSnID",
 setMethod("get_accession_fdr", "MSnID",
           definition=function(.Object)
           {
-             accessionDecoy <- unique(subset(.Object@psms, select=c("Accession","isDecoy")))
-             isDecoy <- table(factor(accessionDecoy$isDecoy, levels=c(FALSE, TRUE)))
+             accessionDecoy <- unique(subset(.Object@psms, 
+                                             select=c("Accession","isDecoy")))
+             isDecoy <- table(factor(accessionDecoy$isDecoy, 
+                                     levels=c(FALSE, TRUE)))
              fdr <- isDecoy["TRUE"]/isDecoy["FALSE"]
              return(fdr)
           }
@@ -223,7 +227,8 @@ setMethod("apply_filter",
 
 setMethod("id_quality",
           signature(.Object="MSnID"),
-          definition=function(.Object, filter=NULL, level=c("PSM", "Peptide", "Accession"))
+          definition=function(.Object, filter=NULL, 
+                              level=c("PSM", "Peptide", "Accession"))
           {
              if(!is.null(filter))
                 .Object <- apply_filter(.Object, filter)
@@ -235,7 +240,8 @@ setMethod("id_quality",
 # synonym of id_quality, but with filter present. It can not be NULL.
 setMethod("evaluate_filter",
           signature(.Object="MSnID"),
-          definition=function(.Object, filter, level=c("PSM", "Peptide", "Accession"))
+          definition=function(.Object, filter, 
+                              level=c("PSM", "Peptide", "Accession"))
           {
              level <- match.arg(level)
              .Object <- apply_filter(.Object, filter)
@@ -301,11 +307,12 @@ setReplaceMethod("psms",
                  function(.Object, value) {
                     misCol <- setdiff(.mustBeColumns, colnames(value))
                     if(!is.null(misCol) & interactive()){
-                       promptStr <- paste("The data.frame missing the following columns:\n",
-                                          paste(strwrap(paste(misCol, collapse=', ')), 
-                                                collapse='\n'),
-                                          '.\n',
-                                          collapse='', sep='')
+                       promptStr <- 
+                          paste("The data.frame missing the following columns:\n",
+                                paste(strwrap(paste(misCol, collapse=', ')), 
+                                      collapse='\n'),
+                                '.\n',
+                                collapse='', sep='')
                        warning(promptStr, call. = FALSE, immediate. = TRUE)
 #                        ANSWER <- readline("Proceed? (Y/N): ")
 #                        if (substr(ANSWER, 1, 1) == "n")
