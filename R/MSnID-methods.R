@@ -387,10 +387,11 @@ setMethod("read_mzIDs", "MSnID",
 
 
 
+#-------------------------------------------------------------------------------
 # Getters and setters modelled after
 # library(Biobase)
-# getMethod("$", "eSet")
-# getMethod("$<-", "eSet")
+# getMethod("$", "eSet") # tricky
+# getMethod("$<-", "eSet") # straight
 # getMethod("[[", "eSet")
 # getMethod("[[<-", "eSet")
 
@@ -398,7 +399,7 @@ setMethod("$", "MSnID",
           definition=function(x, name)
           {
              eval(substitute(x@psms$NAME_ARG, list(NAME_ARG = name)))
-             # return(x@psms[[name]])
+             return(x@psms[[name]])
           }
 )
 
@@ -409,13 +410,32 @@ setMethod("[[", "MSnID",
           }
 )
 
+
+
+# # data.frame style
+# setMethod("$<-", "MSnID",
+#           definition=function(x, name, value)
+#           {
+#              x@psms[[name]] <- value
+#              return(x)
+#           }
+# )
+
+# data.table style
+# data(c_elegans)
+# debug(getMethod("$<-", "MSnID"))
+# msnidObj$HREN <- 1
 setMethod("$<-", "MSnID",
           definition=function(x, name, value)
           {
-             x@psms[[name]] <- value
+             x@psms <- eval(substitute(x@psms[,NAME_ARG:=value], list(NAME_ARG=name)))
              return(x)
           }
 )
+# to debug
+# trace("$<-", browser, exit=browser, signature = c("MSnID"))
+
+
 
 setMethod("[[<-", "MSnID",
           definition=function(x, i, j, ..., value)
@@ -424,6 +444,9 @@ setMethod("[[<-", "MSnID",
              return(x)
           }
 )
+#-------------------------------------------------------------------------------
+
+
 
 
 
