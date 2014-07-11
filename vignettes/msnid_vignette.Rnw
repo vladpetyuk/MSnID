@@ -78,32 +78,6 @@ Check what are the current column names of the MS/MS search results.
 <<>>=
 names(msnid)
 @
-Trivial updates to some of the columns to make sure upper/lower letter cases are correct.
-<<>>=
-msnid$Accession <- msnid$accession
-msnid$isDecoy <- msnid$isdecoy
-msnid$calculatedMassToCharge <- as.numeric(msnid$calculatedmasstocharge)
-msnid$experimentalMassToCharge <- as.numeric(msnid$experimentalmasstocharge)
-msnid$chargeState <- msnid$chargestate
-msnid$spectrumID <- msnid$spectrumid
-@
-Creating "Peptide" column as peptide sequence with flanking amino acids (X.XXXX.X).
-<<>>=
-msnid$Peptide <- paste(msnid$pre, msnid$pepseq, msnid$post, sep='.')
-@
-Removing the columns we don't need anymore.
-<<>>=
-msnid$accession <- NULL
-msnid$pepseq <- NULL
-msnid$pre <- NULL
-msnid$post <- NULL
-msnid$isdecoy <- NULL
-msnid$spectrumid <- NULL
-msnid$experimentalmasstocharge <- NULL
-msnid$calculatedmasstocharge <- NULL
-msnid$chargestate <- NULL
-@
-
 
 
 \subsection{Exploring the MSnID object}
@@ -308,6 +282,11 @@ The \Rpackage{MSnID} package is aimed at providing convenience functionality to 
 <<label=convertingToMSnSet>>=
 msnset <- as(msnid, "MSnSet")
 @
+
+<<eval=TRUE, echo=FALSE, results=hide>>=
+unlink(".Rcache", recursive=TRUE)
+@
+
 
 \bibliographystyle{plainnat}
 \bibliography{msnid}
