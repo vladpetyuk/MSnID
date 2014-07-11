@@ -47,9 +47,11 @@
 
 
 \examples{
+\dontrun{
 msnidObj <- MSnID(".")
 mzids <- system.file("extdata","c_elegans.mzid.gz",package="MSnID")
 msnidObj <- read_mzIDs(msnidObj, mzids)
 # clean up the cache directory
 unlink(".Rcache", recursive=TRUE)
+}
 }
