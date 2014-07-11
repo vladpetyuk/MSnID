@@ -32,33 +32,11 @@ download.file(cel.path, "c_elegans.mzid.gz")}
 msnidObj <- MSnID(".")
 mzids <- system.file("extdata","c_elegans.mzid.gz",package="MSnID")
 msnidObj <- read_mzIDs(msnidObj, mzids)
-msnidObj$Accession <- msnidObj$accession
-msnidObj$accession <- NULL
-msnidObj$isDecoy <- msnidObj$isdecoy
-msnidObj$isdecoy <- NULL
-msnidObj$calculatedMassToCharge <- msnidObj$calculatedmasstocharge
-msnidObj$calculatedmasstocharge <- NULL
-msnidObj$experimentalMassToCharge <- msnidObj$experimentalmasstocharge
-msnidObj$experimentalmasstocharge <- NULL
-msnidObj$chargeState <- msnidObj$chargestate
-msnidObj$chargestate <- NULL
-msnidObj$spectrumID <- msnidObj$spectrumid
-msnidObj$spectrumid <- NULL
-msnidObj$Peptide <- paste(msnidObj$pre, msnidObj$pepseq, msnidObj$post, sep='.')
-msnidObj$pre <- NULL
-msnidObj$post <- NULL
-msnidObj$pepseq <- NULL
-# msnidObj$rank <- as.integer(msnidObj$rank)
-# msnidObj$end <- as.integer(msnidObj$end)
-# msnidObj$start <- as.integer(msnidObj$start)
-# msnidObj$length <- as.integer(msnidObj$length)
-# msnidObj$chargeState <- as.integer(msnidObj$chargeState)
 save(msnidObj, file='c_elegans.RData', compress='xz', compression_level=9)
-# MD5 sum for actual file is: 71b7ae714a7f83fc5ed91665fa14e8bd
+# MD5 sum for the file is: de1976639f056de821804c42ebc58079
 # clean up the cache directory
-unlink(".Rcache", recursive=TRUE)}
-
-
-
+unlink(".Rcache", recursive=TRUE)
 }
+}
+
 \keyword{datasets}
