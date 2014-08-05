@@ -9,25 +9,23 @@ Returns the non-redundant list of peptides from the
 }
 
 \usage{
-   get_peptides(.Object)
+    get_peptides(.Object)
 }
 
 \arguments{
-  \item{.Object}{
-      An instance of class "MSnID".
-   }
+    \item{.Object}{An instance of class "MSnID".}
 }
 
 \value{
-   Non-redundant list of peptides.
+    Non-redundant list of peptides.
 }
 
 \author{
-  Vladislav A Petyuk \email{vladislav.petyuk@pnnl.gov}
+    Vladislav A Petyuk \email{vladislav.petyuk@pnnl.gov}
 }
 
 \seealso{
-  \code{\link{get_accessions}}
+    \code{\link{get_accessions}}
 }
 
 
