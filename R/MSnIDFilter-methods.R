@@ -1,23 +1,24 @@
 
 
 
-setMethod("set_filter", 
-          signature(.Object="MSnIDFilter"), # dispatch just on the first argument
-          definition=function(.Object, 
-                              parName,          # although this MUST be character
-                              comparison=NULL,
-                              threshold=NULL)
-          {
-             parNames <- sapply(.Object@filterList, "[[", "name")
-             parNames <- sapply(.Object@filterList, "[[", "name")
-          }
-)
+# setMethod("set_filter", 
+#             # dispatch just on the first argument
+#             signature(.Object="MSnIDFilter"), 
+#             definition=function(.Object, 
+#                                 parName,   # MUST be character
+#                                 comparison=NULL,
+#                                 threshold=NULL)
+#             {
+#                 parNames <- sapply(.Object@filterList, "[[", "name")
+#                 parNames <- sapply(.Object@filterList, "[[", "name")
+#             }
+# )
 
 
 .is_filterList_valid <- function(filterList)
 {
-   entries=c("comparison","threshold")
-   all(sapply(filterList, function(v) all(entries %in% names(v))))
+    entries=c("comparison","threshold")
+    all(sapply(filterList, function(v) all(entries %in% names(v))))
 }
 
 
@@ -25,149 +26,133 @@ setMethod("set_filter",
 # internal
 .get_filterString <- function(.Object, precision=2)
 {
-   # 1) assuming names in the list match names of list elements
-   # 2) assuming the names are in the rigth order
-   res <- lapply(.Object@filterList, 
-                 within, 
-                 {threshold <- signif(threshold, get("precision", parent.frame(n=4)))})
-   res <- lapply(names(res), 
-                 function(v) 
-                    paste(c(list(v), res[[v]]), collapse=' '))
-   res <- paste(sprintf("(%s)", res), collapse=" & ")
-   return(res)
+    # 1) assuming names in the list match names of list elements
+    # 2) assuming the names are in the rigth order
+    res <- lapply(.Object@filterList, 
+                    within, 
+                    {threshold <- signif(threshold, 
+                                        get("precision", parent.frame(n=4)))})
+    res <- lapply(names(res), 
+                    function(v) 
+                        paste(c(list(v), res[[v]]), collapse=' '))
+    res <- paste(sprintf("(%s)", res), collapse=" & ")
+    return(res)
 }
 
 
 .get_filterValues <- function(.Object, precision=2)
 {
-   # 1) assuming names in the list match names of list elements
-   # 2) assuming the names are in the rigth order
-   res <- sapply(.Object@filterList, "[[", "threshold") 
-   return(res)
+    # 1) assuming names in the list match names of list elements
+    # 2) assuming the names are in the rigth order
+    res <- sapply(.Object@filterList, "[[", "threshold") 
+    return(res)
 }
 
 
 setAs("MSnIDFilter", "character",
-      def=function(from) .get_filterString(from, precision=Inf))
+        def=function(from) .get_filterString(from, precision=Inf))
 
 
 setAs("MSnIDFilter", "numeric",
-      def=function(from) .get_filterValues(from, precision=Inf))
+        def=function(from) .get_filterValues(from, precision=Inf))
 
 setMethod("as.numeric", "MSnIDFilter",
-          definition=function(x, ...)
-             as(x,"numeric"))
-
-# setMethod("as.vector", "MSnIDFilter",
-#           definition=function(x) 
-#              as(x,"numeric"))
+            definition=function(x, ...) as(x,"numeric"))
 
 setMethod("length", "MSnIDFilter",
-          definition=function(x) length(x@filterList))
+            definition=function(x) length(x@filterList))
 
 setMethod("names", "MSnIDFilter",
-          definition=function(x) names(x@filterList))
+            definition=function(x) names(x@filterList))
 
 setMethod("update", "MSnIDFilter",
-          definition=function(object, newThresholds)
-          {
-             #
-             stopifnot(length(object) == length(newThresholds))
-             for(i in seq_along(object))
-                object@filterList[[i]]$threshold <- newThresholds[i]
-             return(object)
-          }
+            definition=function(object, newThresholds)
+            {
+                stopifnot(length(object) == length(newThresholds))
+                for(i in seq_along(object))
+                    object@filterList[[i]]$threshold <- newThresholds[i]
+                return(object)
+            }
 )
 
 setMethod("show", "MSnIDFilter",
-          definition=function(object)
-          {
-             cat(class(object)," object\n",sep='')
-             cat(.get_filterString(object),'\n')
-          }
+            definition=function(object)
+            {
+                cat(class(object)," object\n",sep='')
+                cat(.get_filterString(object),'\n')
+            }
 )
 
 
 MSnIDFilter <- function(MSnIDObj, filterList=list())
 {
-   # validations supposed to be *before* the return
-   # let's allow only complete filters now
-   if(!is.list(filterList)){
-      stop(deparse(substitute(filterList)), 
-           " is not a list!")
-   }
-   if(!.is_filterList_valid(filterList)){
-      stop("Invalid (non-complete) entries in the filterList\n")
-   }
-   # update filterList here, so it includes names
-   
-   return(new("MSnIDFilter", 
-              filterList=filterList,
-              validParNames=names(MSnIDObj)))
+    # validations supposed to be *before* the return
+    # let's allow only complete filters now
+    if(!is.list(filterList)){
+        stop(deparse(substitute(filterList)), " is not a list!")
+    }
+    if(!.is_filterList_valid(filterList)){
+        stop("Invalid (non-complete) entries in the filterList\n")
+    }
+    # update filterList here, so it includes names
+
+    return(new( "MSnIDFilter", 
+                filterList=filterList, 
+                validParNames=names(MSnIDObj)))
 }
 
 
-# now let's define "$" operator
 
 setMethod("$", "MSnIDFilter",
-          definition=function(x, name)
-          {
-             # inspired by 
-             # showMethods("$")
-             # getMethod("$", "refObjectGenerator")
-             #..
-             # library(Biobase)
-             # getMethod("$", "eSet")
-             # eval(substitute(phenoData(x)$NAME_ARG, list(NAME_ARG = name)))
-             # !!! works !!! # eval(substitute(x@filterList$name))
-             return(x@filterList[[name]])
-          }
-)
+            definition=function(x, name) x@filterList[[name]])
 
 
 
 
 setMethod("$<-", "MSnIDFilter",
-          definition=function(x, name, value)
-          {
-             # inpired by
-             # library(Biobase)
-             # getMethod("$<-", "eSet")
-             #---------
-             # check if "value" is list
-             # 
-             if(!(name %in% x@validParNames)){
-                stop(name, " is not a valid parameter!\n",
-                     "See parameter names method for MSnID object.\n",
-                     "Valid names are:\n",
-                     paste(x@validParNames, collapse='\n'))
-                
-             }
-             # c("comparison","threshold")
-             # c("threshold","comparison")
-             if(!is.list(value)){
-                stop(value, " is not a list!")
-             }
-             if(!all(sort(names(value)) == c("comparison","threshold"))){
-                stop(value, 
-                     " names in the list do not match:\n", 
-                     "comparison and threshold")
-             }
-             #
-             comparison.operators <- c(">", ">=", "==", "<=", "<")
-             if(!(value$comparison %in% comparison.operators)){
-                stop(value$comparison, 
-                     sprintf(" has to be one of %s!",
-                             paste(comparison.operators, collapse=' ')))
-             }
-             if(!is.numeric(value$threshold)){
-                stop(value$threshold, " is not numeric")
-             }
-             # to make sure they are ordered
-             value <- value[c("comparison","threshold")]
-             x@filterList[[name]] <- value
-             return(x)
-          }
+            definition=function(x, name, value)
+            {
+                # Has the parameter with the given name
+                # been actually present in the MSnID object?
+                if(!(name %in% x@validParNames)){
+                    stop(name, " is not a valid parameter!\n",
+                        "See parameter names method for MSnID object.\n",
+                        "Valid names are:\n",
+                        paste(x@validParNames, collapse='\n'))
+                }
+
+                # value must be a list of comparison operator 
+                # and threshold value
+                if(!is.list(value)){
+                    stop(value, " is not a list!")
+                }
+
+                # do I actually have comparison and threshold names?
+                if(!all(sort(names(value)) == c("comparison","threshold"))){
+                    stop(value, 
+                        " names in the list do not match:\n", 
+                        "comparison and threshold")
+                }
+
+                # is the comparison operator valid?
+                comparison.operators <- c(">", ">=", "==", "<=", "<")
+                if(!(value$comparison %in% comparison.operators)){
+                    stop(value$comparison, 
+                        sprintf(" has to be one of %s!",
+                                paste(comparison.operators, collapse=' ')))
+                }
+
+                # threshold must be numeric (at least currently)
+                if(!is.numeric(value$threshold)){
+                    stop(value$threshold, " is not numeric")
+                }
+
+                # to make sure comparison and threshold are in right order
+                # and assign it to the filterList slot
+                value <- value[c("comparison","threshold")]
+                x@filterList[[name]] <- value
+                return(x)
+            }
 )
 
 
