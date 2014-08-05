@@ -49,9 +49,9 @@ data(c_elegans)
 
 ## Filtering using string:
 msnidObj <- assess_termini(msnidObj, validCleavagePattern="[KR]\\\\.[^P]")
-table(msnidObj$NumIrregCleavages)
+table(msnidObj$numIrregCleavages)
 # getting rid of any other peptides except fully tryptic
-msnidObj <- apply_filter(msnidObj, "NumIrregCleavages == 0")
+msnidObj <- apply_filter(msnidObj, "numIrregCleavages == 0")
 show(msnidObj)
 
 ## Filtering using filter object:

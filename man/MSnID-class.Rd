@@ -126,7 +126,7 @@
 
     \item{assess_termini}{Checks the agreement of peptide termini 
         with enzymes cleavage specificity. The return value is 
-        the\code{MSnID} object with extra variable \code{NumIrregCleavages}.}
+        the\code{MSnID} object with extra variable \code{numIrregCleavages}.}
 
     \item{assess_missed_cleavages}{Checks if the peptide sequence contains the
         sites that were not cleaved by the enzyme. 

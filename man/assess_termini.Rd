@@ -36,7 +36,7 @@
 
 \value{
     Returns an instance of "MSnID" class with additional 
-    column "NumIrregCleavages". If both termini conforms with 
+    column "numIrregCleavages". If both termini conforms with 
     cleavage specificity, then value is \code{0}, if one or two 
     termini are irregular then the values are \code{1} and \code{2},
     correspondingly.
@@ -60,9 +60,9 @@
 
 \examples{
 data(c_elegans)
-# adding column NumIrregCleavages 
+# adding column numIrregCleavages 
 # containing count of irregularly cleaved termini
 msnidObj <- assess_termini(msnidObj, validCleavagePattern="[KR]\\\\.[^P]")
 # check the distribution
-table(msnidObj$NumIrregCleavages)
+table(msnidObj$numIrregCleavages)
 }

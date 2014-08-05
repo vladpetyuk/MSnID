@@ -34,7 +34,7 @@
 
 \value{
     Returns an instance of "MSnID" class with 
-    additional column "NumMissCleavages"
+    additional column "numMissCleavages"
 }
 
 \author{
@@ -55,11 +55,11 @@
 
 \examples{
 data(c_elegans)
-# adding column NumMissCleavages containing count of missed cleavages
+# adding column numMissCleavages containing count of missed cleavages
 msnidObj <- assess_missed_cleavages(msnidObj, 
                                     missedCleavagePattern="[KR](?=[^P$])")
 # check the distribution
-table(msnidObj$NumMissCleavages)
+table(msnidObj$numMissCleavages)
 }
 
 

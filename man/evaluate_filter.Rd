@@ -46,8 +46,8 @@ data(c_elegans)
 
 ## Filtering using string:
 msnidObj <- assess_termini(msnidObj, validCleavagePattern="[KR]\\\\.[^P]")
-table(msnidObj$NumIrregCleavages)
-evaluate_filter(msnidObj, "NumIrregCleavages == 0")
+table(msnidObj$numIrregCleavages)
+evaluate_filter(msnidObj, "numIrregCleavages == 0")
 
 ## Filtering using filter object:
 # first adding columns that will be used as filters

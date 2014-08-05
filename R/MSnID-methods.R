@@ -64,7 +64,7 @@ setMethod(
     definition=function(.Object, missedCleavagePattern)
     {
         .check_column(.Object, "peptide")
-        .Object@psms$NumMissCleavages <-
+        .Object@psms$numMissCleavages <-
             .assess_missed_cleavages(as.character(.Object@psms$peptide),
                                     missedCleavagePattern)
         return(.Object)
@@ -104,7 +104,7 @@ setMethod(
     signature("MSnID"),
     definition=function(.Object, validCleavagePattern)
     {
-        .Object@psms$NumIrregCleavages <- 
+        .Object@psms$numIrregCleavages <- 
             .assess_termini(as.character(.Object@psms$peptide), 
                             validCleavagePattern)
         return(.Object)

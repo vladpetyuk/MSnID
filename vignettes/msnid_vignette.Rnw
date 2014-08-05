@@ -123,19 +123,19 @@ A particular properties of peptide sequences we are interested in are
 The default regular expressions of valid and missed cleavage 
 patterns correspond to trypsin.
 <<>>=
-# creates new column NumIrregCleavages
+# creates new column numIrregCleavages
 msnid <- assess_termini(msnid, validCleavagePattern="[KR]\\.[^P]")
-# creates new column NumMissCleavages
+# creates new column numMissCleavages
 msnid <- assess_missed_cleavages(msnid, missedCleavagePattern="[KR](?=[^P$])")
 @
-Now the object has two more columns, NumIrregCleavages and NumMissCleavages, 
+Now the object has two more columns, numIrregCleavages and numMissCleavages, 
 evidently corresponding to the number of termini with irregular cleavages and 
 number of missed cleavages within the peptide sequence.
 <<label=missedCleavages, fig=TRUE, include=FALSE, width=9>>=
-pepCleav <- unique(psms(msnid)[,c("NumMissCleavages", "isDecoy", "peptide")])
-pepCleav <- as.data.frame(table(pepCleav[,c("NumMissCleavages", "isDecoy")]))
+pepCleav <- unique(psms(msnid)[,c("numMissCleavages", "isDecoy", "peptide")])
+pepCleav <- as.data.frame(table(pepCleav[,c("numMissCleavages", "isDecoy")]))
 library("ggplot2")
-ggplot(pepCleav, aes(x=NumMissCleavages, y=Freq, fill=isDecoy)) + 
+ggplot(pepCleav, aes(x=numMissCleavages, y=Freq, fill=isDecoy)) + 
     geom_bar(stat='identity', position='dodge') + 
     ggtitle("Number of Missed Cleavages")
 @
@@ -173,10 +173,10 @@ fully tryptic and contain fewer missed cleavages.
 # take a look at original FDRs
 show(msnid)
 # Leave only fully tryptic.
-msnid <- apply_filter(msnid, "NumIrregCleavages == 0")
+msnid <- apply_filter(msnid, "numIrregCleavages == 0")
 show(msnid)
 # Retain peptides with at most 2 missed cleavages.
-msnid <- apply_filter(msnid, "NumMissCleavages <= 2")
+msnid <- apply_filter(msnid, "numMissCleavages <= 2")
 show(msnid)
 @
 
