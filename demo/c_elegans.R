@@ -12,54 +12,27 @@ msnid <- read_mzIDs(msnid, mzids)
 #--- CHECKING WHAT IS INSIDE -----------
 head(psms(msnid))
 names(msnid)
-show(msnid) # Key columns are not set yet.
+show(msnid) 
 #---------------------------------------
-
-
-# --- UPDATES TO INCLUDE KEY COLUMNS ---
-# Note, the anticipated/suggested columns in the
-# peptide-to-spectrum matching results are:
-#    Peptide, Accession, isDecoy, 
-#    calculatedMassToCharge, experimentalMassToCharge, 
-#    spectrumFile, spectrumID
-msnid$Peptide <- paste(msnid$pre, msnid$pepseq, msnid$post, sep='.')
-msnid$Accession <- msnid$accession
-msnid$isDecoy <- msnid$isdecoy
-msnid$calculatedMassToCharge <- msnid$calculatedmasstocharge
-msnid$experimentalMassToCharge <- msnid$experimentalmasstocharge
-msnid$chargeState <- msnid$chargestate
-msnid$spectrumID <- msnid$spectrumid
-# tidying up. removing left-over columns
-msnid$accession <- NULL
-msnid$pepSeq <- NULL
-msnid$pre <- NULL
-msnid$post <- NULL
-msnid$idecoy <- NULL
-msnid$spectrumid <- NULL
-msnid$experimentalmasstocharge <- NULL
-msnid$calculatedmasstocharge <- NULL
-msnid$chargestate <- NULL
-show(msnid)
-#-------------------------------------
 
 
 # --- EXTRA INFO ABOUT PEPTIDE SEQUENCES ---
 msnid <- assess_termini(msnid, validCleavagePattern="[RK]\\.[^P]")
 msnid <- assess_missed_cleavages(msnid, missedCleavagePattern="[KR](?=[^P$])")
 # visualize distributions of missed cleavages as an example
-pepCleav <- unique(psms(msnid)[,c("NumMissCleavages", "isDecoy", "Peptide")])
-pepCleav <- as.data.frame(table(pepCleav[,c("NumMissCleavages", "isDecoy")]))
+pepCleav <- unique(psms(msnid)[,c("numMissCleavages", "isDecoy", "peptide")])
+pepCleav <- as.data.frame(table(pepCleav[,c("numMissCleavages", "isDecoy")]))
 library("ggplot2")
-ggplot(pepCleav, aes(x=NumMissCleavages, y=Freq, fill=isDecoy)) + 
+ggplot(pepCleav, aes(x=numMissCleavages, y=Freq, fill=isDecoy)) + 
     geom_bar(stat="identity", position="dodge") + 
     ggtitle("Number of Missed Cleavages")
 # number of cysteins per peptide sequence as an example of sequence analysis
-msnid$NumCys <- sapply(lapply(strsplit(msnid$Peptide,''),'==','C'),sum)
+msnid$NumCys <- sapply(lapply(strsplit(msnid$peptide,''),'==','C'),sum)
 # calculating peptide lengths
-msnid$PepLength <- nchar(msnid$Peptide) - 4
-pepLen <- unique(psms(msnid)[,c("PepLength", "isDecoy", "Peptide")])
+msnid$pepLength <- nchar(msnid$peptide) - 4
+pepLen <- unique(psms(msnid)[,c("pepLength", "isDecoy", "peptide")])
 # distribution of peptide lengths in the dataset
-ggplot(pepLen, aes(x=PepLength, fill=isDecoy)) + 
+ggplot(pepLen, aes(x=pepLength, fill=isDecoy)) + 
     geom_histogram(position='dodge', binwidth=3) +
     ggtitle("Distribution on of Peptide Lengths")
 #------------------------------------------
@@ -70,10 +43,10 @@ ggplot(pepLen, aes(x=PepLength, fill=isDecoy)) +
 # missed cleavages will affect the FDR.
 show(msnid)
 # 1. Leave only fully tryptic
-msnid <- apply_filter(msnid, "NumIrregCleavages == 0")
+msnid <- apply_filter(msnid, "numIrregCleavages == 0")
 show(msnid)
 # 2. Retain peptides with at most 2 missed cleavages
-msnid <- apply_filter(msnid, "NumMissCleavages <= 2")
+msnid <- apply_filter(msnid, "numMissCleavages <= 2")
 show(msnid)
 #-----------------------------------------
 
@@ -173,9 +146,9 @@ evaluate_filter(msnid, filtObj.nm, level="peptide")
 msnid <- apply_filter(msnid, filtObj.nm)
 show(msnid)
 # removing reverse/decoy and Contaminants
-msnid <- apply_filter(msnid, "!isDecoy")
+msnid <- apply_filter(msnid, "isDecoy == FALSE")
 show(msnid)
-msnid <- apply_filter(msnid, "!grepl('Contaminant',Accession)")
+msnid <- apply_filter(msnid, "!grepl('Contaminant',accession)")
 show(msnid)
 #---------------------------------------------
 
