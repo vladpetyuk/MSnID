@@ -41,7 +41,14 @@ library("MSnID")
 @
 
 % \subsection{Downloading example mzIdentML files}
-% As an example we will use datasets from C.elegans proteomics study describing the effect of daf-16 mutation on the protein abundances \cite{Depuydt2013,Depuydt2014}. There will be 5 datasets corresponding to long-living glp-4; daf-2 strain and 5 datasets corresponding to the strain with compensatory mutation in daf-16 transcription factor that restores (shortens) life-span back to normal. Files available at PeptideAtlas repository \href{https://db.systemsbiology.net/sbeams/cgi/PeptideAtlas/PASS_View?identifier=PASS00308}{PASS00308}.
+% As an example we will use datasets from C.elegans proteomics study describing 
+% the effect of daf-16 mutation on the protein abundances 
+% \cite{Depuydt2013,Depuydt2014}. There will be 5 datasets corresponding to 
+% long-living glp-4; daf-2 strain and 5 datasets corresponding to the strain 
+% with compensatory mutation in daf-16 transcription factor that restores 
+% (shortens) life-span back to normal. 
+% Files available at PeptideAtlas repository 
+% \href{https://db.systemsbiology.net/sbeams/cgi/PeptideAtlas/PASS_View?identifier=PASS00308}{PASS00308}.
 
 
 \subsection{Setting up working directory}
@@ -57,12 +64,15 @@ msnid <- MSnID(".")
 
 
 \subsection{Reading MS/MS data}
-The main intended way to read MS/MS results is by parsing mzIdentML files (*.mzid or *.mzid.gz extensions) using \Biocpkg{mzID} package facilities.
+The main intended way to read MS/MS results is by parsing mzIdentML 
+files (*.mzid or *.mzid.gz extensions) using \Biocpkg{mzID} package facilities.
 <<>>=
 mzids <- system.file("extdata", "c_elegans.mzid.gz", package="MSnID")
 msnid <- read_mzIDs(msnid, mzids)
 @
-Alternative way is to pass MS/MS search results as peptide-to-spectra matches (PSMs) \Rclass{data.frame}. Internally PSMs stored as \CRANpkg{data.table} object.
+Alternative way is to pass MS/MS search results as peptide-to-spectra matches 
+(PSMs) \Rclass{data.frame}. Internally PSMs stored as \CRANpkg{data.table} 
+object.
 <<eval=FALSE>>=
 psms(msnid) <- yourPSMresults
 @
@@ -70,7 +80,8 @@ psms(msnid) <- yourPSMresults
 
 
 \subsection{Updating columns}
-Note, to have a fully functioning \Robject{MSnID} object, the following columns has to be present.
+Note, to have a fully functioning \Robject{MSnID} object, 
+the following columns has to be present.
 <<>>=
 MSnID:::.mustBeColumns
 @
@@ -83,13 +94,22 @@ names(msnid)
 \subsection{Exploring the MSnID object}
 Printing the \Robject{MSnID} object returns some basic information such as
 \begin{itemize}
-   \item Working directory.
-   \item Number of spectrum files used to generate data.
-   \item Number of peptide-to-spectrum matches and corresponding FDR.
-   \item Number of unique peptide sequences and corresponding FDR.
-   \item Number of unique proteins or amino acid sequence accessions and corresponding FDR.
+    \item Working directory.
+    \item Number of spectrum files used to generate data.
+    \item Number of peptide-to-spectrum matches and corresponding FDR.
+    \item Number of unique peptide sequences and corresponding FDR.
+    \item Number of unique proteins or amino acid sequence accessions and 
+            corresponding FDR.
 \end{itemize}
-False discovery rate or FDR is defined here as a ratio of hits to decoy accessions to the non-decoy accessions. In terms of forward and revese protein sequences that would mean ratio of \#reverse/\#forward. While computing FDRs of PSMs and unique peptide sequences is trivial, definition of protein (accession) FDR is a subject for discussion in the field of proteomics. Here, protein (accession) FDR is computed the same way as in IDPicker software \cite{Zhang2007} and simply constitutes a ratio of unqiue accessions from decoy component to non-decoy component of sequence database.
+False discovery rate or FDR is defined here as a ratio of hits to decoy 
+accessions to the non-decoy accessions. In terms of forward and revese 
+protein sequences that would mean ratio of \#reverse/\#forward. 
+While computing FDRs of PSMs and unique peptide sequences is trivial, 
+definition of protein (accession) FDR is a subject for discussion in the field 
+of proteomics. Here, protein (accession) FDR is computed the same way as in 
+IDPicker software \cite{Zhang2007} and simply constitutes a ratio of 
+unqiue accessions from decoy component to non-decoy component of the 
+sequence database.
 <<>>=
 show(msnid)
 @
@@ -97,36 +117,43 @@ show(msnid)
 
 
 \subsection{Analysis of peptide sequences}
-A particular properties of peptide sequences we are interested in are 1) irregular cleavages at the termini of the peptides and 2) missing cleavage site within the peptide sequences. The default regular expressions of valid and missed cleavage patterns correspond to trypsin.
+A particular properties of peptide sequences we are interested in are 
+1) irregular cleavages at the termini of the peptides and 
+2) missing cleavage site within the peptide sequences. 
+The default regular expressions of valid and missed cleavage 
+patterns correspond to trypsin.
 <<>>=
 # creates new column NumIrregCleavages
 msnid <- assess_termini(msnid, validCleavagePattern="[KR]\\.[^P]")
 # creates new column NumMissCleavages
 msnid <- assess_missed_cleavages(msnid, missedCleavagePattern="[KR](?=[^P$])")
 @
-Now the object has two more columns, NumIrregCleavages and NumMissCleavages, evidently corresponding to the number of termini with irregular cleavages and number of missed cleavages within the peptide sequence.
+Now the object has two more columns, NumIrregCleavages and NumMissCleavages, 
+evidently corresponding to the number of termini with irregular cleavages and 
+number of missed cleavages within the peptide sequence.
 <<label=missedCleavages, fig=TRUE, include=FALSE, width=9>>=
-pepCleav <- unique(psms(msnid)[,c("NumMissCleavages", "isDecoy", "Peptide")])
+pepCleav <- unique(psms(msnid)[,c("NumMissCleavages", "isDecoy", "peptide")])
 pepCleav <- as.data.frame(table(pepCleav[,c("NumMissCleavages", "isDecoy")]))
 library("ggplot2")
 ggplot(pepCleav, aes(x=NumMissCleavages, y=Freq, fill=isDecoy)) + 
-   geom_bar(stat='identity', position='dodge') + 
-   ggtitle("Number of Missed Cleavages")
+    geom_bar(stat='identity', position='dodge') + 
+    ggtitle("Number of Missed Cleavages")
 @
 \begin{center}
 \includegraphics[width=0.8\textwidth]{graphics-missedCleavages}
 \end{center}
 \pagebreak[0]
-Peptide sequences can by accessed by directly using \Rcode{\$} operator. For example:
+Peptide sequences can by accessed by directly using \Rcode{\$} 
+operator. For example:
 <<label=lengths, fig=TRUE, include=FALSE, width=9>>=
 # counting number of cysteins per peptide sequence
-msnid$NumCys <- sapply(lapply(strsplit(msnid$Peptide,''),'==','C'),sum)
+msnid$NumCys <- sapply(lapply(strsplit(msnid$peptide,''),'==','C'),sum)
 # calculating peptide lengths
-msnid$PepLength <- nchar(msnid$Peptide) - 4
-pepLen <- unique(psms(msnid)[,c("PepLength", "isDecoy", "Peptide")])
+msnid$PepLength <- nchar(msnid$peptide) - 4
+pepLen <- unique(psms(msnid)[,c("PepLength", "isDecoy", "peptide")])
 ggplot(pepLen, aes(x=PepLength, fill=isDecoy)) + 
-   geom_histogram(position='dodge', binwidth=3) +
-   ggtitle("Distribution on of Peptide Lengths")
+    geom_histogram(position='dodge', binwidth=3) +
+    ggtitle("Distribution on of Peptide Lengths")
 @
 \begin{center}
 \includegraphics[width=0.8\textwidth]{graphics-lengths}
@@ -136,9 +163,12 @@ ggplot(pepLen, aes(x=PepLength, fill=isDecoy)) +
 
 
 \subsection{Trimming the data}
-The main facility for trimming or filtering the data is \Rfunction{apply\_filter} 
-function. The second argument can be either 1) a string representing expression that will be evaluated in the context of data.frame containing MS/MS results or 2) \Rclass{MSnFilter} class object (explained below). Note, the reduction in FDR. True identifications tend to be fully tryptic and contain fewer missed cleavages.
-class object.
+The main facility for trimming or filtering the data is 
+\Rfunction{apply\_filter} function. The second argument can be either 
+1) a string representing expression that will be evaluated in the context of 
+data.frame containing MS/MS results or 2) \Rclass{MSnFilter} class object 
+(explained below). Note, the reduction in FDR. True identifications tend to be 
+fully tryptic and contain fewer missed cleavages.
 <<>>=
 # take a look at original FDRs
 show(msnid)
@@ -153,7 +183,9 @@ show(msnid)
 
 
 \subsection{Parent ion mass measurement accuracy}
-Assuming both \Rcode{calculatedMassToCharge} and \Rcode{experimentalMassToCharge} are present in \Rcode{names(msnid)}, one can access parent ion mass measurement in points per million (ppm) units.
+Assuming both \Rcode{calculatedMassToCharge} and 
+\Rcode{experimentalMassToCharge} are present in \Rcode{names(msnid)}, 
+one can access parent ion mass measurement in points per million (ppm) units.
 <<label=ppmOriginal, fig=TRUE, include=FALSE, width=9>>=
 ppm <- mass_measurement_error(msnid)
 ggplot(as.data.frame(ppm), aes(x=ppm)) + geom_histogram(binwidth=100)
@@ -162,12 +194,17 @@ ggplot(as.data.frame(ppm), aes(x=ppm)) + geom_histogram(binwidth=100)
 \includegraphics[width=0.8\textwidth]{graphics-ppmOriginal}
 \end{center}
 \pagebreak[0]
-Note, although the MS/MS search was done with +/- 20ppm parent ion mass tolerance, error stretch over 1000 in ppm units. The reason is that setting of the MS/MS search engine MS-GF+ assumed imperfect peak picking for fragmentation and considered peptides that were +/- 1 Da (\textsuperscript{13}C-\textsuperscript{12}C to be exact) off.
+Note, although the MS/MS search was done with +/- 20ppm parent ion mass 
+tolerance, error stretch over 1000 in ppm units. The reason is that setting of 
+the MS/MS search engine MS-GF+ assumed imperfect peak picking for fragmentation 
+and considered peptides that were +/- 1 Da 
+(\textsuperscript{13}C-\textsuperscript{12}C to be exact) off.
 <<label=deltaMass, fig=TRUE, include=FALSE, width=9>>=
-dM <- with(psms(msnid), (experimentalMassToCharge-calculatedMassToCharge)*chargeState)
+dM <- with(psms(msnid), 
+    (experimentalMassToCharge-calculatedMassToCharge)*chargeState)
 x <- data.frame(dM, isDecoy=msnid$isDecoy)
 ggplot(x, aes(x=dM, fill=isDecoy)) + 
-   geom_histogram(position='stack', binwidth=0.1)
+    geom_histogram(position='stack', binwidth=0.1)
 @
 \begin{center}
 \includegraphics[width=0.8\textwidth]{graphics-deltaMass}
@@ -183,7 +220,8 @@ ggplot(as.data.frame(ppm), aes(x=ppm)) + geom_histogram(binwidth=0.25)
 \includegraphics[width=0.8\textwidth]{graphics-ppmCorrectedMass}
 \end{center}
 \pagebreak[0]
-Alternatively, one can simply apply a filter to remove any matches that do not fit the +/- 20 ppm tolerance.
+Alternatively, one can simply apply a filter to remove any matches that 
+do not fit the +/- 20 ppm tolerance.
 <<label=ppmFiltered20, fig=TRUE, include=FALSE, width=9>>=
 msnid.chopped <- apply_filter(msnid, "abs(mass_measurement_error(msnid)) < 20")
 ppm <- mass_measurement_error(msnid.chopped)
@@ -194,7 +232,10 @@ ggplot(as.data.frame(ppm), aes(x=ppm)) + geom_histogram(binwidth=0.25)
 \end{center}
 \pagebreak[0]
 !NOTE! Make sure the text is correct.
-For further processing we'll consider \Rcode{msnid.chopped} data that is adjusted for 1 Da errors in picking of wrong monoisotopic peak. Note, if the center of the histogram is significantly shifted from zero, \Rcode{experimentalMassToCharge} can be recalibrated.
+For further processing we'll consider \Rcode{msnid.chopped} data that is 
+adjusted for 1 Da errors in picking of wrong monoisotopic peak. 
+Note, if the center of the histogram is significantly shifted from zero, 
+\Rcode{experimentalMassToCharge} can be recalibrated.
 <<label=ppmRecalibrated, fig=TRUE, include=FALSE, width=9>>=
 msnid <- recalibrate(msnid.chopped)
 ppm <- mass_measurement_error(msnid)
@@ -208,9 +249,11 @@ ggplot(as.data.frame(ppm), aes(x=ppm)) + geom_histogram(binwidth=0.25)
 
 
 \subsection{Defining and optimizing filters for MS/MS identifications}
-First, let's define criteria we are going to use for data filtration. First will be based on MS-GF+ Spectrum E-value, second will be absolute mass measurement error of the parent ion.
+First, let's define criteria we are going to use for data filtration. 
+First will be based on MS-GF+ Spectrum E-value, second will be absolute 
+mass measurement error of the parent ion.
 <<label=msmsScoreDistribution, fig=TRUE, include=FALSE, width=9>>=
-msnid$msmsScore <- -log10(msnid$`ms-gf:specevalue`)
+msnid$msmsScore <- -log10(msnid$`MS-GF:SpecEValue`)
 params <- psms(msnid)[,c("msmsScore","isDecoy")]
 ggplot(params) + geom_density(aes(x = msmsScore, color = isDecoy, ..count..))
 @
@@ -221,13 +264,17 @@ ggplot(params) + geom_density(aes(x = msmsScore, color = isDecoy, ..count..))
 <<label=absPpmDistribution, fig=TRUE, include=FALSE, width=9>>=
 msnid$absParentMassErrorPPM <- abs(mass_measurement_error(msnid))
 params <- psms(msnid)[,c("absParentMassErrorPPM","isDecoy")]
-ggplot(params) + geom_density(aes(x = absParentMassErrorPPM, color = isDecoy, ..count..))
+ggplot(params) + 
+    geom_density(aes(x = absParentMassErrorPPM, color = isDecoy, ..count..))
 @
 \begin{center}
 \includegraphics[width=0.8\textwidth]{graphics-absPpmDistribution}
 \end{center}
 \pagebreak[0]
-MS/MS fiters are handled by a special \Rclass{MSnIDFilter} class objects. Individual filtering criteria can be set by name (that is present in \Rcode{names(msnid)}), comparison operator (>, <, = , ...) defining what to retain, and a threshold value.
+MS/MS fiters are handled by a special \Rclass{MSnIDFilter} class objects. 
+Individual filtering criteria can be set by name 
+(that is present in \Rcode{names(msnid)}), comparison operator (>, <, = , ...) 
+defining what to retain, and a threshold value.
 <<>>=
 filtObj <- MSnIDFilter(msnid)
 filtObj$absParentMassErrorPPM <- list(comparison="<", threshold=10.0)
@@ -236,23 +283,28 @@ filtObj$msmsScore <- list(comparison=">", threshold=10.0)
 show(filtObj)
 # evaluate filter
 evaluate_filter(msnid, filtObj, level="PSM")
-evaluate_filter(msnid, filtObj, level="Peptide")
-evaluate_filter(msnid, filtObj, level="Accession")
+evaluate_filter(msnid, filtObj, level="peptide")
+evaluate_filter(msnid, filtObj, level="accession")
 @
-The threshold values in the example above are not necessarily optimal and set just be in the range of probable values. Filters can be optimized to ensure maximum number of identifications (peptide-to-spectrum matches, unique peptide sequences or proteins) within given FDR upper limit.
+The threshold values in the example above are not necessarily optimal and set 
+just be in the range of probable values. Filters can be optimized to ensure 
+maximum number of identifications (peptide-to-spectrum matches, 
+unique peptide sequences or proteins) within given FDR upper limit.
 <<>>=
 # brute-force optimization by enumeration all the parameter combinations
 # these should be good starting parameters for follow-up optimizations
 system.time({
-   filtObj.grid <- optimize_filter(filtObj, msnid, fdr.max=0.01, 
-                                  method="Grid", level="Peptide", n.iter=500)})
+    filtObj.grid <- optimize_filter(filtObj, msnid, fdr.max=0.01, 
+                                    method="Grid", level="peptide", 
+                                    n.iter=500)})
 show(filtObj.grid)
 # (absParentMassErrorPPM < 2) & (msmsScore > 7.8)
 
 # Fine tuning. Nelder-Mead optimization
 system.time({
-   filtObj.nm <- optimize_filter(filtObj.grid, msnid, fdr.max=0.01, 
-                          method="Nelder-Mead", level="Peptide", n.iter=500)})
+    filtObj.nm <- optimize_filter(filtObj.grid, msnid, fdr.max=0.01, 
+                                    method="Nelder-Mead", level="peptide", 
+                                    n.iter=500)})
 show(filtObj.nm)
 # (absParentMassErrorPPM < 3) & (msmsScore > 7.8)
 @
@@ -260,25 +312,36 @@ Evaluating filter based on a good guess and optimization. Finally we'll apply
 optimized filter to proceed with further steps in the pipeline.
 <<>>=
 # comparing orignal and optimized filters
-evaluate_filter(msnid, filtObj, level="Peptide")
-evaluate_filter(msnid, filtObj.nm, level="Peptide")
+evaluate_filter(msnid, filtObj, level="peptide")
+evaluate_filter(msnid, filtObj.nm, level="peptide")
 # apply the optimized filter
 msnid <- apply_filter(msnid, filtObj.nm)
 show(msnid)
 @
-Identifications that matched to decoy and contaminant protein sequences can be removed by providing filters in the forms of text strings that will be evaluated in the context of PSM table.
+Identifications that matched to decoy and contaminant protein sequences can be 
+removed by providing filters in the forms of text strings that will be 
+evaluated in the context of PSM table.
 <<>>=
 # let's remove reverse/decoy and Contaminants
-msnid <- apply_filter(msnid, "!isDecoy")
+msnid <- apply_filter(msnid, "isDecoy == FALSE")
 show(msnid)
-msnid <- apply_filter(msnid, "!grepl('Contaminant',Accession)")
+msnid <- apply_filter(msnid, "!grepl('Contaminant',accession)")
 show(msnid)
 @
 
 
 
 \subsection{Downstream quantitative analysis}
-The \Rpackage{MSnID} package is aimed at providing convenience functionality to handle MS/MS identifications. Quantitation \textit{per se} is outside of the scope of the package. The only type of quantitation that can be seamlessly blended with MS/MS identification analysis is so-called \emph{spectral counting} approah. In such an approach a peptide abundance is considered to be directly proportional to the number of matched MS/MS spectra. In its turn protein abunance is proportional to the sum of the number of spectra of the matching peptides. The \Rclass{MSnID} object can be converted to \Rclass{MSnSet} object form \Biocpkg{MSnbase} that extends generic Bioconductor \Rclass{eSet} to quantitative proteomics data.
+The \Rpackage{MSnID} package is aimed at providing convenience functionality 
+to handle MS/MS identifications. Quantitation \textit{per se} is outside of 
+the scope of the package. The only type of quantitation that can be seamlessly 
+blended with MS/MS identification analysis is so-called 
+\emph{spectral counting} approah. In such an approach a peptide abundance is 
+considered to be directly proportional to the number of matched MS/MS spectra. 
+In its turn protein abunance is proportional to the sum of the number of 
+spectra of the matching peptides. The \Rclass{MSnID} object can be converted 
+to \Rclass{MSnSet} object form \Biocpkg{MSnbase} that extends generic 
+Bioconductor \Rclass{eSet} to quantitative proteomics data.
 <<label=convertingToMSnSet>>=
 msnset <- as(msnid, "MSnSet")
 @
