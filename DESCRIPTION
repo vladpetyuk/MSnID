@@ -19,3 +19,4 @@ Imports: MSnbase (>= 1.12.1), mzID (>= 1.1.5), R.cache,
     data.table, Biobase
 Suggests: BiocStyle, msmsTests, ggplot2, RUnit, BiocGenerics
 LazyData: yes
+biocViews: Proteomics, MassSpectrometry
