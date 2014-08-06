@@ -11,6 +11,9 @@ setGeneric("assess_termini",
 setGeneric("accessions", 
             function(.Object) standardGeneric("accessions"))
 
+setGeneric("proteins", 
+           function(.Object) standardGeneric("proteins"))
+
 setGeneric("peptides", 
             function(.Object) standardGeneric("peptides"))
 
