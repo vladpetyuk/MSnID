@@ -26,12 +26,64 @@ BiocStyle::latex(use.unsrturl=FALSE)
 
 
 \section{Introduction}
-The \Rpackage{MSnID} package is a convenience tool to manipulating
-MS/MS identifications in R/Bioconductor environment. The input file 
-can be a flat text file with the results of MS/MS search in a table
-format or mzIdentML files. The main S4 class for storing data is
-\Rclass{MSnID}. A class for handling MS/MS filtering criteria
-is \Rclass{MSnIDFilter}.
+MS/MS identification is a process with some uncertainty. Some peptide or 
+protein to spectrum matches are true and some are not. There are ways to 
+score how well the peptide/protein fragmentation pattern observed in 
+MS/MS spectrum matches the theoretical amino acid sequence. Other ways to 
+assess confidence of identification are:
+\begin{enumerate}
+    \item the difference in theoretical and experimental masses
+    \item frequency of observation (true identifications tend to be more 
+    consistent)
+    \item peptide sequence properties (only in the case of technique involving 
+    protein digestion) such as missed cleavages or presence of cleavages not 
+    typical for a given protease and chemical reagent.
+\end{enumerate}
+A typical and currently most reliable way to quantify uncertainty in the list 
+of identify spectra, peptides or proteins relies on so-called decoy database. 
+For bottom-up (i.e. involving protein digestion) approaches a common way to 
+construct a decoy database is simple inversion of protein amino-acid sequences. 
+The other approach commonly used in top-down (that is intact protein) 
+approaches is based on shuffling of amino acids within protein sequence. 
+Typically normal and decoy sequences are concatenated into one FASTA file. 
+Some software tools (e.g. MS-GF+) perform the task of constructing and 
+appending the decoy sequence internally on the fly. If the spectrum matches 
+to normal protein sequence it can be true or false match. Matches to decoy 
+part of the database are false only (excluding the palindromes). Therefore 
+the false discovery rate (FDR) of identifications can be estimated as ratio 
+of hits to decoy over normal parts of the protein sequence database.
+\\
+There are multiple levels of identification that FDR can be estimated for. 
+First, is at the level of peptide/protein-to-spectrum matches. Second is at 
+the level of unique peptide sequences. Note, true peptides tend to be 
+identified by more then one spectrum. False peptide tend to be sporadic. 
+Therefore, after collapsing the redundant peptide identifications from 
+multiple spectra to the level of unique peptide sequence, the FDR typically 
+increases. The extend of FDR increase depends on the type and complexity of 
+the sample. The same trend is true for estimating the identification FDR at 
+the protein level. True proteins tend to be identified with multiple peptides, 
+while false protein identifications are commonly covered only by one peptide. 
+Therefore FDR estimate tend to be even higher for protein level compare to 
+peptide level.
+\\
+The estimation of the FDR is also affected by the number of LC-MS (runs) 
+datasets in the experiment. Again, true identifications tend to be more 
+consistent from run to run, while false are sporadic. After collapsing the 
+redundancy across the runs, the number of true identification reduces much 
+stronger compare to false identifications. Therefore, the peptide and 
+protein FDR estimates need to be re-evaluated.
+\\
+The main objective of the MSnID package is to provide convenience tools for 
+handling tasks on estimation of FDR, defining and optimizing the filtering 
+criteria and ensuring confidence in MS/MS identification data. User can 
+specify the criteria for filtering the data (e.g. goodness or p-value of 
+matching of experimental and theoretical fragmentation mass spectrum, 
+deviation of theoretical from experimentally measured mass, presence of 
+missed cleavages in the peptide sequence, etc), evaluate the performance of 
+the filter judging by FDRs at spectrum, peptide and protein levels, and 
+finally optimize the filter to achieve the maximum number of identifications 
+while not exceeding maximally allowed FDR upper threshold.
+
 
 \section{Setting up working directory}
 First, the \Robject{MSnID} object has to be initialized. The main argument is
@@ -54,8 +106,8 @@ psms(msnid) <- yourPSMresults
 show(msnid)
 @
 Alternative and currently the preferred way is to read MS/MS results is by 
-parsing files (*.mzid or *.mzid.gz extensions) using \Biocpkg{mzID} package 
-facilities.
+parsing mzIdentML files (*.mzid or *.mzid.gz extensions) using \Biocpkg{mzID} 
+package facilities.
 <<>>=
 mzids <- system.file("extdata", "c_elegans.mzid.gz", package="MSnID")
 msnid <- read_mzIDs(msnid, mzids)
@@ -76,7 +128,7 @@ names(msnid)
 @
 
 
-\section{Exploring the MSnID object}
+\section{Exploring the \Robject{MSnID} object}
 Printing the \Robject{MSnID} object returns some basic information such as
 \begin{itemize}
     \item Working directory.
