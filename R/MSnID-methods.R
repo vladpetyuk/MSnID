@@ -118,58 +118,8 @@ setMethod(
 
 
 
-
-
-#----FDRs and unique peptides and accessions------------------------------------
 setMethod(
-    "get_psm_fdr", 
-    signature("MSnID"),
-    definition=function(.Object)
-    {
-        isDecoy <- table(factor(.Object@psms$isDecoy, 
-                                levels=c(FALSE, TRUE)))
-        fdr <- isDecoy["TRUE"]/isDecoy["FALSE"]
-        return(fdr)
-    }
-)
-
-
-
-
-setMethod(
-    "get_peptide_fdr", 
-    signature("MSnID"),
-    definition=function(.Object)
-    {
-        peptideDecoy <- unique(subset(.Object@psms, 
-                                        select=c("peptide","isDecoy")))
-        isDecoy <- table(factor(peptideDecoy$isDecoy, levels=c(FALSE, TRUE)))
-        fdr <- isDecoy["TRUE"]/isDecoy["FALSE"]
-        return(fdr)
-    }
-)
-
-
-
-setMethod(
-    "get_accession_fdr", 
-    signature("MSnID"),
-    definition=function(.Object)
-    {
-        accessionDecoy <- unique(subset(.Object@psms, 
-                                        select=c("accession","isDecoy")))
-        isDecoy <- table(factor(accessionDecoy$isDecoy, levels=c(FALSE, TRUE)))
-        fdr <- isDecoy["TRUE"]/isDecoy["FALSE"]
-        return(fdr)
-    }
-)
-
-
-
-
-# todo: change to peptides()
-setMethod(
-    "get_peptides", 
+    "peptides", 
     "MSnID",
     definition=function(.Object)
     {
@@ -179,16 +129,14 @@ setMethod(
 
 
 
-# todo: change to accessions()
 setMethod(
-    "get_accessions", 
+    "accessions", 
     "MSnID",
     definition=function(.Object)
     {
         unique(as.character(.Object@psms$accession))
     }
 )
-#-------------------------------------------------------------------------------
 
 
 

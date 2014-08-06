@@ -1,20 +1,6 @@
 
 
 
-# setMethod("set_filter", 
-#             # dispatch just on the first argument
-#             signature(.Object="MSnIDFilter"), 
-#             definition=function(.Object, 
-#                                 parName,   # MUST be character
-#                                 comparison=NULL,
-#                                 threshold=NULL)
-#             {
-#                 parNames <- sapply(.Object@filterList, "[[", "name")
-#                 parNames <- sapply(.Object@filterList, "[[", "name")
-#             }
-# )
-
-
 .is_filterList_valid <- function(filterList)
 {
     entries=c("comparison","threshold")

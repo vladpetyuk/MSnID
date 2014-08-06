@@ -1,43 +1,24 @@
 
-setGeneric("set_filter",
-            function(.Object, ...) standardGeneric("set_filter"))
 
 setGeneric("assess_missed_cleavages",
             function(.Object, missedCleavagePattern="[KR](?=[^P$])") 
                 standardGeneric("assess_missed_cleavages"))
 
-# this may be an odd way to handle assess_termini
 setGeneric("assess_termini", 
             function(.Object, validCleavagePattern="[KR]\\.[^P]") 
                 standardGeneric("assess_termini"))
 
-setGeneric("get_accession_fdr", 
-            function(.Object, ...) standardGeneric("get_accession_fdr"))
+setGeneric("accessions", 
+            function(.Object) standardGeneric("accessions"))
 
-setGeneric("get_peptide_fdr", 
-            function(.Object, ...) standardGeneric("get_peptide_fdr"))
-
-setGeneric("get_psm_fdr", 
-            function(.Object, ...) standardGeneric("get_psm_fdr"))
-
-setGeneric("get_accessions", 
-            function(.Object) standardGeneric("get_accessions"))
-
-setGeneric("get_peptides", 
-            function(.Object) standardGeneric("get_peptides"))
-
-
-# setGeneric("read_mzIDs", 
-#            function(.Object, mzids) standardGeneric("read_mzIDs"))
+setGeneric("peptides", 
+            function(.Object) standardGeneric("peptides"))
 
 setGeneric("read_mzIDs", 
             function(object, mzids) standardGeneric("read_mzIDs"))
 
-
-
 setGeneric("apply_filter", 
             function(.Object, .Filter) standardGeneric("apply_filter"))
-
 
 setGeneric("evaluate_filter", 
             function(.Object, filter, level=c("PSM", "Peptide", "Accession"))
