@@ -242,7 +242,7 @@ setMethod(
         return(list(fdr=NaN, n=0))
     # if there are normal matches, proceed
     fdr <- decoy/(n-decoy)
-    return(list(fdr=fdr, n=n))
+    return(c(fdr=fdr, n=n))
 }
 
 setMethod(
@@ -418,7 +418,8 @@ setMethod(
         for(i in c("PSM", "peptide", "accession")){
             try({
                 temp <- .id_quality(object, i)
-                cat("#", i, "s: ", temp$n, " at ", signif(100*temp$fdr, 2), 
+                cat("#", i, "s: ", temp['n'], " at ", 
+                    signif(100*temp['fdr'], 2), 
                     " % FDR", '\n', sep='')
                 }, 
                 silent=TRUE)

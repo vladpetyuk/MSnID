@@ -14,11 +14,11 @@
     filter <- update(filter, filterThresholds)
     # level should get here through ... (ellipsis)
     x <- evaluate_filter(msmsdata, filter, ...)
-    if(is.nan(x$fdr) || x$fdr > fdr.max){
+    if(is.nan(x['fdr']) || x['fdr'] > fdr.max){
         # 0 is bad because optimization does not move
         return(rnorm(1,sd=0.001)) 
     }else{
-        return(x$n)
+        return(x['n'])
     }
 }
 
