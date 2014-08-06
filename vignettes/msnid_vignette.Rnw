@@ -105,7 +105,7 @@ psms(msnid) <- yourPSMresults
 show(msnid)
 @
 Alternative and currently the preferred way to read MS/MS results is by 
-parsing mzIdentML files (*.mzid or *.mzid.gz extensions). The read_mzIDs 
+parsing mzIdentML files (*.mzid or *.mzid.gz extensions). The read\_mzIDs 
 function levelrages \Biocpkg{mzID} package facilities.
 <<>>=
 mzids <- system.file("extdata", "c_elegans.mzid.gz", package="MSnID")
@@ -264,7 +264,13 @@ ggplot(x, aes(x=dM, fill=isDecoy)) +
 \includegraphics[width=0.8\textwidth]{graphics-deltaMass}
 \end{center}
 \pagebreak[0]
-The wrongly reported monoisotopic masses can be corrected.
+Ideally, to avoid this problem, the MS/MS datasets have to be either aquired 
+in MIPS (monoisotopic ion precurson selection) mode or preprocessed with
+Decon2LS \cite{Mayampurath2008} tools that identifies the monoisotipic peaks 
+post-experimentally. \Biocpkg{MSnID} package provide a simple 
+\Rcode{correct_peak_selection} function that simply adds or subtracts 
+the difference between \textsuperscript{13}C and \textsuperscript{12}C 
+to make the error less then 1 Dalton.
 <<label=ppmCorrectedMass, fig=TRUE, include=FALSE, width=9>>=
 msnid.fixed <- correct_peak_selection(msnid)
 ppm <- mass_measurement_error(msnid.fixed)
@@ -290,7 +296,11 @@ ggplot(as.data.frame(ppm), aes(x=ppm)) +
 For further processing we'll consider \Rcode{msnid.chopped} data that ignores
 matches with 1 Da errors. Note, if the center of the histogram is 
 significantly shifted from zero, \Rcode{experimentalMassToCharge} can 
-be post-experimentally recalibrated.
+be post-experimentally recalibrated. This MS/MS data was preprocessed with 
+DtaRefinery tool \cite{Petyuk2010} that post-experimentally eliminates 
+any systematic mass measurement error. At this point, the \Rcode{recalibrate} 
+function implements the most simplistic algorithm avalable in the 
+DtaRefinery tool.
 <<label=ppmRecalibrated, fig=TRUE, include=FALSE, width=9>>=
 msnid <- recalibrate(msnid.chopped)
 ppm <- mass_measurement_error(msnid)
