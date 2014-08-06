@@ -266,9 +266,9 @@ ggplot(x, aes(x=dM, fill=isDecoy)) +
 \pagebreak[0]
 Ideally, to avoid this problem, the MS/MS datasets have to be either aquired 
 in MIPS (monoisotopic ion precurson selection) mode or preprocessed with
-Decon2LS \cite{Mayampurath2008} tools that identifies the monoisotipic peaks 
+DeconMSn \cite{Mayampurath2008} tools that identifies the monoisotipic peaks 
 post-experimentally. \Biocpkg{MSnID} package provide a simple 
-\Rcode{correct_peak_selection} function that simply adds or subtracts 
+\Rcode{correct\_peak\_selection} function that simply adds or subtracts 
 the difference between \textsuperscript{13}C and \textsuperscript{12}C 
 to make the error less then 1 Dalton.
 <<label=ppmCorrectedMass, fig=TRUE, include=FALSE, width=9>>=
