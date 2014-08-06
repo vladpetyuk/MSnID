@@ -233,7 +233,7 @@ ggplot(as.data.frame(ppm), aes(x=ppm)) + geom_histogram(binwidth=0.25)
 
 
 
-\section{Defining and optimizing filters for MS/MS identifications}
+\section{\Robject{MSnIDFilter} object for filtering MS/MS identifications}
 First, let's define criteria we are going to use for data filtration. 
 First will be based on MS-GF+ Spectrum E-value, second will be absolute 
 mass measurement error of the parent ion.
@@ -271,28 +271,40 @@ evaluate_filter(msnid, filtObj, level="PSM")
 evaluate_filter(msnid, filtObj, level="peptide")
 evaluate_filter(msnid, filtObj, level="accession")
 @
+
+
+\section{Optimizing MS/MS filter to achieve the maximum number of 
+identifications within given FDR upper limit threshold}
 The threshold values in the example above are not necessarily optimal and set 
 just be in the range of probable values. Filters can be optimized to ensure 
 maximum number of identifications (peptide-to-spectrum matches, 
 unique peptide sequences or proteins) within given FDR upper limit.
+\\
+First, the filter can be optimized simply by stepping through 
+individual parameters and their combinations. The idea has been described in
+\cite{Piehowski2013a}. This should be good starting parameters for 
+follow-up refining optimizations.
 <<>>=
-# brute-force optimization by enumeration all the parameter combinations
-# these should be good starting parameters for follow-up optimizations
 system.time({
     filtObj.grid <- optimize_filter(filtObj, msnid, fdr.max=0.01, 
                                     method="Grid", level="peptide", 
                                     n.iter=500)})
 show(filtObj.grid)
-# (absParentMassErrorPPM < 2) & (msmsScore > 7.8)
+@
+%# (absParentMassErrorPPM < 2) & (msmsScore > 7.8)
 
+The resulting \Rcode{filtObj.grid} can be further refined with such 
+optimization routines as simulated annealing or Nelder-Mead optimization.
+<<>>=
 # Fine tuning. Nelder-Mead optimization
 system.time({
     filtObj.nm <- optimize_filter(filtObj.grid, msnid, fdr.max=0.01, 
                                     method="Nelder-Mead", level="peptide", 
                                     n.iter=500)})
 show(filtObj.nm)
-# (absParentMassErrorPPM < 3) & (msmsScore > 7.8)
 @
+%# (absParentMassErrorPPM < 3) & (msmsScore > 7.8)
+
 Evaluating filter based on a good guess and optimization. Finally we'll apply
 optimized filter to proceed with further steps in the pipeline.
 <<>>=
