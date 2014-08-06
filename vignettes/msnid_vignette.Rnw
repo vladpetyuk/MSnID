@@ -33,25 +33,7 @@ format or mzIdentML files. The main S4 class for storing data is
 \Rclass{MSnID}. A class for handling MS/MS filtering criteria
 is \Rclass{MSnIDFilter}.
 
-
-
-\section{Case study}
-<<init, results=hide>>=
-library("MSnID")
-@
-
-% \subsection{Downloading example mzIdentML files}
-% As an example we will use datasets from C.elegans proteomics study describing 
-% the effect of daf-16 mutation on the protein abundances 
-% \cite{Depuydt2013,Depuydt2014}. There will be 5 datasets corresponding to 
-% long-living glp-4; daf-2 strain and 5 datasets corresponding to the strain 
-% with compensatory mutation in daf-16 transcription factor that restores 
-% (shortens) life-span back to normal. 
-% Files available at PeptideAtlas repository 
-% \href{https://db.systemsbiology.net/sbeams/cgi/PeptideAtlas/PASS_View?identifier=PASS00308}{PASS00308}.
-
-
-\subsection{Setting up working directory}
+\section{Setting up working directory}
 First, the \Robject{MSnID} object has to be initialized. The main argument is
 path to the working directory. This directory will be used for storing cached 
 analysis results. Caching/memoisation mechanism is based on \CRANpkg{R.cache}.
@@ -61,25 +43,28 @@ library("MSnID")
 msnid <- MSnID(".")
 @
 
-
-
-\subsection{Reading MS/MS data}
-The main intended way to read MS/MS results is by parsing mzIdentML 
-files (*.mzid or *.mzid.gz extensions) using \Biocpkg{mzID} package facilities.
+\section{Reading MS/MS data}
+One way to read in peptide/protein to MS/MS spectrum matching (PSM) results as a 
+table from a text file and assing the \Rclass{data.frame} object.
+<<>>=
+yourPSMresults <- read.delim(system.file("extdata", "human_brain.txt", 
+                                            package="MSnID"),
+                                stringsAsFactors=FALSE)
+psms(msnid) <- yourPSMresults
+show(msnid)
+@
+Alternative and currently the preferred way is to read MS/MS results is by 
+parsing files (*.mzid or *.mzid.gz extensions) using \Biocpkg{mzID} package 
+facilities.
 <<>>=
 mzids <- system.file("extdata", "c_elegans.mzid.gz", package="MSnID")
 msnid <- read_mzIDs(msnid, mzids)
 @
-Alternative way is to pass MS/MS search results as peptide-to-spectra matches 
-(PSMs) \Rclass{data.frame}. Internally PSMs stored as \CRANpkg{data.table} 
-object.
-<<eval=FALSE>>=
-psms(msnid) <- yourPSMresults
-@
+Internally PSMs stored as \CRANpkg{data.table} object.
 
 
 
-\subsection{Updating columns}
+\section{Updating columns}
 Note, to have a fully functioning \Robject{MSnID} object, 
 the following columns has to be present.
 <<>>=
@@ -91,7 +76,7 @@ names(msnid)
 @
 
 
-\subsection{Exploring the MSnID object}
+\section{Exploring the MSnID object}
 Printing the \Robject{MSnID} object returns some basic information such as
 \begin{itemize}
     \item Working directory.
@@ -116,7 +101,7 @@ show(msnid)
 
 
 
-\subsection{Analysis of peptide sequences}
+\section{Analysis of peptide sequences}
 A particular properties of peptide sequences we are interested in are 
 1) irregular cleavages at the termini of the peptides and 
 2) missing cleavage site within the peptide sequences. 
@@ -162,7 +147,7 @@ ggplot(pepLen, aes(x=PepLength, fill=isDecoy)) +
 
 
 
-\subsection{Trimming the data}
+\section{Trimming the data}
 The main facility for trimming or filtering the data is 
 \Rfunction{apply\_filter} function. The second argument can be either 
 1) a string representing expression that will be evaluated in the context of 
@@ -182,7 +167,7 @@ show(msnid)
 
 
 
-\subsection{Parent ion mass measurement accuracy}
+\section{Parent ion mass measurement accuracy}
 Assuming both \Rcode{calculatedMassToCharge} and 
 \Rcode{experimentalMassToCharge} are present in \Rcode{names(msnid)}, 
 one can access parent ion mass measurement in points per million (ppm) units.
@@ -248,7 +233,7 @@ ggplot(as.data.frame(ppm), aes(x=ppm)) + geom_histogram(binwidth=0.25)
 
 
 
-\subsection{Defining and optimizing filters for MS/MS identifications}
+\section{Defining and optimizing filters for MS/MS identifications}
 First, let's define criteria we are going to use for data filtration. 
 First will be based on MS-GF+ Spectrum E-value, second will be absolute 
 mass measurement error of the parent ion.
@@ -331,7 +316,7 @@ show(msnid)
 
 
 
-\subsection{Downstream quantitative analysis}
+\section{Downstream quantitative analysis}
 The \Rpackage{MSnID} package is aimed at providing convenience functionality 
 to handle MS/MS identifications. Quantitation \textit{per se} is outside of 
 the scope of the package. The only type of quantitation that can be seamlessly 
@@ -341,7 +326,9 @@ considered to be directly proportional to the number of matched MS/MS spectra.
 In its turn protein abunance is proportional to the sum of the number of 
 spectra of the matching peptides. The \Rclass{MSnID} object can be converted 
 to \Rclass{MSnSet} object form \Biocpkg{MSnbase} that extends generic 
-Bioconductor \Rclass{eSet} to quantitative proteomics data.
+Bioconductor \Rclass{eSet} to quantitative proteomics data. The spectral count
+data can be analyzed with \Biocpkg{msmsEDA}, \Biocpkg{msmsTests} or 
+\Biocpkg{DESeq}.
 <<label=convertingToMSnSet>>=
 msnset <- as(msnid, "MSnSet")
 @
