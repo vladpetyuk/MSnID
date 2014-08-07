@@ -11,26 +11,26 @@
 }
 
 \usage{
-    apply_filter(object, .Filter)
+    apply_filter(msnidObj, filterObj)
 }
 
 \arguments{
-    \item{object}{An instance of class "MSnID".}
-    \item{.Filter}{
+    \item{msnidObj}{An instance of class "MSnID".}
+    \item{filterObj}{
         Either an instance of \link[MSnID]{MSnIDFilter} 
         class or a \code{"character"}.
     }
 }
 
 \details{
-    \code{.Filter} argument
+    \code{filterObj} argument
     evaluated to a \code{"logical"} for each entry of the
     MS/MS results table.
 }
 
 \value{
     Returns an instance of "MSnID" class with with peptide-to-spectrum
-    matches that pass criteria defined in \code{.Filter} argument.
+    matches that pass criteria defined in \code{filterObj} argument.
 }
 
 \author{

@@ -157,24 +157,22 @@ setMethod(
 #----Filter---------------------------------------------------------------------
 setMethod(
     "apply_filter", 
-    signature(object="MSnID", .Filter="character"),
-    definition=function(object, .Filter)
+    signature(msnidObj="MSnID", filterObj="character"),
+    definition=function(msnidObj, filterObj)
     {
-        # the infamous eval(parse(text=...))
-        exprssn <- parse(text=.Filter, srcfile=NULL, keep.source=FALSE)
-        #object@psms <- subset(object@psms, eval(exprssn))
-        object@psms <- object@psms[eval(exprssn),]
-        return(object)
+        exprssn <- parse(text=filterObj, srcfile=NULL, keep.source=FALSE)
+        msnidObj@psms <- msnidObj@psms[eval(exprssn),]
+        return(msnidObj)
     }
 )
 
 setMethod(
     "apply_filter", 
-    signature(object="MSnID", .Filter="MSnIDFilter"),
-    definition=function(object, .Filter)
+    signature(msnidObj="MSnID", filterObj="MSnIDFilter"),
+    definition=function(msnidObj, filterObj)
     {
-        filterString <- as(.Filter, "character")
-        return(apply_filter(object, filterString))
+        filterString <- as(filterObj, "character")
+        return(apply_filter(msnidObj, filterString))
     }
 )
 

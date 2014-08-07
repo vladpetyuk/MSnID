@@ -21,7 +21,7 @@ setGeneric("read_mzIDs",
             function(object, mzids) standardGeneric("read_mzIDs"))
 
 setGeneric("apply_filter", 
-            function(object, .Filter) standardGeneric("apply_filter"))
+            function(msnidObj, filterObj) standardGeneric("apply_filter"))
 
 setGeneric("evaluate_filter", 
             function(object, filter, level=c("PSM", "Peptide", "Accession"))
