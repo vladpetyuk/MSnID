@@ -274,7 +274,8 @@ to make the error less then 1 Dalton.
 <<label=ppmCorrectedMass, fig=TRUE, include=FALSE, width=9>>=
 msnid.fixed <- correct_peak_selection(msnid)
 ppm <- mass_measurement_error(msnid.fixed)
-ggplot(as.data.frame(ppm), aes(x=ppm)) + geom_histogram(binwidth=0.25)
+ggplot(as.data.frame(ppm), aes(x=ppm)) + 
+    geom_histogram(binwidth=0.25)
 @
 \begin{center}
 \includegraphics[width=0.8\textwidth]{graphics-ppmCorrectedMass}
