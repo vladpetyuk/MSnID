@@ -401,13 +401,6 @@ setMethod(
 
 
 #-------------------------------------------------------------------------------
-# Getters and setters modelled after
-# library(Biobase)
-# getMethod("$", "eSet") # tricky
-# getMethod("$<-", "eSet") # straight
-# getMethod("[[", "eSet")
-# getMethod("[[<-", "eSet")
-
 # Note, get method in Biobase is a bit different
 # library(Biobase)
 # getMethod("$", "eSet")
@@ -448,17 +441,6 @@ setMethod("$<-", "MSnID",
         return(x)
     }
 )
-
-
-# setMethod("$<-", "MSnID",
-#     definition=function(x, name, value)
-#     {
-#         x@psms <- eval(substitute(x@psms[,NAME_ARG:=value],
-#                                   list(NAME_ARG=name)))
-#         return(x)
-#     }
-# )
-
 
 
 setMethod("[[<-", "MSnID",
