@@ -9,11 +9,11 @@
     filter <- update(filter, filterThresholds)
     # level should get here through ... (ellipsis)
     x <- evaluate_filter(msmsdata, filter, ...)
-    if(is.nan(x['fdr']) || x['fdr'] > fdr.max){
+    if(is.nan(x[['fdr']]) || x[['fdr']] > fdr.max){
         # 0 is bad because optimization does not move
         return(rnorm(1,sd=0.001)) 
     }else{
-        return(x['n'])
+        return(x[['n']])
     }
 }
 
@@ -87,10 +87,10 @@ setMethod("optimize_filter",
     # subset msnidObj to only relevant columns
     if(level == "PSM"){
        msnidObj@psms <- 
-           msnidObj@psms[,c("isDecoy", names(filtObj)), with=FALSE]
+           msnidObj@psms[,c("isDecoy", names(filterObj)), with=FALSE]
     }else{
        msnidObj@psms <- 
-           msnidObj@psms[,c("isDecoy", level, names(filtObj)), with=FALSE]
+           msnidObj@psms[,c("isDecoy", level, names(filterObj)), with=FALSE]
     }
     # substitute Peptide and or Accession with integers
     msnidObj@psms[[level]] <- as.integer(as.factor(msnidObj@psms[[level]]))
