@@ -98,10 +98,10 @@ msnid <- MSnID(".")
 One way to read in peptide/protein to MS/MS spectrum matching (PSM) results as a 
 table from a text file and assing the \Rclass{data.frame} object.
 <<>>=
-yourPSMresults <- read.delim(system.file("extdata", "human_brain.txt", 
+PSMresults <- read.delim(system.file("extdata", "human_brain.txt", 
                                             package="MSnID"),
                                 stringsAsFactors=FALSE)
-psms(msnid) <- yourPSMresults
+psms(msnid) <- PSMresults
 show(msnid)
 @
 Alternative and currently the preferred way to read MS/MS results is by 
