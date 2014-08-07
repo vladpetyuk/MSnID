@@ -1,5 +1,5 @@
-\name{get_peptides}
-\alias{get_peptides}
+\name{peptides}
+\alias{peptides}
 
 \title{Non-redundant list of peptides}
 
@@ -9,7 +9,7 @@ Returns the non-redundant list of peptides from the
 }
 
 \usage{
-    get_peptides(.Object)
+    peptides(.Object)
 }
 
 \arguments{
@@ -25,12 +25,13 @@ Returns the non-redundant list of peptides from the
 }
 
 \seealso{
-    \code{\link{get_accessions}}
+    \code{\link{accessions}}
+    \code{\link{proteins}}
 }
 
 
 \examples{
 data(c_elegans)
-head(get_peptides(msnidObj))
+head(peptides(msnidObj))
 }
 

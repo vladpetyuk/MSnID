@@ -138,6 +138,14 @@ setMethod(
     }
 )
 
+setMethod(
+   "proteins", 
+   "MSnID",
+   definition=function(.Object)
+   {
+      accessions(.Object)
+   }
+)
 
 
 

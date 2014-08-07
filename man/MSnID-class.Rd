@@ -1,34 +1,3 @@
-%% ?MSnID
-
-% showMethods(class="MSnID", where="package:MSnID")
-
-% read_mzIDs
-% assess_missed_cleavages
-% assess_termini
-%% get_psm_fdr
-%% get_peptide_fdr
-%% get_accession_fdr
-%% get_peptides
-%% get_accessions
-% apply_filter
-% id_quality
-% evaluate_filter
-% correct_peak_selection
-% mass_measurement_error
-% recalibrate
-% names
-% dim
-% show
-% psms
-% psms<-
-% as MSnSet
-% $
-% $<-
-% [[
-% [[<-
-% optimize_filter
-
-
 \name{MSnID-class}
 \docType{class}
 \alias{MSnID-class}
