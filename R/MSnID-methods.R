@@ -139,12 +139,12 @@ setMethod(
 )
 
 setMethod(
-   "proteins", 
-   "MSnID",
-   definition=function(object)
-   {
-      accessions(object)
-   }
+    "proteins", 
+    "MSnID",
+    definition=function(object)
+    {
+        accessions(object)
+    }
 )
 
 

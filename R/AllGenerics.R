@@ -12,7 +12,7 @@ setGeneric("accessions",
             function(object) standardGeneric("accessions"))
 
 setGeneric("proteins", 
-           function(object) standardGeneric("proteins"))
+            function(object) standardGeneric("proteins"))
 
 setGeneric("peptides", 
             function(object) standardGeneric("peptides"))
