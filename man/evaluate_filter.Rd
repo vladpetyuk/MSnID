@@ -8,12 +8,12 @@
 }
 
 \usage{
-    evaluate_filter(.Object, filter, level=c("PSM", "Peptide", "Accession"))
+    evaluate_filter(object, filter, level=c("PSM", "Peptide", "Accession"))
 }
 
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-    \item{.Object}{An instance of class "MSnID".}
+    \item{object}{An instance of class "MSnID".}
     \item{filter}{
         Either an instance of \link{MSnIDFilter} class or a \code{"character"}.
     }

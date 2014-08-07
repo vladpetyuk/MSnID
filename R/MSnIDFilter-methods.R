@@ -10,11 +10,11 @@
 
 
 # internal
-.get_filterString <- function(.Object, precision=2)
+.get_filterString <- function(object, precision=2)
 {
     # 1) assuming names in the list match names of list elements
     # 2) assuming the names are in the rigth order
-    res <- lapply(.Object@filterList, 
+    res <- lapply(object@filterList, 
                     within, 
                     {threshold <- signif(threshold, 
                                         get("precision", parent.frame(n=4)))})
@@ -26,11 +26,11 @@
 }
 
 
-.get_filterValues <- function(.Object, precision=2)
+.get_filterValues <- function(object, precision=2)
 {
     # 1) assuming names in the list match names of list elements
     # 2) assuming the names are in the rigth order
-    res <- sapply(.Object@filterList, "[[", "threshold") 
+    res <- sapply(object@filterList, "[[", "threshold") 
     return(res)
 }
 

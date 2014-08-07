@@ -19,12 +19,12 @@
 }
 
 \usage{
-    assess_termini(.Object, validCleavagePattern="[KR]\\\\.[^P]")
+    assess_termini(object, validCleavagePattern="[KR]\\\\.[^P]")
 }
 
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-    \item{.Object}{An instance of class "MSnID".}
+    \item{object}{An instance of class "MSnID".}
     \item{validCleavagePattern}{
         Cleavage pattern in the form of regular expression.
     }

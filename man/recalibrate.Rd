@@ -15,12 +15,12 @@
 }
 
 \usage{
-    recalibrate(.Object)
+    recalibrate(object)
 }
 
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-    \item{.Object}{An instance of class "MSnID".}
+    \item{object}{An instance of class "MSnID".}
 }
 
 \details{

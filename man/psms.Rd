@@ -12,13 +12,13 @@
 }
 
 \usage{
-    psms(.Object)
-    psms(.Object) <- value
+    psms(object)
+    psms(object) <- value
 }
 
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-    \item{.Object}{An instance of class "MSnID".}
+    \item{object}{An instance of class "MSnID".}
     \item{value}{Value is a \code{data.frame} with MS/MS search results}
 }
 

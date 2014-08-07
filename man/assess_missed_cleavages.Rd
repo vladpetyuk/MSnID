@@ -20,12 +20,12 @@
 }
 
 \usage{
-    assess_missed_cleavages(.Object, missedCleavagePattern="[KR](?=[^P$])")
+    assess_missed_cleavages(object, missedCleavagePattern="[KR](?=[^P$])")
 }
 
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-    \item{.Object}{An instance of class "MSnID".}
+    \item{object}{An instance of class "MSnID".}
 
     \item{missedCleavagePattern}{
         Cleavage pattern in the form of regular expression.

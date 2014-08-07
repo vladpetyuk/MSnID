@@ -9,11 +9,11 @@ Returns the non-redundant list of peptides from the
 }
 
 \usage{
-    peptides(.Object)
+    peptides(object)
 }
 
 \arguments{
-    \item{.Object}{An instance of class "MSnID".}
+    \item{object}{An instance of class "MSnID".}
 }
 
 \value{

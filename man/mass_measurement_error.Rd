@@ -10,12 +10,12 @@
 }
 
 \usage{
-    mass_measurement_error(.Object)
+    mass_measurement_error(object)
 }
 
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-    \item{.Object}{
+    \item{object}{
         An instance of class "MSnID".
     }
 }

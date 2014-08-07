@@ -14,12 +14,12 @@ proteins have the same meaning in \code{MSnID}.
 }
 
 \usage{
-    accessions(.Object)
-    proteins(.Object)
+    accessions(object)
+    proteins(object)
 }
 
 \arguments{
-    \item{.Object}{
+    \item{object}{
         An instance of class "MSnID".
     }
 }

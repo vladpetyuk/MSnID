@@ -61,13 +61,13 @@
 setMethod(
     "assess_missed_cleavages", 
     signature("MSnID"),
-    definition=function(.Object, missedCleavagePattern)
+    definition=function(object, missedCleavagePattern)
     {
-        .check_column(.Object, "peptide")
-        .Object@psms$numMissCleavages <-
-            .assess_missed_cleavages(as.character(.Object@psms$peptide),
+        .check_column(object, "peptide")
+        object@psms$numMissCleavages <-
+            .assess_missed_cleavages(as.character(object@psms$peptide),
                                     missedCleavagePattern)
-        return(.Object)
+        return(object)
     }
 )
 
@@ -102,12 +102,12 @@ setMethod(
 setMethod(
     "assess_termini", 
     signature("MSnID"),
-    definition=function(.Object, validCleavagePattern)
+    definition=function(object, validCleavagePattern)
     {
-        .Object@psms$numIrregCleavages <- 
-            .assess_termini(as.character(.Object@psms$peptide), 
+        object@psms$numIrregCleavages <- 
+            .assess_termini(as.character(object@psms$peptide), 
                             validCleavagePattern)
-        return(.Object)
+        return(object)
     }
 )
 
@@ -121,9 +121,9 @@ setMethod(
 setMethod(
     "peptides", 
     "MSnID",
-    definition=function(.Object)
+    definition=function(object)
     {
-        unique(as.character(.Object@psms$peptide))
+        unique(as.character(object@psms$peptide))
     }
 )
 
@@ -132,18 +132,18 @@ setMethod(
 setMethod(
     "accessions", 
     "MSnID",
-    definition=function(.Object)
+    definition=function(object)
     {
-        unique(as.character(.Object@psms$accession))
+        unique(as.character(object@psms$accession))
     }
 )
 
 setMethod(
    "proteins", 
    "MSnID",
-   definition=function(.Object)
+   definition=function(object)
    {
-      accessions(.Object)
+      accessions(object)
    }
 )
 
@@ -157,41 +157,41 @@ setMethod(
 #----Filter---------------------------------------------------------------------
 setMethod(
     "apply_filter", 
-    signature(.Object="MSnID", .Filter="character"),
-    definition=function(.Object, .Filter)
+    signature(object="MSnID", .Filter="character"),
+    definition=function(object, .Filter)
     {
         # the infamous eval(parse(text=...))
         exprssn <- parse(text=.Filter, srcfile=NULL, keep.source=FALSE)
-        #.Object@psms <- subset(.Object@psms, eval(exprssn))
-        .Object@psms <- .Object@psms[eval(exprssn),]
-        return(.Object)
+        #object@psms <- subset(object@psms, eval(exprssn))
+        object@psms <- object@psms[eval(exprssn),]
+        return(object)
     }
 )
 
 setMethod(
     "apply_filter", 
-    signature(.Object="MSnID", .Filter="MSnIDFilter"),
-    definition=function(.Object, .Filter)
+    signature(object="MSnID", .Filter="MSnIDFilter"),
+    definition=function(object, .Filter)
     {
         filterString <- as(.Filter, "character")
-        return(apply_filter(.Object, filterString))
+        return(apply_filter(object, filterString))
     }
 )
 
 
 
 # todo: change to returning a vector with names instead of a list
-.id_quality <- function(.Object, .Level=c("PSM", "peptide", "accession"))
+.id_quality <- function(object, .Level=c("PSM", "peptide", "accession"))
 {
     #
     .Level <- match.arg(.Level)
     if(.Level != "PSM"){
-        temp.dt <- .Object@psms[,c(.Level,"isDecoy"),with=FALSE]
-        .Object@psms <- unique(temp.dt)
+        temp.dt <- object@psms[,c(.Level,"isDecoy"),with=FALSE]
+        object@psms <- unique(temp.dt)
     }
-    stopifnot(is.logical(.Object@psms$isDecoy))
-    n <- length(.Object@psms$isDecoy)
-    decoy <- sum(.Object@psms$isDecoy)
+    stopifnot(is.logical(object@psms$isDecoy))
+    n <- length(object@psms$isDecoy)
+    decoy <- sum(object@psms$isDecoy)
     #
     # catch the case in case there are zero normal matches
     if(decoy == n)
@@ -203,31 +203,31 @@ setMethod(
 
 setMethod(
     "id_quality",
-    signature(.Object="MSnID"),
-    definition=function(.Object, 
+    signature(object="MSnID"),
+    definition=function(object, 
                         filter=NULL, 
                         level=c("PSM", "peptide", "accession"))
     {
         if(!is.null(filter))
-            .Object <- apply_filter(.Object, filter)
+            object <- apply_filter(object, filter)
         # if no filter has been provided just return the quality of
         # features in original object
         level <- match.arg(level)
-        return(.id_quality(.Object, level))
+        return(.id_quality(object, level))
     }
 )
 
 # Similar of id_quality, but filter hast to be present. It can not be NULL.
 setMethod(
     "evaluate_filter",
-    signature(.Object="MSnID"),
-    definition=function(.Object, 
+    signature(object="MSnID"),
+    definition=function(object, 
                         filter, 
                         level=c("PSM", "peptide", "accession"))
     {
         level <- match.arg(level)
-        .Object <- apply_filter(.Object, filter)
-        return(.id_quality(.Object, level))
+        object <- apply_filter(object, filter)
+        return(.id_quality(object, level))
     }
 )
 #-------------------------------------------------------------------------------
@@ -286,17 +286,17 @@ MSnID <- function(workDir='.', cleanCache=FALSE)
 setMethod(
     f="psms",
     signature("MSnID"), 
-    definition=function(.Object)
+    definition=function(object)
     {
-        return(as.data.frame(.Object@psms))
+        return(as.data.frame(object@psms))
     }
 )
 
 
 setReplaceMethod(
     f="psms",
-    signature(.Object="MSnID", value="data.frame"),
-    definition=function(.Object, value)
+    signature(object="MSnID", value="data.frame"),
+    definition=function(object, value)
     {
         misCol <- setdiff(.mustBeColumns, colnames(value))
         if(!is.null(misCol) & interactive()){
@@ -310,13 +310,13 @@ setReplaceMethod(
             # if use is concerned, do not modify the object
             ANSWER <- readline("Proceed? (Y/N): ")
             if(substr(ANSWER, 1, 1) %in% c("N", "n"))
-                return(.Object)
+                return(object)
         }
 
         # if all required columns are present,
         # then there is no need for warnings and questions.
-        .Object@psms <- data.table(value)
-        return(.Object)
+        object@psms <- data.table(value)
+        return(object)
     }
 )
 
@@ -340,10 +340,10 @@ setAs(
 
 
 #----Misc-----------------------------------------------------------------------
-.check_column <- function(.Object, columnName)
+.check_column <- function(object, columnName)
 # generic column checking
 {
-    if(is.null(.Object@psms[[columnName]]))
+    if(is.null(object@psms[[columnName]]))
     {
         if(columnName == "peptide"){
             stop("\"peptide\" column is not present!\n",
@@ -480,35 +480,35 @@ setMethod("[[<-", "MSnID",
 
 #--------------------------------------------
 setMethod("correct_peak_selection", "MSnID",
-    definition=function(.Object)
+    definition=function(object)
     {
-        deltaMz <- .Object$experimentalMassToCharge - 
-                    .Object$calculatedMassToCharge
-        deltaMass <- deltaMz * .Object$chargeState
+        deltaMz <- object$experimentalMassToCharge - 
+                    object$calculatedMassToCharge
+        deltaMass <- deltaMz * object$chargeState
         deltaC13C12 <- 1.0033548378
         deltaMass.corrected <- deltaMass - deltaC13C12 * round(deltaMass)
-        deltaMz.corrected <- deltaMass.corrected/.Object$chargeState
-        .Object$experimentalMassToCharge <- .Object$calculatedMassToCharge +
+        deltaMz.corrected <- deltaMass.corrected/object$chargeState
+        object$experimentalMassToCharge <- object$calculatedMassToCharge +
                                                 deltaMz.corrected
-        return(.Object)
+        return(object)
     }
 )
 
 setMethod("mass_measurement_error", "MSnID",
-    definition=function(.Object)
+    definition=function(object)
     {
-        ppm <- 1e6*(.Object$experimentalMassToCharge - 
-                    .Object$calculatedMassToCharge)/
-                .Object$calculatedMassToCharge
+        ppm <- 1e6*(object$experimentalMassToCharge - 
+                    object$calculatedMassToCharge)/
+                object$calculatedMassToCharge
         return(ppm)
     }
 )
 
 setMethod("recalibrate", "MSnID",
-    definition=function(.Object)
+    definition=function(object)
     {
         # this is just a simple shift by a signle bias
-        error.ppm <- mass_measurement_error(.Object)
+        error.ppm <- mass_measurement_error(object)
         #%%%%%%%%%%%%%%%%%%%%%%%
         # modeling systematic error
         sys.error.ppm <- median(error.ppm)
@@ -525,9 +525,9 @@ setMethod("recalibrate", "MSnID",
         #%%%%%%%%%%%%%%%%%%%%%%%
         res.error.ppm <- error.ppm - sys.error.ppm # new error residuals
         # now back-calculate the experimentalMassToCharge
-        .Object$experimentalMassToCharge <- 
-            .Object$calculatedMassToCharge * (1 + res.error.ppm/1e6)
-        return(.Object)
+        object$experimentalMassToCharge <- 
+            object$calculatedMassToCharge * (1 + res.error.ppm/1e6)
+        return(object)
     }
 )
 

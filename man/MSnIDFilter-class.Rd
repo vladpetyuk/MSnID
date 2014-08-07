@@ -53,7 +53,7 @@
 \section{Methods}{
     \describe{       
 
-    \item{show}{\code{signature(.Object)}: \cr 
+    \item{show}{\code{signature(object="MSnIDFilter")}: \cr 
         Prints \code{MSnIDFilter} object.}
 
     \item{\code{object$name}, \code{object$name<-value}}{

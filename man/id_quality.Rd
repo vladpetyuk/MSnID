@@ -9,11 +9,11 @@
 }
 
 \usage{
-    id_quality(.Object, filter=NULL, level=c("PSM", "Peptide", "Accession"))
+    id_quality(object, filter=NULL, level=c("PSM", "Peptide", "Accession"))
 }
 
 \arguments{
-    \item{.Object}{An instance of class "MSnID".}
+    \item{object}{An instance of class "MSnID".}
     \item{filter}{
         Optional argument.
         Either an instance of \link{MSnIDFilter} class or a \code{"character"}.

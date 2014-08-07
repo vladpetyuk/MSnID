@@ -1,48 +1,48 @@
 
 
 setGeneric("assess_missed_cleavages",
-            function(.Object, missedCleavagePattern="[KR](?=[^P$])") 
+            function(object, missedCleavagePattern="[KR](?=[^P$])") 
                 standardGeneric("assess_missed_cleavages"))
 
 setGeneric("assess_termini", 
-            function(.Object, validCleavagePattern="[KR]\\.[^P]") 
+            function(object, validCleavagePattern="[KR]\\.[^P]") 
                 standardGeneric("assess_termini"))
 
 setGeneric("accessions", 
-            function(.Object) standardGeneric("accessions"))
+            function(object) standardGeneric("accessions"))
 
 setGeneric("proteins", 
-           function(.Object) standardGeneric("proteins"))
+           function(object) standardGeneric("proteins"))
 
 setGeneric("peptides", 
-            function(.Object) standardGeneric("peptides"))
+            function(object) standardGeneric("peptides"))
 
 setGeneric("read_mzIDs", 
             function(object, mzids) standardGeneric("read_mzIDs"))
 
 setGeneric("apply_filter", 
-            function(.Object, .Filter) standardGeneric("apply_filter"))
+            function(object, .Filter) standardGeneric("apply_filter"))
 
 setGeneric("evaluate_filter", 
-            function(.Object, filter, level=c("PSM", "Peptide", "Accession"))
+            function(object, filter, level=c("PSM", "Peptide", "Accession"))
                 standardGeneric("evaluate_filter"))
 
 setGeneric("id_quality",
-            function(.Object, 
+            function(object, 
                         filter=NULL, 
                         level=c("PSM", "Peptide", "Accession")) 
                 standardGeneric("id_quality"))
 
 setGeneric("correct_peak_selection", 
-            function(.Object) 
+            function(object) 
                 standardGeneric("correct_peak_selection"))
 
 setGeneric("mass_measurement_error",
-            function(.Object) 
+            function(object) 
                 standardGeneric("mass_measurement_error"))
 
 setGeneric("recalibrate",
-            function(.Object) 
+            function(object) 
                 standardGeneric("recalibrate"))
 
 setGeneric("optimize_filter",
@@ -50,7 +50,7 @@ setGeneric("optimize_filter",
                 stadardGeneric("optimize_filter"))
 
 setGeneric("psms",
-            function(.Object) standardGeneric("psms"))
+            function(object) standardGeneric("psms"))
 
 setGeneric("psms<-",
-            function(.Object, value) standardGeneric("psms<-"))
+            function(object, value) standardGeneric("psms<-"))

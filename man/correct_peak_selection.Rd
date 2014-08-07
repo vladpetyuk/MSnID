@@ -20,12 +20,12 @@
 }
 
 \usage{
-    correct_peak_selection(.Object)
+    correct_peak_selection(object)
 }
 
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-    \item{.Object}{An instance of class "MSnID".}
+    \item{object}{An instance of class "MSnID".}
 }
 
 \value{

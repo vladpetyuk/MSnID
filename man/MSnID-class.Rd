@@ -73,9 +73,9 @@
 \section{Methods}{
     \describe{ 
 
-    \item{read_mzIDs}{\code{signature(.Object, mzids)}: \cr 
+    \item{read_mzIDs}{\code{signature(object, mzids)}: \cr 
         Reads mzIdentML files into \code{psms} \code{data.table} slot 
-        of \code{.Object} MSnID instance. The functionality leverage
+        of \code{object} MSnID instance. The functionality leverage
         \link[mzID]{mzID} package facility. Note, the calls are memoised
         using \link[R.cache]{R.cache} facility. So if the call with the same
         list of files issues again, the results will be read from cache 
@@ -87,10 +87,10 @@
     \item{dim}{\code{signature(x = "MSnID")}: \cr Returns the dimensions of 
         the table with MS/MS identification data.}
 
-    \item{get_peptides}{\code{signature(.Object = "MSnID")}: \cr 
+    \item{get_peptides}{\code{signature(object = "MSnID")}: \cr 
         Returns unique peptide list.}
 
-    \item{get_accessions}{\code{signature(.Object = "MSnID")}: \cr 
+    \item{get_accessions}{\code{signature(object = "MSnID")}: \cr 
         Returns unique accessions (typically proteins) list.}
 
     \item{assess_termini}{Checks the agreement of peptide termini 
@@ -116,8 +116,8 @@
         that is different by ~ 1 Da.}
 
     \item{apply_filter}{
-        \code{signature(.Object="MSnID", .Filter="character")}\cr
-        \code{signature(.Object="MSnID", .Filter="MSnIDFilter")}\cr
+        \code{signature(object="MSnID", .Filter="character")}\cr
+        \code{signature(object="MSnID", .Filter="MSnIDFilter")}\cr
         The \code{.Filter} argument is a \code{"character"} or
         converted to a \code{"character"} text string that is
         evaluated to a \code{"logical"} for each entry of the
@@ -125,7 +125,7 @@
         \code{MSnID} object with entries that pass the applied filter.}
 
     \item{evaluate_filter}{
-        \code{evaluate_filter(.Object, filter, 
+        \code{evaluate_filter(object, filter, 
         level = c("PSM","Peptide", "Accession")}\cr
         Returns a list with \code{fdr} and \code{n} elements. 
         Argument \code{filter} is either \code{"character"} 
@@ -134,7 +134,7 @@
         and controls the level filter is evaluated.}
 
     \item{\code{id_quality}}{
-        \code{signature(.Object="MSnID", ...)}\cr
+        \code{signature(object="MSnID", ...)}\cr
         Other optional \dots arguments are \code{filter} is an "MSnIDFilter"
         instance and \code{level}. The \code{level} values are one of "PSM",
         "Peptide", "Accession". The method returns FDR for given 
