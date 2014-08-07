@@ -1,6 +1,8 @@
 \name{accessions}
 \alias{accessions}
 \alias{proteins}
+\alias{accessions,MSnID-method}
+\alias{proteins,MSnID-method}
 
 \title{Non-redundant list of accession (protein) identifiers}
 
