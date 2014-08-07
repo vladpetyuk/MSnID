@@ -1,9 +1,4 @@
-# Here will be the methods for handling filter optimization.
-# Since they apply both to MSnID and MSnIDFilter objects 
-# it probably make sense not to make these methods exclusively
-# for either of the classes. 
-# It may make some (minor) sense to make it as MSnIDFilter-method though.
-
+# methods and functions for handling filter optimization.
 
 .get_num_pep_for_fdr <- function(filterThresholds, 
                                     msmsdata, 
@@ -25,11 +20,7 @@
 
 .construct_optimization_grid <- function(filterObj, msnidObj, n.iter)
 {
-    #
-    # todo: don't really like this -1 hack
-    # what is this for?
     n.iter.per.param <- round(n.iter^(1/length(filterObj))) - 1 
-    #
     probs <- seq(0, 1, 1/n.iter.per.param)
     eg <- expand.grid(lapply(names(filterObj), 
                                 function(arg) 
