@@ -297,7 +297,7 @@ setReplaceMethod(
     definition=function(object, value)
     {
         misCol <- setdiff(.mustBeColumns, colnames(value))
-        if(!is.null(misCol) & interactive()){
+        if((length(misCol) > 0) & interactive()){
             promptStr <- 
                 paste("The data.frame is missing the following columns:\n",
                     paste(strwrap(paste(misCol, collapse=', ')), collapse='\n'),
