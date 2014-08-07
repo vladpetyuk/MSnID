@@ -42,9 +42,9 @@
 }
 
 \section{Warning}{
-    If the "MSnID" instance does not contain "Peptide" column in MS/MS results
+    If the "MSnID" instance does not contain "peptide" column in MS/MS results
     table then there will be an error.
-    E.g. you can check this by \cr \code{"Peptide" \%in\% names(msnid)} 
+    E.g. you can check this by \cr \code{"peptide" \%in\% names(msnid)} 
     where \code{msnid} is your "MSnID" instance.
 }
 

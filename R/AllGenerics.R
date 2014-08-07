@@ -24,13 +24,13 @@ setGeneric("apply_filter",
             function(msnidObj, filterObj) standardGeneric("apply_filter"))
 
 setGeneric("evaluate_filter", 
-            function(object, filter, level=c("PSM", "Peptide", "Accession"))
+            function(object, filter, level=c("PSM", "peptide", "accession"))
                 standardGeneric("evaluate_filter"))
 
 setGeneric("id_quality",
             function(object, 
                         filter=NULL, 
-                        level=c("PSM", "Peptide", "Accession")) 
+                        level=c("PSM", "peptide", "accession")) 
                 standardGeneric("id_quality"))
 
 setGeneric("correct_peak_selection", 

@@ -9,7 +9,7 @@
 }
 
 \usage{
-    id_quality(object, filter=NULL, level=c("PSM", "Peptide", "Accession"))
+    id_quality(object, filter=NULL, level=c("PSM", "peptide", "accession"))
 }
 
 \arguments{
@@ -20,7 +20,7 @@
     }
     \item{level}{
         Level at which the filter will be evaluated. Possible values are
-        "PSM", "Peptide" and "Accession". Default value is "PSM".
+        "PSM", "peptide" and "accession". Default value is "PSM".
     }
 }
 

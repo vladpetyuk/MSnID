@@ -126,18 +126,18 @@
 
     \item{evaluate_filter}{
         \code{evaluate_filter(object, filter, 
-        level = c("PSM","Peptide", "Accession")}\cr
+        level = c("PSM","peptide", "accession")}\cr
         Returns a list with \code{fdr} and \code{n} elements. 
         Argument \code{filter} is either \code{"character"} 
         or \code{"MSnIDFilter"} object. Argument \code{level} can 
-        take one of the values \code{c("PSM","Peptide","Accession")} 
+        take one of the values \code{c("PSM","peptide","accession")} 
         and controls the level filter is evaluated.}
 
     \item{\code{id_quality}}{
         \code{signature(object="MSnID", ...)}\cr
         Other optional \dots arguments are \code{filter} is an "MSnIDFilter"
         instance and \code{level}. The \code{level} values are one of "PSM",
-        "Peptide", "Accession". The method returns FDR for given 
+        "peptide", "accession". The method returns FDR for given 
         level depending of type of identifications.}
 
     \item{as(,"MSnSet")}{

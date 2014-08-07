@@ -8,7 +8,7 @@
 }
 
 \usage{
-    evaluate_filter(object, filter, level=c("PSM", "Peptide", "Accession"))
+    evaluate_filter(object, filter, level=c("PSM", "peptide", "accession"))
 }
 
 %- maybe also 'usage' for other objects documented here.
@@ -19,7 +19,7 @@
     }
     \item{level}{
         Level at which the filter will be evaluated. Possible values are
-        "PSM", "Peptide" and "Accession".
+        "PSM", "peptide" and "accession".
     }
 }
 
