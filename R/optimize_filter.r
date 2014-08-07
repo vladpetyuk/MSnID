@@ -76,54 +76,56 @@
 
 
 setMethod("optimize_filter",
-            signature(.Filter="MSnIDFilter", .Data="MSnID"),
-            definition=function(.Filter, .Data, fdr.max, method, level, n.iter)
+            signature(filterObj="MSnIDFilter", msnidObj="MSnID"),
+            definition=function(filterObj, msnidObj, fdr.max, 
+                                   method, level, n.iter)
             {
-                .optimize_filter.memoized(.Filter, .Data, 
+                .optimize_filter.memoized(filterObj, msnidObj, 
                                             fdr.max, method, level, n.iter)
             }
 )
 
 
 
-.optimize_filter <- function(.Filter, .Data, fdr.max, method, level, n.iter)
+.optimize_filter <- function(filterObj, msnidObj, 
+                               fdr.max, method, level, n.iter)
 {
     method <- match.arg(method, choices=c("Grid", "Nelder-Mead", "SANN"))
     level <- match.arg(level, choices=c("PSM", "peptide", "accession"))
     #
-    # subset .Data to only relevant columns
+    # subset msnidObj to only relevant columns
     if(level == "PSM"){
-        .Data@psms <- 
-            .Data@psms[,c("isDecoy", names(filtObj)), with=FALSE]
+       msnidObj@psms <- 
+           msnidObj@psms[,c("isDecoy", names(filtObj)), with=FALSE]
     }else{
-        .Data@psms <- 
-            .Data@psms[,c("isDecoy", level, names(filtObj)), with=FALSE]
+       msnidObj@psms <- 
+           msnidObj@psms[,c("isDecoy", level, names(filtObj)), with=FALSE]
     }
     # substitute Peptide and or Accession with integers
-    .Data@psms[[level]] <- as.integer(as.factor(.Data@psms[[level]]))
+    msnidObj@psms[[level]] <- as.integer(as.factor(msnidObj@psms[[level]]))
     #
     if(method == "Grid"){
         if(.Platform$OS.type == "unix"){
             optimFilter <- 
-                .optimize_filter.grid.mclapply(.Filter, .Data, 
+                .optimize_filter.grid.mclapply(filterObj, msnidObj, 
                                                 fdr.max, level, n.iter)
         }else{
             # yet to implement effective parallelization on Windows
             optimFilter <- 
-                .optimize_filter.grid(.Filter, .Data, 
+                .optimize_filter.grid(filterObj, msnidObj, 
                                         fdr.max, level, n.iter)
         }
     }
     if(method %in% c("Nelder-Mead", "SANN")){
-        optim.out <- optim(par=as.numeric(.Filter),
+        optim.out <- optim(par=as.numeric(filterObj),
                             fn = .get_num_pep_for_fdr,
-                            msmsdata = .Data,
-                            filter = .Filter,
+                            msmsdata = msnidObj,
+                            filter = filterObj,
                             fdr.max = fdr.max,
                             level = level,
                             method = method,
                             control=list(fnscale=-1, maxit=n.iter))
-        optimFilter <- update(.Filter, optim.out$par)
+        optimFilter <- update(filterObj, optim.out$par)
     }
     return(optimFilter)
 }

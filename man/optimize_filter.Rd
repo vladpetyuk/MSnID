@@ -12,15 +12,15 @@
 }
 
 \usage{
-    optimize_filter(.Filter, .Data, fdr.max, method, level, n.iter)
+    optimize_filter(filterObj, msnidObj, fdr.max, method, level, n.iter)
 }
 
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-    \item{.Filter}{
+    \item{filterObj}{
         An instance of class "MSnIDFilter".
     }
-    \item{.Data}{
+    \item{msnidObj}{
         An instance of class "MSnID".
     }
     \item{fdr.max}{

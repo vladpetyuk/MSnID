@@ -116,9 +116,9 @@
         that is different by ~ 1 Da.}
 
     \item{apply_filter}{
-        \code{signature(object="MSnID", .Filter="character")}\cr
-        \code{signature(object="MSnID", .Filter="MSnIDFilter")}\cr
-        The \code{.Filter} argument is a \code{"character"} or
+        \code{signature(msnidObj="MSnID", filterObj="character")}\cr
+        \code{signature(msnidObj="MSnID", filterObj="MSnIDFilter")}\cr
+        The \code{filterObj} argument is a \code{"character"} or
         converted to a \code{"character"} text string that is
         evaluated to a \code{"logical"} for each entry of the
         MS/MS results table. Return value is a filtered
