@@ -424,9 +424,25 @@ show(msnid)
 
 
 
-\section{Downstream quantitative analysis}
+\section{Data output and interface with other Bioconductor packages}
+One can extract the entire PSMs tables as 
+\Rcode{data.frame} or \Rcode{data.table}
+<<>>=
+psm.df <- psms(msnid)
+psm.dt <- as(msnid, "data.table")
+@
+If only interested in the non-redundant list of confidently identified
+peptides or proteins
+<<>>=
+peps <- peptides(msnid)
+head(peps)
+prots <- accessions(msnid)
+head(prots)
+prots <- proteins(msnid) # may be more intuitive then accessions
+head(prots)
+@
 The \Rpackage{MSnID} package is aimed at providing convenience functionality 
-to handle MS/MS identifications. Quantitation \textit{per se} is outside of 
+to handle MS/MS identifications. Quantification \textit{per se} is outside of 
 the scope of the package. The only type of quantitation that can be seamlessly 
 tied with MS/MS identification analysis is so-called 
 \emph{spectral counting} approah. In such an approach a peptide abundance is 
@@ -439,8 +455,27 @@ The spectral count data can be analyzed with \Biocpkg{msmsEDA},
 \Biocpkg{msmsTests} or \Biocpkg{DESeq} packages.
 <<label=convertingToMSnSet>>=
 msnset <- as(msnid, "MSnSet")
+library("MSnbase")
+head(fData(msnset))
+head(exprs(msnset))
+@
+Note, the convertion from \Robject{MSnID} to \Robject{MSnSet} uses peptides
+as features. Number of redundant peptide observations represent so-called
+spectral count that can be used for rough quantitative analysis. Summing of
+all of the peptide counts to a proteins level can be done with 
+\Rcode{combineFeatures} function from \Biocpkg{MSnbase} package.
+<<>>=
+msnset <- combineFeatures(msnset, 
+                          fData(msnset)$accession, 
+                          redundancy.handler="unique", 
+                          fun="sum", 
+                          cv=FALSE)
+head(fData(msnset))
+head(exprs(msnset))
 @
 
+
+% clean-up
 <<eval=TRUE, echo=FALSE, results=hide>>=
 unlink(".Rcache", recursive=TRUE)
 @
