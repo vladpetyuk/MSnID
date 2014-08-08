@@ -157,8 +157,8 @@ show(msnid)
 \section{Analysis of peptide sequences}
 A particular properties of peptide sequences we are interested in are 
 \begin{enumerate}
-   \item irregular cleavages at the termini of the peptides and 
-   \item missing cleavage site within the peptide sequences. 
+    \item irregular cleavages at the termini of the peptides and 
+    \item missing cleavage site within the peptide sequences. 
 \end{enumerate}
 The default regular expressions of valid and missed cleavage 
 patterns correspond to trypsin.
@@ -466,10 +466,10 @@ all of the peptide counts to a proteins level can be done with
 \Rcode{combineFeatures} function from \Biocpkg{MSnbase} package.
 <<>>=
 msnset <- combineFeatures(msnset, 
-                          fData(msnset)$accession, 
-                          redundancy.handler="unique", 
-                          fun="sum", 
-                          cv=FALSE)
+                            fData(msnset)$accession, 
+                            redundancy.handler="unique", 
+                            fun="sum", 
+                            cv=FALSE)
 head(fData(msnset))
 head(exprs(msnset))
 @
