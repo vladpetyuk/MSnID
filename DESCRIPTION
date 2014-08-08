@@ -3,7 +3,7 @@ Type: Package
 Title: Utilities for Exploration and Assessment of Confidence of 
     LC-MSn Proteomics Identifications.
 Version: 0.99.0
-Date: 2014-04-02
+Date: 2014-08-08
 Author: Vlad Petyuk 
 Maintainer: Vlad Petyuk <vladislav.petyuk@pnnl.gov>
 Description: Extracts MS/MS ID data from mzIdentML (leveraging mzID package) or 
