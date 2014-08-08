@@ -9,9 +9,6 @@ setClass(Class="MSnID",
 )
 
 
-
-
-# partitions and parameter transforms to be added to filter class
 setClass(Class="MSnIDFilter",
             representation(
                 filterList="list",
