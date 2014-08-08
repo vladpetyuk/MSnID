@@ -1,6 +1,5 @@
 \name{peptides}
 \alias{peptides}
-\alias{peptides,MSnID-method}
 
 \title{Non-redundant list of peptides}
 

@@ -117,7 +117,7 @@
 
     \item{recalibrate}{Recalibrates, that is removes systematic 
         error from \code{experimentalMassToCharge} measurements.
-        See \code{\link[MSnID]{experimentalMassToCharge}}}
+        See \code{\link[MSnID]{recalibrate}}}
 
     \item{correct_peak_selection}{Subtracts or adds the mass difference between
         C13 and C12 isotopes (1.0033548378 Da) if that reduces the mass error. 
