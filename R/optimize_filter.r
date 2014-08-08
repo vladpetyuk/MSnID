@@ -116,7 +116,7 @@ setMethod("optimize_filter",
                             level = level,
                             method = method,
                             control=list(fnscale=-1, maxit=n.iter))
-        optimFilter <- update(filterObj, optim.out$par)
+        optimFilter <- update(filterObj, as.numeric(optim.out$par))
     }
     return(optimFilter)
 }
