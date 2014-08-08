@@ -117,7 +117,7 @@ setMethod(
 
 
 
-
+#--- Accessors -----------------------------------------------------------------
 setMethod(
     "peptides", 
     "MSnID",
@@ -146,7 +146,7 @@ setMethod(
         accessions(object)
     }
 )
-
+#-------------------------------------------------------------------------------
 
 
 
@@ -176,9 +176,6 @@ setMethod(
     }
 )
 
-
-
-# todo: change to returning a vector with names instead of a list
 .id_quality <- function(object, .Level=c("PSM", "peptide", "accession"))
 {
     #
@@ -401,9 +398,6 @@ setMethod(
 
 
 #-------------------------------------------------------------------------------
-# Note, get method in Biobase is a bit different
-# library(Biobase)
-# getMethod("$", "eSet")
 setMethod("$", "MSnID",
             definition=function(x, name)
             {
