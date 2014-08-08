@@ -418,30 +418,13 @@ setMethod("[[", "MSnID",
             }
 )
 
-
-
-# todo: double check set $<- method
-# todo: the current problem is that := assignment by reference
-# still does not work properly (copies by value). Therefore
-# will use either set or find smarter way to use :=
-
-# # data.frame style
-# setMethod("$<-", "MSnID",
-#           definition=function(x, name, value)
-#           {
-#              x@psms[[name]] <- value
-#              return(x)
-#           }
-# )
 setMethod("$<-", "MSnID",
     definition=function(x, name, value)
     {
-        x@psms <- eval(substitute(x@psms[,NAME_ARG:=value],
-                                    list(NAME_ARG=name)))
+        x@psms[[name]] <- value
         return(x)
     }
 )
-
 
 setMethod("[[<-", "MSnID",
             definition=function(x, i, j, ..., value)
