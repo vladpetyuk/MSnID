@@ -1,8 +1,12 @@
 
+Version 0.99.1
+--------------------------------------------------------------------------------
+o Updated dependency on mzID version
+
 Version 0.99.0
 --------------------------------------------------------------------------------
 o Minor bug fixes
-o Added unit tests for filter optimization and assessment of 
+o Added unit tests for filter optimization and assessment of
     non-tryptic and missed cleavages
 o Version bump for Bioconductor submission
 
