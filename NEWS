@@ -1,3 +1,7 @@
+Version 0.99.2
+--------------------------------------------------------------------------------
+o Updated Rcpp dependency
+o Updated contact info to match the bioc-devel mailing list
 
 Version 0.99.1
 --------------------------------------------------------------------------------
