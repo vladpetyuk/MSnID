@@ -105,15 +105,19 @@ psms(msnid) <- PSMresults
 show(msnid)
 @
 Alternative and currently the preferred way to read MS/MS results is by
-parsing mzIdentML files (*.mzid or *.mzid.gz extensions). The read\_mzIDs
-function levelrages \Biocpkg{mzID} package facilities.
+parsing mzIdentML files (*.mzid or *.mzid.gz extensions). The \Rcode{read\_mzIDs}
+function leverages \Biocpkg{mzID} package facilities.
 <<>>=
 mzids <- system.file("extdata", "c_elegans.mzid.gz", package="MSnID")
 msnid <- read_mzIDs(msnid, mzids)
 show(msnid)
 @
 Internally PSMs stored as \CRANpkg{data.table} object.
-
+\\
+The example file \texttt{"c\_elegans.mzid.gz"} is based on MS-GF+ search engine.
+The \Rcode{read\_mzIDs} function reads results of any MS/MS search engine as
+long as it compliant with mzIdentML standard. In general case, use aforementioned
+\Rcode{psms<-} function.
 
 
 \section{Updating columns}
@@ -252,7 +256,8 @@ settings of the MS/MS search engine MS-GF+ (used for analysis of this
 LC-MS dataset) fairly assumed that the instrument could have peak
 non-monoisotopic peaks of parent ion for fragmentation
 and thus considered peptides that were off by +/- 1 Da
-(\textsuperscript{13}C-\textsuperscript{12}C to be exact).
+(\textsuperscript{13}C-\textsuperscript{12}C to be exact). Similar settings
+can be found in other search engines (e.g X!Tandem).
 <<label=deltaMass, fig=TRUE, include=FALSE, width=9>>=
 dM <- with(psms(msnid),
     (experimentalMassToCharge-calculatedMassToCharge)*chargeState)
@@ -323,6 +328,11 @@ theoretical fragmentation patterns as one the filtering criteria.
 Let's keep it under the "msmsScore" name. The score density distribution
 shows that it is a good discriminant between non-decoy (red)
 and decoy hits (green).
+\\
+For alternative MS/MS search engines refer to the engine-specific manual for
+the names of parameters reflecting the quality of MS/MS spectra matching.
+Examples of such parameters are \Rcode{E-Value} for X!Tandem
+and \Rcode{XCorr} and \Rcode{$\Delta$Cn2} for SEQUEST.
 <<label=msmsScoreDistribution, fig=TRUE, include=FALSE, width=9>>=
 msnid$msmsScore <- -log10(msnid$`MS-GF:SpecEValue`)
 params <- psms(msnid)[,c("msmsScore","isDecoy")]
