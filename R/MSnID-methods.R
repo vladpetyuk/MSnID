@@ -32,7 +32,7 @@
 {
     # INPUT: Peptide sequence with flanking AAs e.g. "K.APEP*TID{34.34}E%.-"
     # OUPUT: Peptide without flanking "APEP*TID{34.34}E%"
-    # 
+    #
     # this is quicker, but may not be safe if there are some mods with dots
     # stopifnot(nchar(peptide) - nchar(gsub("\\.","",peptide)) == 2)
     # this one is safer, but likely to be slower
@@ -51,15 +51,15 @@
     # the fastest approach
     peptide <- .get_clean_peptide_sequence(peptide)
     # now no flanking AAs, no mods
-    numberOfMissedCleavages <- 
-        nchar(peptide) - 
+    numberOfMissedCleavages <-
+        nchar(peptide) -
         nchar(gsub(missedCleavagePattern, "", peptide, perl=TRUE))
     return( numberOfMissedCleavages )
 }
 
 
 setMethod(
-    "assess_missed_cleavages", 
+    "assess_missed_cleavages",
     signature("MSnID"),
     definition=function(object, missedCleavagePattern)
     {
@@ -73,12 +73,12 @@ setMethod(
 
 #---
 
-.assess_termini <- function(peptide, 
+.assess_termini <- function(peptide,
                             validCleavagePattern)
 {
     # "[RK]\\.[^P]" | "-\\."
     # It has to be sequence with flanking AAs e.g. K.XXXXXXXR.X
-    # first peptide needs to be cleaned on anything other then 
+    # first peptide needs to be cleaned on anything other then
     # 20 amino acids and . and -
     #
     # make sure all have flanked AAs (this line of code is redundant)
@@ -91,7 +91,7 @@ setMethod(
     is.C.valid <- grepl(sprintf("%s$", validCleavagePattern), peptide)
     is.protein.N.terminus <- grepl("^-\\.",peptide)
     is.protein.C.terminus <- grepl("\\.-$",peptide)
-    number.of.irregular.termini <- 
+    number.of.irregular.termini <-
         as.numeric(!(is.N.valid | is.protein.N.terminus)) + # valid N-term
         as.numeric(!(is.C.valid | is.protein.C.terminus))   # valid C-term
     return(number.of.irregular.termini)
@@ -100,12 +100,12 @@ setMethod(
 
 
 setMethod(
-    "assess_termini", 
+    "assess_termini",
     signature("MSnID"),
     definition=function(object, validCleavagePattern)
     {
-        object@psms$numIrregCleavages <- 
-            .assess_termini(as.character(object@psms$peptide), 
+        object@psms$numIrregCleavages <-
+            .assess_termini(as.character(object@psms$peptide),
                             validCleavagePattern)
         return(object)
     }
@@ -119,7 +119,7 @@ setMethod(
 
 #--- Accessors -----------------------------------------------------------------
 setMethod(
-    "peptides", 
+    "peptides",
     "MSnID",
     definition=function(object)
     {
@@ -130,7 +130,7 @@ setMethod(
 
 
 setMethod(
-    "accessions", 
+    "accessions",
     "MSnID",
     definition=function(object)
     {
@@ -139,7 +139,7 @@ setMethod(
 )
 
 setMethod(
-    "proteins", 
+    "proteins",
     "MSnID",
     definition=function(object)
     {
@@ -156,7 +156,7 @@ setMethod(
 
 #----Filter---------------------------------------------------------------------
 setMethod(
-    "apply_filter", 
+    "apply_filter",
     signature(msnidObj="MSnID", filterObj="character"),
     definition=function(msnidObj, filterObj)
     {
@@ -167,7 +167,7 @@ setMethod(
 )
 
 setMethod(
-    "apply_filter", 
+    "apply_filter",
     signature(msnidObj="MSnID", filterObj="MSnIDFilter"),
     definition=function(msnidObj, filterObj)
     {
@@ -199,8 +199,8 @@ setMethod(
 setMethod(
     "id_quality",
     signature(object="MSnID"),
-    definition=function(object, 
-                        filter=NULL, 
+    definition=function(object,
+                        filter=NULL,
                         level=c("PSM", "peptide", "accession"))
     {
         if(!is.null(filter))
@@ -216,8 +216,8 @@ setMethod(
 setMethod(
     "evaluate_filter",
     signature(object="MSnID"),
-    definition=function(object, 
-                        filter, 
+    definition=function(object,
+                        filter,
                         level=c("PSM", "peptide", "accession"))
     {
         level <- match.arg(level)
@@ -260,18 +260,20 @@ MSnID <- function(workDir='.', cleanCache=FALSE)
 {
     cachePath <- file.path(workDir,".Rcache")
     # is that enough or should I getOption("R.cache::rootPath")?
-    # or is it the same thing? 
+    # or is it the same thing?
     setCacheRootPath(cachePath)
     if(cleanCache) clearCache(cachePath)
-    cat("Note, the anticipated/suggested columns in the\n",
-        "peptide-to-spectrum matching results are:\n",
-        paste(.mustBeColumns, collapse=', '),
-        sep='')
+    msg <- paste("Note, the anticipated/suggested columns in the",
+                 "peptide-to-spectrum matching results are:",
+                 "-----------------------------------------------",
+                 paste0(sort(.mustBeColumns), collapse = "\n"),
+                 sep='\n')
+    message(msg)
     msnidObj <- new("MSnID", workDir=workDir, psms=data.table())
 }
 #-------------------------------------------------------------------------------
 
-.mustBeColumns <- c("peptide", "accession", "isDecoy", 
+.mustBeColumns <- c("peptide", "accession", "isDecoy",
                     "calculatedMassToCharge",
                     "experimentalMassToCharge",
                     "chargeState",
@@ -280,7 +282,7 @@ MSnID <- function(workDir='.', cleanCache=FALSE)
 
 setMethod(
     f="psms",
-    signature("MSnID"), 
+    signature("MSnID"),
     definition=function(object)
     {
         return(as.data.frame(object@psms))
@@ -295,10 +297,10 @@ setReplaceMethod(
     {
         misCol <- setdiff(.mustBeColumns, colnames(value))
         if((length(misCol) > 0) & interactive()){
-            promptStr <- 
+            promptStr <-
                 paste("The data.frame is missing the following columns:\n",
                     paste(strwrap(paste(misCol, collapse=', ')), collapse='\n'),
-                    '.\n', 
+                    '.\n',
                     collapse='', sep='')
             warning(promptStr, call. = FALSE, immediate. = TRUE)
 
@@ -317,7 +319,7 @@ setReplaceMethod(
 
 
 setAs(
-    from="MSnID", 
+    from="MSnID",
     to="data.table",
     def=function(from)
     {
@@ -352,7 +354,7 @@ setAs(
 
 
 setMethod(
-    "show", 
+    "show",
     signature("MSnID"),
     definition=function(object)
     {
@@ -361,18 +363,18 @@ setMethod(
 
         # show number of datasets
         try(
-            cat("#Spectrum Files: ", 
+            cat("#Spectrum Files: ",
                 length(unique(as.character(object@psms$spectrumFile))), '\n'),
             silent=TRUE)
-        
+
         # show data quality at three levels
         for(i in c("PSM", "peptide", "accession")){
             try({
                 temp <- .id_quality(object, i)
-                cat("#", i, "s: ", temp['n'], " at ", 
-                    signif(100*temp['fdr'], 2), 
+                cat("#", i, "s: ", temp['n'], " at ",
+                    signif(100*temp['fdr'], 2),
                     " % FDR", '\n', sep='')
-                }, 
+                },
                 silent=TRUE)
         }
     }
@@ -380,7 +382,7 @@ setMethod(
 
 
 setMethod(
-    "read_mzIDs", 
+    "read_mzIDs",
     signature("MSnID"),
     definition=function(object, mzids)
     {
@@ -439,7 +441,7 @@ setMethod("[[<-", "MSnID",
 setMethod("correct_peak_selection", "MSnID",
     definition=function(object)
     {
-        deltaMz <- object$experimentalMassToCharge - 
+        deltaMz <- object$experimentalMassToCharge -
                     object$calculatedMassToCharge
         deltaMass <- deltaMz * object$chargeState
         deltaC13C12 <- 1.0033548378
@@ -454,7 +456,7 @@ setMethod("correct_peak_selection", "MSnID",
 setMethod("mass_measurement_error", "MSnID",
     definition=function(object)
     {
-        ppm <- 1e6*(object$experimentalMassToCharge - 
+        ppm <- 1e6*(object$experimentalMassToCharge -
                     object$calculatedMassToCharge)/
                 object$calculatedMassToCharge
         return(ppm)
@@ -482,7 +484,7 @@ setMethod("recalibrate", "MSnID",
         #%%%%%%%%%%%%%%%%%%%%%%%
         res.error.ppm <- error.ppm - sys.error.ppm # new error residuals
         # now back-calculate the experimentalMassToCharge
-        object$experimentalMassToCharge <- 
+        object$experimentalMassToCharge <-
             object$calculatedMassToCharge * (1 + res.error.ppm/1e6)
         return(object)
     }
