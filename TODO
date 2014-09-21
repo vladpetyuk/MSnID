@@ -1,0 +1,2 @@
+1) Add handling of top-down data from MSAlign ouput
+2) Leverage the cleaver package for shortcuts of enzyme cleavage patterns
