@@ -1,0 +1,23 @@
+Version 0.99.3
+--------------------------------------------------------------------------------
+o Rcpp back into "Depends"
+
+Version 0.99.2
+--------------------------------------------------------------------------------
+o Updated Rcpp dependency
+o Updated contact info to match the bioc-devel mailing list
+
+Version 0.99.1
+--------------------------------------------------------------------------------
+o Updated dependency on mzID version
+
+Version 0.99.0
+--------------------------------------------------------------------------------
+o Minor bug fixes
+o Added unit tests for filter optimization and assessment of
+    non-tryptic and missed cleavages
+o Version bump for Bioconductor submission
+
+Version 0.1.0
+--------------------------------------------------------------------------------
+o First release version
