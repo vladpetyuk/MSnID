@@ -1,5 +1,18 @@
 # methods and functions for handling filter optimization.
 
+
+.msg.invalid.optimization.results <-
+    paste("No settings that satisfy FDR criteria.",
+          "Returning original filter.",
+          sep='\n')
+
+# later warning messages for different optimization
+# issues will be customized
+.msg.invalid.optimization.results.grid <-
+    .msg.invalid.optimization.results
+
+
+
 .get_num_pep_for_fdr <- function(filterThresholds,
                                     msmsdata,
                                     filter,
@@ -41,6 +54,11 @@
                                 filterObj,
                                 fdr.max,
                                 level)
+    evaluations <- round(evaluations)
+    if(all(evaluations == 0)){
+        warning(.msg.invalid.optimization.results.grid)
+        return(filterObj)
+    }
     optim.pars <- par.grid[which.max(evaluations),]
     newFilter <- update(filterObj, as.numeric(optim.pars))
     return(newFilter)
@@ -59,7 +77,11 @@
                                                         fdr.max,
                                                         level)},
                             mc.cores=detectCores())
-    evaluations <- unlist(evaluations)
+    evaluations <- round(unlist(evaluations))
+    if(all(evaluations == 0)){
+        warning(.msg.invalid.optimization.results.grid)
+        return(filterObj)
+    }
     optim.pars <- par.grid[which.max(evaluations),]
     newFilter <- update(filterObj, as.numeric(optim.pars))
     return(newFilter)
@@ -117,6 +139,11 @@ setMethod("optimize_filter",
                             method = method,
                             control=list(fnscale=-1, maxit=n.iter))
         optimFilter <- update(filterObj, as.numeric(optim.out$par))
+        x <- evaluate_filter(msmsdata, optimFilter, level)
+        if(is.nan(x[['fdr']]) || x[['fdr']] > fdr.max){
+            warning(.msg.invalid.optimization.results)
+            return(filterObj)
+        }
     }
     return(optimFilter)
 }
