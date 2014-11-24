@@ -1,0 +1,13 @@
+# History files
+.Rhistory
+
+# Example code in package build process
+*-Ex.R
+.Rproj.user
+MSnID.Rproj
+
+# .DS_Store files
+.DS_Store
+/demo/.DS_Store
+/inst/.DS_Store
+/inst/doc/.DS_Store
