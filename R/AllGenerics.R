@@ -49,8 +49,5 @@ setGeneric("optimize_filter",
             function(filterObj, msnidObj, fdr.max, method, level, n.iter)
                 stadardGeneric("optimize_filter"))
 
-setGeneric("psms",
-            function(object) standardGeneric("psms"))
-
 setGeneric("psms<-",
             function(object, value) standardGeneric("psms<-"))
