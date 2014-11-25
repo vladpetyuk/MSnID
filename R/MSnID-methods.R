@@ -190,7 +190,7 @@ setMethod(
     #
     # catch the case in case there are zero normal matches
     if(decoy == n)
-        return(list(fdr=NaN, n=0))
+        return(c(fdr=NaN, n=0))
     # if there are normal matches, proceed
     fdr <- decoy/(n-decoy)
     return(c(fdr=fdr, n=n))
@@ -207,8 +207,9 @@ setMethod(
             object <- apply_filter(object, filter)
         # if no filter has been provided just return the quality of
         # features in original object
-        level <- match.arg(level)
-        return(.id_quality(object, level))
+        level <- match.arg(level, several.ok = TRUE)
+        out <- t(sapply(level, .id_quality, object=object))
+        return(out)
     }
 )
 
@@ -220,9 +221,10 @@ setMethod(
                         filter,
                         level=c("PSM", "peptide", "accession"))
     {
-        level <- match.arg(level)
+        level <- match.arg(level, several.ok = TRUE)
         object <- apply_filter(object, filter)
-        return(.id_quality(object, level))
+        out <- t(sapply(level, .id_quality, object=object))
+        return(out)
     }
 )
 #-------------------------------------------------------------------------------

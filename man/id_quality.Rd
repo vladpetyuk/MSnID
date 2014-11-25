@@ -4,7 +4,7 @@
 \title{Identification quality}
 
 \description{
-    Reports quality for a given level of 
+    Reports quality for a given level of
     identification (spectra, peptide or protein).
 }
 
@@ -20,16 +20,17 @@
     }
     \item{level}{
         Level at which the filter will be evaluated. Possible values are
-        "PSM", "peptide" and "accession". Default value is "PSM".
+        "PSM", "peptide" and "accession". Multiple are OK. Default is all of them.
     }
 }
 
 \value{
-    Returns a list with with elements "n" and "fdr". 
-    Element "n" contains the number of features (spectra, 
-    peptides or proteins/accessions) passing the filter. 
-    Element "fdr" is the false discovery rate (i.e. identification
+    Returns a matrix with with column names "fdr" and "n".
+    Column "n" contains the number of features (spectra,
+    peptides or proteins/accessions) passing the filter.
+    Column "fdr" is the false discovery rate (i.e. identification
     confidence) for the corresponding features.
+    Row names correspond to the provided levels.
 }
 
 \author{
