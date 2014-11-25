@@ -3,7 +3,7 @@ Version 1.1.2
  o id_quality and evaluate_filter may have multiple values for
     the level argument. By default it is all three:
     "PSM", "peptide" and "accession". The return value for
-    both methods switched to matrices.
+    both methods is switched to matrices.
  o added Laurent Gatto as a contributor
 
 Version 1.1.1
