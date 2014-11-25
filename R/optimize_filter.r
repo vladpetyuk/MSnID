@@ -22,11 +22,11 @@
     filter <- update(filter, filterThresholds)
     # level should get here through ... (ellipsis)
     x <- evaluate_filter(msmsdata, filter, ...)
-    if(is.nan(x[['fdr']]) || x[['fdr']] > fdr.max){
+    if(is.nan(x[,'fdr']) || x[,'fdr'] > fdr.max){
         # 0 is bad because optimization does not move
         return(rnorm(1,sd=0.001))
     }else{
-        return(x[['n']])
+        return(x[,'n'])
     }
 }
 
@@ -63,6 +63,7 @@
     newFilter <- update(filterObj, as.numeric(optim.pars))
     return(newFilter)
 }
+
 
 
 .optimize_filter.grid.mclapply <- function(filterObj, msnidObj,
@@ -104,6 +105,7 @@ setMethod("optimize_filter",
                                fdr.max, method, level, n.iter)
 {
     method <- match.arg(method, choices=c("Grid", "Nelder-Mead", "SANN"))
+    # several is not OK below for match.arg !
     level <- match.arg(level, choices=c("PSM", "peptide", "accession"))
     #
     # subset msnidObj to only relevant columns
@@ -139,8 +141,9 @@ setMethod("optimize_filter",
                             method = method,
                             control=list(fnscale=-1, maxit=n.iter))
         optimFilter <- update(filterObj, as.numeric(optim.out$par))
-        x <- evaluate_filter(msmsdata, optimFilter, level)
-        if(is.nan(x[['fdr']]) || x[['fdr']] > fdr.max){
+        # sanity check
+        x <- evaluate_filter(msnidObj, optimFilter, level)
+        if(is.nan(x[,'fdr']) || x[,'fdr'] > fdr.max){
             warning(.msg.invalid.optimization.results)
             return(filterObj)
         }
