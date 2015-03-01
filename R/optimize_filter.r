@@ -1,6 +1,5 @@
 # methods and functions for handling filter optimization.
 
-
 .msg.invalid.optimization.results <-
     paste("No settings that satisfy FDR criteria.",
           "Returning original filter.",
