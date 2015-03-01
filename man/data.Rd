@@ -5,7 +5,7 @@
 \title{Example mzIdenML File and MSnID Object}
 
 \description{
-MSnID object from 
+MSnID object from
 c_elegans_A_3_1_21Apr10_Draco_10-03-04_msgfplus.mzid.gz dataset
 from PeptideAltas repository id PASS00308.
 }
@@ -30,7 +30,7 @@ msnidObj <- MSnID(".")
 mzids <- system.file("extdata","c_elegans.mzid.gz",package="MSnID")
 msnidObj <- read_mzIDs(msnidObj, mzids)
 save(msnidObj, file='c_elegans.RData', compress='xz', compression_level=9)
-# MD5 sum for the file is: de1976639f056de821804c42ebc58079
+# MD5 sum for the file is: b53039889f9b657a07edf436871c9573
 # clean up the cache directory
 unlink(".Rcache", recursive=TRUE)
 }
