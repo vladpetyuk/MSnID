@@ -14,3 +14,9 @@ test_data_load <- function() {
     data(c_elegans)
     checkIdentical(psms(msnidObj), psms(msnid2))
 }
+
+test_column_names <- function() {
+    # now, check if the column names are the same
+    data(c_elegans)
+    checkIdentical(names(msnidObj), names(msnid2))
+}
