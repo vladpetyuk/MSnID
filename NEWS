@@ -1,3 +1,8 @@
+Version 1.1.3
+-------------
+ o Updated data, documentation and unit test to reflect the
+    latest changes in mzID
+
 Version 1.1.2
 -------------
  o id_quality and evaluate_filter may have multiple values for
