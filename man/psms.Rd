@@ -7,12 +7,12 @@
 \title{Peptide-to-spectrum matches}
 
 \description{
-    Returns results of MS/MS search (peptide-to-spectrum) 
+    Returns results of MS/MS search (peptide-to-spectrum)
     matches in the form of \code{data.frame}.
 }
 
 \usage{
-    psms(object)
+    psms(object, ...)
     psms(object) <- value
 }
 
@@ -20,6 +20,7 @@
 \arguments{
     \item{object}{An instance of class "MSnID".}
     \item{value}{Value is a \code{data.frame} with MS/MS search results}
+    \item{\dots}{ignored for now}
 }
 
 \value{
