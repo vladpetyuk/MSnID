@@ -30,7 +30,8 @@ msnidObj <- MSnID(".")
 mzids <- system.file("extdata","c_elegans.mzid.gz",package="MSnID")
 msnidObj <- read_mzIDs(msnidObj, mzids)
 save(msnidObj, file='c_elegans.RData', compress='xz', compression_level=9)
-# MD5 sum for the file is: b53039889f9b657a07edf436871c9573
+# MD5 sum for the file is: a7c511a6502a6419127f1e46db48ed92
+digest::digest(msnidObj)
 # clean up the cache directory
 unlink(".Rcache", recursive=TRUE)
 }
