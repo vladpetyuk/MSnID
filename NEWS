@@ -1,3 +1,8 @@
+Version 1.1.5
+-------------
+ o Always trimming spectrumFile and databaseFile to basename
+    after reading data from mzIdentML files.
+
 Version 1.1.4
 -------------
  o Catching up with changes in mzID package version 1.5.3

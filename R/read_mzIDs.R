@@ -18,6 +18,12 @@
     # This may be substituted in the future with more flexible
     # peptide S4 object
     data$peptide <- paste(data$pre, data$pepSeq, data$post, sep='.')
+    
+    # trimming spectrumFile databaseFile down to basenames
+    # mzID 1.5.3 reported them differently on POSIX vs Win
+    # so that brings it to common denominator
+    data$spectrumFile <- basename(data$spectrumFile)
+    data$databaseFile <- basename(data$databaseFile)
 
     # Columns that must be present:
     # peptide, accession, isDecoy, calculatedMassToCharge,
