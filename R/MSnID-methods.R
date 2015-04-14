@@ -285,7 +285,7 @@ MSnID <- function(workDir='.', cleanCache=FALSE)
 setMethod(
     f="psms",
     signature("MSnID"),
-    definition=function(object)
+    definition=function(object, ...)
     {
         return(as.data.frame(object@psms))
     }
