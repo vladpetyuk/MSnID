@@ -1,3 +1,9 @@
+Version 1.1.6
+-------------
+ o Added explicit mc.cores argument for "Grid" type of 
+    optimization
+ o Fix of trimming to basename on POSIX
+
 Version 1.1.5
 -------------
  o Always trimming spectrumFile and databaseFile to basename
