@@ -22,8 +22,8 @@
     # trimming spectrumFile databaseFile down to basenames
     # mzID 1.5.3 reported them differently on POSIX vs Win
     # so that brings it to common denominator
-    data$spectrumFile <- basename(data$spectrumFile)
-    data$databaseFile <- basename(data$databaseFile)
+    data$spectrumFile <- basename(gsub('\\\\','/',data$spectrumFile))
+    data$databaseFile <- basename(gsub('\\\\','/',data$databaseFile))
 
     # Columns that must be present:
     # peptide, accession, isDecoy, calculatedMassToCharge,
