@@ -66,7 +66,7 @@
 
 
 .optimize_filter.grid.mclapply <- function(filterObj, msnidObj,
-                                            fdr.max, level, n.iter)
+                                            fdr.max, level, n.iter, mc.cores)
 {
     par.grid <- .construct_optimization_grid(filterObj, msnidObj, n.iter)
     evaluations <- mclapply(seq_len(nrow(par.grid)),
@@ -76,7 +76,7 @@
                                                         filterObj,
                                                         fdr.max,
                                                         level)},
-                            mc.cores=detectCores())
+                            mc.cores=mc.cores)
     evaluations <- round(unlist(evaluations))
     if(all(evaluations == 0)){
         warning(.msg.invalid.optimization.results.grid)
@@ -91,17 +91,18 @@
 setMethod("optimize_filter",
             signature(filterObj="MSnIDFilter", msnidObj="MSnID"),
             definition=function(filterObj, msnidObj, fdr.max,
-                                   method, level, n.iter)
+                                   method, level, n.iter, mc.cores=NULL)
             {
                 .optimize_filter.memoized(filterObj, msnidObj,
-                                            fdr.max, method, level, n.iter)
+                                            fdr.max, method, 
+                                          level, n.iter, mc.cores)
             }
 )
 
 
 
 .optimize_filter <- function(filterObj, msnidObj,
-                               fdr.max, method, level, n.iter)
+                               fdr.max, method, level, n.iter, mc.cores)
 {
     method <- match.arg(method, choices=c("Grid", "Nelder-Mead", "SANN"))
     # several is not OK below for match.arg !
@@ -120,9 +121,12 @@ setMethod("optimize_filter",
     #
     if(method == "Grid"){
         if(.Platform$OS.type == "unix"){
+            if(is.null(mc.cores))
+                mc.cores <- getOption("mc.cores", 2L)
             optimFilter <-
                 .optimize_filter.grid.mclapply(filterObj, msnidObj,
-                                                fdr.max, level, n.iter)
+                                               fdr.max, level, 
+                                               n.iter, mc.cores)
         }else{
             # yet to implement effective parallelization on Windows
             optimFilter <-
@@ -152,4 +156,5 @@ setMethod("optimize_filter",
 
 # todo: make memoization optional
 .optimize_filter.memoized <- addMemoization(.optimize_filter)
+
 

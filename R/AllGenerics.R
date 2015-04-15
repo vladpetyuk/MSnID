@@ -46,7 +46,8 @@ setGeneric("recalibrate",
                 standardGeneric("recalibrate"))
 
 setGeneric("optimize_filter",
-            function(filterObj, msnidObj, fdr.max, method, level, n.iter)
+            function(filterObj, msnidObj, 
+                     fdr.max, method, level, n.iter, mc.cores=NULL)
                 stadardGeneric("optimize_filter"))
 
 setGeneric("psms<-",
