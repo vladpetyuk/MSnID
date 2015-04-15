@@ -41,6 +41,13 @@
         For method "Grid" is approxomate number of evaluation point. 
         For "Nelder-Mean" and "SANN" methods see \link[stats]{optim}.
     }
+    \item{mc.cores}{
+        Controls the number of enabled cores for parallel processing. 
+        Make sense only for "Grid" optimizaton. Default is
+        \code{getOption("mc.cores", 2L)}. See \link[parallel]{mclapply}
+        for details.
+    }
+
 }
 
 \details{
