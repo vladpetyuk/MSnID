@@ -8,11 +8,11 @@ setGeneric("assess_termini",
             function(object, validCleavagePattern="[KR]\\.[^P]") 
                 standardGeneric("assess_termini"))
 
-setGeneric("accessions", 
-            function(object) standardGeneric("accessions"))
+# setGeneric("accessions", 
+#             function(object) standardGeneric("accessions"))
 
-setGeneric("proteins", 
-            function(object) standardGeneric("proteins"))
+# setGeneric("proteins", 
+#             function(object) standardGeneric("proteins"))
 
 setGeneric("peptides", 
             function(object) standardGeneric("peptides"))
