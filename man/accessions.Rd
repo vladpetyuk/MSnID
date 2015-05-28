@@ -22,6 +22,10 @@ proteins have the same meaning in \code{MSnID}.
     \item{object}{
         An instance of class "MSnID".
     }
+    \item{...}{
+        ignored parameters
+    }
+
 }
 
 \value{
