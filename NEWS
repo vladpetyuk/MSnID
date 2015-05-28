@@ -1,3 +1,7 @@
+Version 1.3.1
+-------------
+ o S4 methods "accessions" and "proteins" outsourced to ProtGenerics
+
 Version 1.1.6
 -------------
  o Added explicit mc.cores argument for "Grid" type of 

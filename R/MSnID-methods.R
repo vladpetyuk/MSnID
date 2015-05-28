@@ -132,7 +132,7 @@ setMethod(
 setMethod(
     "accessions",
     "MSnID",
-    definition=function(object)
+    definition=function(object, ...)
     {
         unique(as.character(object@psms$accession))
     }
@@ -141,7 +141,7 @@ setMethod(
 setMethod(
     "proteins",
     "MSnID",
-    definition=function(object)
+    definition=function(object, ...)
     {
         accessions(object)
     }
