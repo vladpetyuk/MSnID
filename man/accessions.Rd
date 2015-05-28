@@ -14,8 +14,8 @@ proteins have the same meaning in \code{MSnID}.
 }
 
 \usage{
-    accessions(object)
-    proteins(object)
+    accessions(object, ...)
+    proteins(object, ...)
 }
 
 \arguments{
