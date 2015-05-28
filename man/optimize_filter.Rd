@@ -12,7 +12,8 @@
 }
 
 \usage{
-    optimize_filter(filterObj, msnidObj, fdr.max, method, level, n.iter)
+    optimize_filter(filterObj, msnidObj, fdr.max, method, 
+                    level, n.iter, mc.cores=NULL)
 }
 
 %- maybe also 'usage' for other objects documented here.
