@@ -1,3 +1,9 @@
+Version 1.7.1
+-------------
+ o added infer_parsimonious_accessions method
+ o version leap from 1.3.1 to 1.7.1 to catch up with Bioconductor
+ o fixed conflict between reshape2 and data.table
+
 Version 1.3.1
 -------------
  o S4 methods "accessions" and "proteins" outsourced to ProtGenerics
