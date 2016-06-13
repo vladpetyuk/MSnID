@@ -1,4 +1,8 @@
 
+setGeneric("infer_parsimonious_accessions",
+           function(object) 
+               standardGeneric("infer_parsimonious_accessions"))
+
 
 setGeneric("assess_missed_cleavages",
             function(object, missedCleavagePattern="[KR](?=[^P$])") 

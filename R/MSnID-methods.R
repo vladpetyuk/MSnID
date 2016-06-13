@@ -529,3 +529,30 @@ setAs("MSnID", "MSnSet",
         def=function(from) .convert_MSnID_to_MSnSet(from))
 
 
+
+
+
+setMethod("infer_parsimonious_accessions", "MSnID",
+          definition=function(object)
+          {
+              infer_acc <- function(x){
+                  res <- list()
+                  while(nrow(x) > 0){
+                      top_prot <- names(which.max(table(x[['accession']])))
+                      top_peps <- subset(x, accession == top_prot)
+                      res <- c(res, list(top_peps))
+                      x <- subset(x, !(pepSeq %in% top_peps[,"pepSeq"]))
+                  }
+                  return(Reduce(rbind,res))
+              }
+              
+              x <- unique(psms(object)[,c("pepSeq","accession")])
+              res <- infer_acc(x) # this step may take awhile
+              razor_accessions <- unique(res$accession)
+              filterString <- paste("accession %in% ", list(razor_accessions))
+              object <- apply_filter(object, filterString)
+              return(object)
+          }
+)
+
+
