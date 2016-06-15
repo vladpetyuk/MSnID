@@ -14,13 +14,19 @@
 }
 
 \usage{
-    read_mzIDs(object, mzids)
+    read_mzIDs(object, mzids, backend)
 }
 
 %- maybe also 'usage' for other objects documented here.
 \arguments{
     \item{object}{An instance of class "MSnID"}
     \item{mzids}{paths to mzIdentML (mzid) files}
+    \item{backend}{Package that is leveraged for parsing. 
+                Either 'mzID' or 'mzR' corresponding to \code{\link[mzID]{mzID}}
+                and \code\link[mzR]{mzR}} packages respectively. 
+                The 'mzR' parser is much faster, 
+                since it is based on C++ code. 'mzID' will be kept in the 
+                package for leagacy reasons. Note, the default is 'mzID'.}
 }
 
 \details{

@@ -40,3 +40,61 @@
 
 
 
+factor_to_str_converter <- function(df){
+    data.frame(lapply(df, function(x){
+        if(is.factor(x))
+            x <- as.character(x)
+        return(x)}), 
+        stringsAsFactors=FALSE)
+}
+
+
+
+.read_mzIDs.mzR.engine.single.file <- function(mzid){
+    mzRidentObj <- openIDfile(mzid)
+    x.psms <- psms(mzRidentObj) %>% factor_to_str_converter
+    x.scor <- score(mzRidentObj) %>% factor_to_str_converter
+    x.mods <- modifications(mzRidentObj) %>% factor_to_str_converter
+    x.mods <- group_by(x.mods, spectrumID,sequence,name) %>%
+        summarise(modification = paste(mass,' (',location,')',sep='',collapse=', ')) %>%
+        select(spectrumID,sequence,modification)
+    #' merging
+    stopifnot(all(as.character(x.psms$spectrumID) == as.character(x.scor$spectrumID)))
+    x <- cbind(x.psms, x.scor[,setdiff(colnames(x.scor),'spectrumID')])
+    x <- left_join(x, x.mods, by=c("spectrumID", "sequence"))
+    x$modified <- ifelse(is.na(x$modification), FALSE, TRUE)
+    x$spectrumFile <- fileName(mzRidentObj) # very redundant. not good
+    x <- rename(x,
+                accession = DatabaseAccess,
+                description = DatabaseDescription,
+                length = DBseqLength,
+                pepSeq = sequence)
+    x <- data.table(x, safeNames=FALSE)
+    return(x)
+}
+
+
+.read_mzIDs.mzR <- function(mzids){
+    if(length(mzids) == 1){
+        res <- .read_mzIDs.mzR.engine.single.file(mzids)
+    }
+    else {
+        nCores <- detectCores()
+        nThreads <- ifelse(length(mzids) < nCores, length(mzids), nCores)
+        cl <- makeCluster(nThreads, outfile = '')
+        on.exit(stopCluster(cl))
+        registerDoParallel(cl)
+        res <- foreach(i = icount(length(mzids)),
+                       .packages = c("mzR",'dplyr','data.table'),
+                       .export=c(".read_mzIDs.mzR.engine.single.file",
+                                 'factor_to_str_converter')) %dopar% 
+            {
+                cat("reading ", basename(mzids[i]), "...\n", sep = "")
+                res.i <- .read_mzIDs.mzR.engine.single.file(mzids[i])
+                cat(basename(mzids[i]), "DONE!\n")
+                res.i
+            }
+        res <- rbindlist(res)
+    }
+    return(res)
+}

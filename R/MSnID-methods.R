@@ -386,13 +386,37 @@ setMethod(
 setMethod(
     "read_mzIDs",
     signature("MSnID"),
-    definition=function(object, mzids)
+    definition=function(object, mzids, backend=c('mzID','mzR'))
     {
         # check if files are indeed available by the provided path
         stopifnot(all(sapply(mzids, file.exists)))
-
-        # proceed if they are present
-        object@psms <- .read_mzIDs.memoized(mzids)
+        backend <- match.arg(backend)
+        stopifnot(backend %in% c('mzID','mzR')) # not sure if this is necessary
+        
+        # Try to load cached data, if exists
+        key <- list(mzids)
+        data <- loadCache(key)
+        if (!is.null(data)){
+            message("Loaded cached data\n")
+        }else{
+            message("Reading from mzIdentMLs ...\n")
+            if(backend == 'mzID'){
+                data <- data.table(flatten(mzID(mzids), safeNames=FALSE))
+                data$databaseFile <- basename(gsub('\\\\','/',data$databaseFile))
+            }else{
+                data <- .read_mzIDs.mzR(mzids)
+            }
+            
+            #' extra stuff
+            data$peptide <- paste(data$pre, data$pepSeq, data$post, sep='.')
+            data$spectrumFile <- basename(gsub('\\\\','/',data$spectrumFile))
+            
+            #' save for reuse
+            saveCache(data, key=key)
+        }
+        
+        object@psms <- data
+        
         return(object)
     }
 )
