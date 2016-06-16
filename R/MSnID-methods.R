@@ -386,6 +386,7 @@ setMethod(
 setMethod(
     "read_mzIDs",
     signature("MSnID"),
+<<<<<<< HEAD
     definition=function(object, mzids)
     {
         # check if files are indeed available by the provided path
@@ -393,6 +394,39 @@ setMethod(
 
         # proceed if they are present
         object@psms <- .read_mzIDs.memoized(mzids)
+=======
+    definition=function(object, mzids, backend)
+    {
+        # check if files are indeed available by the provided path
+        stopifnot(all(sapply(mzids, file.exists)))
+        backend <- match.arg(backend)
+        stopifnot(backend %in% c('mzID','mzR')) # not sure if this is necessary
+        
+        # Try to load cached data, if exists
+        key <- list(mzids)
+        data <- loadCache(key)
+        if (!is.null(data)){
+            message("Loaded cached data\n")
+        }else{
+            message("Reading from mzIdentMLs ...\n")
+            if(backend == 'mzID'){
+                data <- data.table(flatten(mzID(mzids), safeNames=FALSE))
+                data$databaseFile <- basename(gsub('\\\\','/',data$databaseFile))
+            }else{
+                data <- .read_mzIDs.mzR(mzids)
+            }
+            
+            #' extra stuff
+            data$peptide <- paste(data$pre, data$pepSeq, data$post, sep='.')
+            data$spectrumFile <- basename(gsub('\\\\','/',data$spectrumFile))
+            
+            #' save for reuse
+            saveCache(data, key=key)
+        }
+        
+        object@psms <- data
+        
+>>>>>>> master
         return(object)
     }
 )
@@ -529,3 +563,33 @@ setAs("MSnID", "MSnSet",
         def=function(from) .convert_MSnID_to_MSnSet(from))
 
 
+<<<<<<< HEAD
+=======
+
+
+
+setMethod("infer_parsimonious_accessions", "MSnID",
+          definition=function(object)
+          {
+              infer_acc <- function(x){
+                  res <- list()
+                  while(nrow(x) > 0){
+                      top_prot <- names(which.max(table(x[['accession']])))
+                      top_peps <- subset(x, accession == top_prot)
+                      res <- c(res, list(top_peps))
+                      x <- subset(x, !(pepSeq %in% top_peps[,"pepSeq"]))
+                  }
+                  return(Reduce(rbind,res))
+              }
+              
+              x <- unique(psms(object)[,c("pepSeq","accession")])
+              res <- infer_acc(x) # this step may take awhile
+              razor_accessions <- unique(res$accession)
+              filterString <- paste("accession %in% ", list(razor_accessions))
+              object <- apply_filter(object, filterString)
+              return(object)
+          }
+)
+
+
+>>>>>>> master

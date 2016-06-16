@@ -1,4 +1,11 @@
 
+<<<<<<< HEAD
+=======
+setGeneric("infer_parsimonious_accessions",
+           function(object) 
+               standardGeneric("infer_parsimonious_accessions"))
+
+>>>>>>> master
 
 setGeneric("assess_missed_cleavages",
             function(object, missedCleavagePattern="[KR](?=[^P$])") 
@@ -18,7 +25,12 @@ setGeneric("peptides",
             function(object) standardGeneric("peptides"))
 
 setGeneric("read_mzIDs", 
+<<<<<<< HEAD
             function(object, mzids) standardGeneric("read_mzIDs"))
+=======
+            function(object, mzids, backend=c('mzID','mzR')) 
+                standardGeneric("read_mzIDs"))
+>>>>>>> master
 
 setGeneric("apply_filter", 
             function(msnidObj, filterObj) standardGeneric("apply_filter"))
