@@ -36,7 +36,11 @@
     }
     \item{level}{
         Determines at what level to perform optimization. 
+<<<<<<< HEAD
         Possible values are "PSM", "Peptides" or "Accession".
+=======
+        Possible values are "PSM", "peptides" or "accession".
+>>>>>>> master
     }
     \item{n.iter}{
         For method "Grid" is approxomate number of evaluation point. 
