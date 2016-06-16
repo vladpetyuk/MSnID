@@ -1,9 +1,4 @@
 library("MSnID")
-<<<<<<< HEAD
-msnid2 <- MSnID(".")
-mzids <- system.file("extdata","c_elegans.mzid.gz",package="MSnID")
-msnid2 <- read_mzIDs(msnid2, mzids)
-=======
 library("digest")
 
 msnid2 <- MSnID(".")
@@ -12,7 +7,6 @@ msnid2 <- read_mzIDs(msnid2, mzids, backend = 'mzID')
 unlink(".Rcache", recursive=TRUE)
 # the object from mzR parser is a bit different from mzID (at this point)
 msnid3 <- read_mzIDs(msnid2, mzids, backend = 'mzR') 
->>>>>>> master
 unlink(".Rcache", recursive=TRUE)
 
 
@@ -26,21 +20,15 @@ test_data_load <- function() {
     checkIdentical(psms(msnidObj), psms(msnid2))
 }
 
-<<<<<<< HEAD
-=======
 
->>>>>>> master
 test_column_names <- function() {
     # now, check if the column names are the same
     data(c_elegans)
     checkIdentical(names(msnidObj), names(msnid2))
 }
-<<<<<<< HEAD
-=======
 
 
 test_data_load_mzR <- function() {
     # now, check if it is what it supposed to be
     checkIdentical(digest(psms(msnid3)),'e5c572c07878673f1165822969f81869')
 }
->>>>>>> master

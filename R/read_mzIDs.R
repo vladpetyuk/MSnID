@@ -40,8 +40,6 @@
 
 
 
-<<<<<<< HEAD
-=======
 factor_to_str_converter <- function(df){
     data.frame(lapply(df, function(x){
         if(is.factor(x))
@@ -100,4 +98,3 @@ factor_to_str_converter <- function(df){
     }
     return(res)
 }
->>>>>>> master

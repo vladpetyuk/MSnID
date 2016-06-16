@@ -386,15 +386,6 @@ setMethod(
 setMethod(
     "read_mzIDs",
     signature("MSnID"),
-<<<<<<< HEAD
-    definition=function(object, mzids)
-    {
-        # check if files are indeed available by the provided path
-        stopifnot(all(sapply(mzids, file.exists)))
-
-        # proceed if they are present
-        object@psms <- .read_mzIDs.memoized(mzids)
-=======
     definition=function(object, mzids, backend)
     {
         # check if files are indeed available by the provided path
@@ -426,7 +417,6 @@ setMethod(
         
         object@psms <- data
         
->>>>>>> master
         return(object)
     }
 )
@@ -563,8 +553,6 @@ setAs("MSnID", "MSnSet",
         def=function(from) .convert_MSnID_to_MSnSet(from))
 
 
-<<<<<<< HEAD
-=======
 
 
 
@@ -592,4 +580,3 @@ setMethod("infer_parsimonious_accessions", "MSnID",
 )
 
 
->>>>>>> master

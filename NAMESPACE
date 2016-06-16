@@ -2,30 +2,18 @@ import("Rcpp")
 import("R.cache")
 import("foreach")
 import("doParallel")
-<<<<<<< HEAD
-import("reshape2")
-import("methods")
-import("iterators")
-import("data.table")
-=======
 import("methods")
 import("iterators")
 import("data.table")
 importFrom("dplyr","group_by","summarise","select","%>%","left_join","rename")
 importFrom("reshape2", "acast")
->>>>>>> master
 importFrom("ProtGenerics", "psms")
 importFrom("ProtGenerics", "accessions")
 importFrom("ProtGenerics", "proteins")
 importFrom("mzID", "mzID")
-<<<<<<< HEAD
-importMethodsFrom("mzID", "flatten")
-importFrom("parallel", "mclapply", "detectCores")
-=======
 importFrom("mzR","openIDfile","score","modifications","fileName")
 importMethodsFrom("mzID", "flatten")
 importFrom("parallel", "mclapply", "detectCores","makeCluster","stopCluster")
->>>>>>> master
 importClassesFrom("MSnbase", "MSnSet")
 importClassesFrom("Biobase", "AnnotatedDataFrame")
 #-----------------------------------------------------------------------------
@@ -53,8 +41,4 @@ exportMethods("names")
 exportMethods("show")
 exportMethods("dim")
 exportMethods("psms", "psms<-")
-<<<<<<< HEAD
-=======
 exportMethods("infer_parsimonious_accessions")
-
->>>>>>> master
