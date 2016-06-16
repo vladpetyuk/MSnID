@@ -183,7 +183,15 @@ setMethod(
     if(.Level != "PSM"){
         temp.dt <- object@psms[,c(.Level,"isDecoy"),with=FALSE]
         object@psms <- unique(temp.dt)
+    }else{
+        # deal with peptide to protein assignment redundancy
+        temp.dt <- object@psms[,c('spectrumFile',
+                                  'spectrumID',
+                                  'peptide',
+                                  'isDecoy'),with=FALSE]
+        object@psms <- unique(temp.dt)
     }
+    
     stopifnot(is.logical(object@psms$isDecoy))
     n <- length(object@psms$isDecoy)
     decoy <- sum(object@psms$isDecoy)

@@ -1,3 +1,9 @@
+Version 1.7.3
+-------------
+ o Logical error fix in PSM FDR calculation. Prior it ignored redundancy
+   in peptide to protein mapping. Now protein accession are discarded
+   and unique rows considered before compuring the FDR.
+
 Version 1.7.2
 -------------
  o added high performance parser based on mzR::openIDFile
