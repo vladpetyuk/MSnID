@@ -55,7 +55,7 @@ factor_to_str_converter <- function(df){
     x.psms <- psms(mzRidentObj) %>% factor_to_str_converter
     x.scor <- score(mzRidentObj) %>% factor_to_str_converter
     x.mods <- modifications(mzRidentObj) %>% factor_to_str_converter
-    x.mods <- group_by(x.mods, spectrumID,sequence,name) %>%
+    x.mods <- group_by(x.mods, spectrumID, sequence, name) %>%
         summarise(modification = paste(mass,' (',location,')',sep='',collapse=', ')) %>%
         select(spectrumID,sequence,modification)
     #' merging

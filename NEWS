@@ -1,3 +1,7 @@
+Version 1.7.2
+-------------
+ o added high performance parser based on mzR::openIDFile
+
 Version 1.7.1
 -------------
  o added infer_parsimonious_accessions method

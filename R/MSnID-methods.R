@@ -386,7 +386,7 @@ setMethod(
 setMethod(
     "read_mzIDs",
     signature("MSnID"),
-    definition=function(object, mzids, backend=c('mzID','mzR'))
+    definition=function(object, mzids, backend)
     {
         # check if files are indeed available by the provided path
         stopifnot(all(sapply(mzids, file.exists)))

@@ -22,7 +22,8 @@ setGeneric("peptides",
             function(object) standardGeneric("peptides"))
 
 setGeneric("read_mzIDs", 
-            function(object, mzids) standardGeneric("read_mzIDs"))
+            function(object, mzids, backend=c('mzID','mzR')) 
+                standardGeneric("read_mzIDs"))
 
 setGeneric("apply_filter", 
             function(msnidObj, filterObj) standardGeneric("apply_filter"))
