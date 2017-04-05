@@ -571,7 +571,7 @@ setMethod("infer_parsimonious_accessions", "MSnID",
                   res <- list()
                   setDT(x)
                   while(nrow(x) > 0){
-                      top_prot <- pep_pro[, .N, by=accession][which.max(N),,]$accession
+                      top_prot <- x[, .N, by=accession][which.max(N),,]$accession
                       top_peps <- subset(x, accession == top_prot)
                       res <- c(res, list(top_peps))
                       x <- subset(x, !(pepSeq %in% top_peps[[1]]))
