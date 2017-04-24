@@ -567,6 +567,20 @@ setAs("MSnID", "MSnSet",
 setMethod("infer_parsimonious_accessions", "MSnID",
           definition=function(object)
           {
+              
+              # # Old code for inferring accessions.
+              # # It is too slow.
+              # infer_acc <- function(x){
+              #     res <- list()
+              #     while(nrow(x) > 0){
+              #         top_prot <- names(which.max(table(x[['accession']])))
+              #         top_peps <- subset(x, accession == top_prot)
+              #         res <- c(res, list(top_peps))
+              #         x <- subset(x, !(pepSeq %in% top_peps[,"pepSeq"]))
+              #     }
+              #     return(Reduce(rbind,res))
+              # }
+
               infer_acc <- function(x){
                   res <- list()
                   setDT(x)
