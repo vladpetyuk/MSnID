@@ -155,16 +155,33 @@ setMethod(
 
 
 #----Filter---------------------------------------------------------------------
+
+# # Old implementation. Just as a backup.
+# # See https://github.com/vladpetyuk/MSnID/issues/5 for the issue.
+# setMethod(
+#     "apply_filter",
+#     signature(msnidObj="MSnID", filterObj="character"),
+#     definition=function(msnidObj, filterObj)
+#     {
+#         exprssn <- parse(text=filterObj, srcfile=NULL, keep.source=FALSE)
+#         msnidObj@psms <- msnidObj@psms[eval(exprssn),]
+#         return(msnidObj)
+#     }
+# )
+
 setMethod(
     "apply_filter",
     signature(msnidObj="MSnID", filterObj="character"),
     definition=function(msnidObj, filterObj)
     {
         exprssn <- parse(text=filterObj, srcfile=NULL, keep.source=FALSE)
-        msnidObj@psms <- msnidObj@psms[eval(exprssn),]
+        idx <- eval(exprssn, envir = msnidObj@psms, enclos = parent.frame())
+        msnidObj@psms <- msnidObj@psms[idx,]
         return(msnidObj)
     }
 )
+
+
 
 setMethod(
     "apply_filter",
