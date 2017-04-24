@@ -569,13 +569,14 @@ setMethod("infer_parsimonious_accessions", "MSnID",
           {
               infer_acc <- function(x){
                   res <- list()
+                  setDT(x)
                   while(nrow(x) > 0){
-                      top_prot <- names(which.max(table(x[['accession']])))
+                      top_prot <- x[, .N, by=accession][which.max(N),,]$accession
                       top_peps <- subset(x, accession == top_prot)
                       res <- c(res, list(top_peps))
-                      x <- subset(x, !(pepSeq %in% top_peps[,"pepSeq"]))
+                      x <- subset(x, !(pepSeq %in% top_peps[[1]]))
                   }
-                  return(Reduce(rbind,res))
+                  return(rbindlist(res, use.names=F, fill=FALSE, idcol=NULL))
               }
               
               x <- unique(psms(object)[,c("pepSeq","accession")])
