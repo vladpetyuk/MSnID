@@ -1,8 +1,8 @@
 library("MSnID")
 data(c_elegans)
 
-test_infer_parsimonious_accessions_old <- function(){
 
+test_infer_parsimonious_accessions_old <- function(){
     # explicitely adding parameters that will be used for data filtering
     msnidObj$msmsScore <- -log10(msnidObj$`MS-GF:SpecEValue`)
     msnidObj$absParentMassErrorPPM <- abs(mass_measurement_error(msnidObj))
@@ -14,6 +14,7 @@ test_infer_parsimonious_accessions_old <- function(){
     msnidObj2 <- infer_parsimonious_accessions(msnidObj)
     checkEqualsNumeric(length(proteins(msnidObj2)), 551)
 }
+
 
 
 # Above is the old function for testing protein inference.  I'll leave it for
@@ -40,7 +41,6 @@ test_infer_parsimonious_accessions_hash <- function(){
 
 # Future challenges is to come up with tests that check inference that is
 # done outside of MSnID object
-
 
 
 

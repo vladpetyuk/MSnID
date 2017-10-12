@@ -1,6 +1,4 @@
 
-
-
 .is_filterList_valid <- function(filterList)
 {
     entries=c("comparison","threshold")
@@ -140,5 +138,4 @@ setMethod("$<-", "MSnIDFilter",
                 return(x)
             }
 )
-
 

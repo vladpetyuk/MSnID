@@ -1,5 +1,4 @@
 
-
 .PROTON_MASS <- 1.007276466812
 
 setClass(Class="MSnID",
@@ -14,4 +13,3 @@ setClass(Class="MSnIDFilter",
                 filterList="list",
                 validParNames="character")
 )
-

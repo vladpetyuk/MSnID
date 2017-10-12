@@ -116,8 +116,6 @@
     return(newFilter)
 }
 
-
-
 setMethod("optimize_filter",
             signature(filterObj="MSnIDFilter", msnidObj="MSnID"),
             definition=function(filterObj, msnidObj, fdr.max,

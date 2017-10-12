@@ -155,7 +155,6 @@ setMethod(
 
 
 #----Filter---------------------------------------------------------------------
-
 # # Old implementation. Just as a backup.
 # # See https://github.com/vladpetyuk/MSnID/issues/5 for the issue.
 # setMethod(
@@ -168,7 +167,6 @@ setMethod(
 #         return(msnidObj)
 #     }
 # )
-
 setMethod(
     "apply_filter",
     signature(msnidObj="MSnID", filterObj="character"),
@@ -180,8 +178,6 @@ setMethod(
         return(msnidObj)
     }
 )
-
-
 
 setMethod(
     "apply_filter",
@@ -584,7 +580,6 @@ setAs("MSnID", "MSnSet",
 setMethod("infer_parsimonious_accessions", "MSnID",
           definition=function(object)
           {
-              
               # # Old code for inferring accessions.
               # # It is too slow.
               # infer_acc <- function(x){

@@ -1,5 +1,3 @@
-% validCleavagePattern="[RK]\\.[^P]"
-
 \name{assess_termini}
 \alias{assess_termini}
 
