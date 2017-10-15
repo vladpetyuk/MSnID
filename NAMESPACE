@@ -43,7 +43,3 @@ exportMethods("show")
 exportMethods("dim")
 exportMethods("psms", "psms<-")
 exportMethods("infer_parsimonious_accessions")
-<<<<<<< HEAD
-
-=======
->>>>>>> upstream/master
