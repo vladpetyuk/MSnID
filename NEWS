@@ -1,3 +1,9 @@
+Version 1.15.1
+-------------
+ o mzR now added scan number(s) into the table representation of
+   mzIdentML object. As a results it caused an error in my unit test
+   checking if the file reads properly. Fixed this check with updated hash.
+
 Version 1.11.1
 -------------
  o Switch from mclapply to parLapply in filter optimizaition.
