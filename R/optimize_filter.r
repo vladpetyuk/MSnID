@@ -88,6 +88,34 @@
 }
 
 
+.optimize_filter.grid.parLapply <- function(filterObj, msnidObj,
+                                           fdr.max, level, n.iter, mc.cores)
+{
+    par.grid <- .construct_optimization_grid(filterObj, msnidObj, n.iter)
+    cl <- makeCluster(mc.cores)
+    # clusterExport(cl, 
+    #                         list(".get_num_pep_for_fdr"),
+    #                         envir = "package:MSnID")
+    clusterEvalQ(cl, library("MSnID"))
+    evaluations <- parLapply(cl,
+                             seq_len(nrow(par.grid)),
+                             function(i){
+                                .get_num_pep_for_fdr(par.grid[i,],
+                                                     msnidObj,
+                                                     filterObj,
+                                                     fdr.max,
+                                                     level)})
+    stopCluster(cl)
+    evaluations <- round(unlist(evaluations))
+    if(all(evaluations == 0)){
+        warning(.msg.invalid.optimization.results.grid)
+        return(filterObj)
+    }
+    optim.pars <- par.grid[which.max(evaluations),]
+    newFilter <- update(filterObj, as.numeric(optim.pars))
+    return(newFilter)
+}
+
 setMethod("optimize_filter",
             signature(filterObj="MSnIDFilter", msnidObj="MSnID"),
             definition=function(filterObj, msnidObj, fdr.max,
@@ -120,19 +148,24 @@ setMethod("optimize_filter",
     }
     #
     if(method == "Grid"){
-        if(.Platform$OS.type == "unix"){
-            if(is.null(mc.cores))
-                mc.cores <- getOption("mc.cores", 2L)
-            optimFilter <-
-                .optimize_filter.grid.mclapply(filterObj, msnidObj,
-                                               fdr.max, level, 
-                                               n.iter, mc.cores)
-        }else{
-            # yet to implement effective parallelization on Windows
-            optimFilter <-
-                .optimize_filter.grid(filterObj, msnidObj,
-                                        fdr.max, level, n.iter)
-        }
+        # if(.Platform$OS.type == "unix"){
+        #     if(is.null(mc.cores))
+        #         mc.cores <- getOption("mc.cores", 2L)
+        #     optimFilter <-
+        #         .optimize_filter.grid.mclapply(filterObj, msnidObj,
+        #                                        fdr.max, level, 
+        #                                        n.iter, mc.cores)
+        # }else{
+        #     # yet to implement effective parallelization on Windows
+        #     optimFilter <-
+        #         .optimize_filter.grid(filterObj, msnidObj,
+        #                                 fdr.max, level, n.iter)
+        # }
+        mc.cores <- getOption("mc.cores", 2L)
+        optimFilter <-
+            .optimize_filter.grid.parLapply(filterObj, msnidObj,
+                                            fdr.max, level,
+                                            n.iter, mc.cores)
     }
     if(method %in% c("Nelder-Mead", "SANN")){
         optim.out <- optim(par=as.numeric(filterObj),

@@ -13,7 +13,8 @@ importFrom("ProtGenerics", "proteins")
 importFrom("mzID", "mzID")
 importFrom("mzR","openIDfile","score","modifications","fileName")
 importMethodsFrom("mzID", "flatten")
-importFrom("parallel", "mclapply", "detectCores","makeCluster","stopCluster")
+importFrom("parallel", "mclapply", "detectCores","makeCluster",
+           "stopCluster","parLapply","clusterExport","clusterEvalQ")
 importClassesFrom("MSnbase", "MSnSet")
 importClassesFrom("Biobase", "AnnotatedDataFrame")
 #-----------------------------------------------------------------------------

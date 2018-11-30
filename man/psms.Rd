@@ -1,5 +1,3 @@
-% this is document of generic function
-
 \name{psms}
 \alias{psms}
 \alias{psms<-}

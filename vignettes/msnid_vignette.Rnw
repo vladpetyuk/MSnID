@@ -496,6 +496,3 @@ unlink(".Rcache", recursive=TRUE)
 \bibliographystyle{plainnat}
 \bibliography{msnid}
 \end{document}
-
-
-

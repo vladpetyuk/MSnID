@@ -60,5 +60,3 @@ massErr <- (msnidObj$experimentalMassToCharge -
 hist(massErr,xlim=c(-1,+1), breaks=seq(-1.5,+1.5,0.01))
 }
 
-
-

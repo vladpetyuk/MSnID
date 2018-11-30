@@ -1,3 +1,21 @@
+Version 1.15.2
+-------------
+ o Broadened the scope of the tool to ImmunoOncology - that is finding rare
+   events that reflected in protein sequence.
+   
+Version 1.15.1
+-------------
+ o mzR now added scan number(s) into the table representation of
+   mzIdentML object. As a results it caused an error in my unit test
+   checking if the file reads properly. Fixed this check with updated hash.
+
+Version 1.11.1
+-------------
+ o Switch from mclapply to parLapply in filter optimizaition.
+   This fixes a bug 
+   "Assertion failure at kmp_runtime.cpp(6480): __kmp_thread_pool == __null."
+   Also allows to run parallel on Window OS
+
 Version 1.7.3
 -------------
  o Logical error fix in PSM FDR calculation. Prior it ignored redundancy

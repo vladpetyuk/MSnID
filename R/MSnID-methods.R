@@ -155,13 +155,26 @@ setMethod(
 
 
 #----Filter---------------------------------------------------------------------
+# # Old implementation. Just as a backup.
+# # See https://github.com/vladpetyuk/MSnID/issues/5 for the issue.
+# setMethod(
+#     "apply_filter",
+#     signature(msnidObj="MSnID", filterObj="character"),
+#     definition=function(msnidObj, filterObj)
+#     {
+#         exprssn <- parse(text=filterObj, srcfile=NULL, keep.source=FALSE)
+#         msnidObj@psms <- msnidObj@psms[eval(exprssn),]
+#         return(msnidObj)
+#     }
+# )
 setMethod(
     "apply_filter",
     signature(msnidObj="MSnID", filterObj="character"),
     definition=function(msnidObj, filterObj)
     {
         exprssn <- parse(text=filterObj, srcfile=NULL, keep.source=FALSE)
-        msnidObj@psms <- msnidObj@psms[eval(exprssn),]
+        idx <- eval(exprssn, envir = msnidObj@psms, enclos = parent.frame())
+        msnidObj@psms <- msnidObj@psms[idx,]
         return(msnidObj)
     }
 )
@@ -567,15 +580,29 @@ setAs("MSnID", "MSnSet",
 setMethod("infer_parsimonious_accessions", "MSnID",
           definition=function(object)
           {
+              # # Old code for inferring accessions.
+              # # It is too slow.
+              # infer_acc <- function(x){
+              #     res <- list()
+              #     while(nrow(x) > 0){
+              #         top_prot <- names(which.max(table(x[['accession']])))
+              #         top_peps <- subset(x, accession == top_prot)
+              #         res <- c(res, list(top_peps))
+              #         x <- subset(x, !(pepSeq %in% top_peps[,"pepSeq"]))
+              #     }
+              #     return(Reduce(rbind,res))
+              # }
+
               infer_acc <- function(x){
                   res <- list()
+                  setDT(x)
                   while(nrow(x) > 0){
-                      top_prot <- names(which.max(table(x[['accession']])))
+                      top_prot <- x[, .N, by=accession][which.max(N),,]$accession
                       top_peps <- subset(x, accession == top_prot)
                       res <- c(res, list(top_peps))
-                      x <- subset(x, !(pepSeq %in% top_peps[,"pepSeq"]))
+                      x <- subset(x, !(pepSeq %in% top_peps[[1]]))
                   }
-                  return(Reduce(rbind,res))
+                  return(rbindlist(res, use.names=F, fill=FALSE, idcol=NULL))
               }
               
               x <- unique(psms(object)[,c("pepSeq","accession")])
