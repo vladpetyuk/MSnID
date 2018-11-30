@@ -1,3 +1,8 @@
+Version 1.15.2
+-------------
+ o Broadened the scope of the tool to ImmunoOncology - that is finding rare
+   events that reflected in protein sequence.
+   
 Version 1.15.1
 -------------
  o mzR now added scan number(s) into the table representation of
