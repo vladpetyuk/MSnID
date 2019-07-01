@@ -596,7 +596,7 @@ setMethod("infer_parsimonious_accessions", "MSnID",
               infer_acc <- function(x){
                   res <- list()
                   setDT(x)
-                  setorder(x, accession) # so at least there is certainty which is first
+                  setorder(x, accession, pepSeq) # so at least there is certainty which is first
                   while(nrow(x) > 0){
                       top_prot <- x[, .N, by=accession][which.max(N),,]$accession
                       top_peps <- subset(x, accession == top_prot)
