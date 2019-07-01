@@ -608,9 +608,19 @@ setMethod("infer_parsimonious_accessions", "MSnID",
               
               x <- unique(psms(object)[,c("pepSeq","accession")])
               res <- infer_acc(x) # this step may take awhile
-              razor_accessions <- unique(res$accession)
-              filterString <- paste("accession %in% ", list(razor_accessions))
-              object <- apply_filter(object, filterString)
+              
+              # res is what is known as with razor peptides
+              setkey(res, pepSeq, accession)
+              old_psms <- psms(object)
+              setDT(old_psms)
+              setkey(old_psms, pepSeq, accession)
+              new_psms <- old_psms[res] # semi-joint in data.table
+              psms(object) <- new_psms
+              
+              # razor_accessions <- unique(res$accession)
+              # filterString <- paste("accession %in% ", list(razor_accessions))
+              # object <- apply_filter(object, filterString)
+              
               return(object)
           }
 )
