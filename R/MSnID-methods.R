@@ -578,7 +578,7 @@ setAs("MSnID", "MSnSet",
 
 
 setMethod("infer_parsimonious_accessions", "MSnID",
-          definition=function(object)
+          definition=function(object, unique_only=FALSE)
           {
               # # Old code for inferring accessions.
               # # It is too slow.
@@ -595,8 +595,6 @@ setMethod("infer_parsimonious_accessions", "MSnID",
 
               infer_acc <- function(x){
                   res <- list()
-                  setDT(x)
-                  setorder(x, accession, pepSeq) # so at least there is certainty which is first
                   while(nrow(x) > 0){
                       top_prot <- x[, .N, by=accession][which.max(N),,]$accession
                       top_peps <- subset(x, accession == top_prot)
@@ -607,10 +605,20 @@ setMethod("infer_parsimonious_accessions", "MSnID",
               }
               
               x <- unique(psms(object)[,c("pepSeq","accession")])
-              res <- infer_acc(x) # this step may take awhile
+              setDT(x)
+              # order, so at least there is certainty which is first
+              setorder(x, accession, pepSeq)
+              if(unique_only){
+                  redundancy <- x[, .(num = length(accession)), by = pepSeq]
+                  non_redundant <- redundancy[num == 1]
+                  res <- non_redundant[,.(pepSeq)]
+                  setkey(res, pepSeq)
+              }else{
+                  # razor
+                  res <- infer_acc(x) # this step may take awhile
+                  setkey(res, pepSeq, accession)
+              }
               
-              # res is what is known as with razor peptides
-              setkey(res, pepSeq, accession)
               old_psms <- psms(object)
               setDT(old_psms)
               setkey(old_psms, pepSeq, accession)

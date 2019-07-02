@@ -23,6 +23,14 @@
     \item{object}{
         An instance of class "MSnID".
     }
+    \item{unique_only}{
+        If TRUE, peptides mapping to multiple accessions are dropped and
+        only unique are retained. If FALSE, then shared peptides assigned
+        according to Occam's razor rule. That is a shared peptide is 
+        assigned to a protein with larger number of unique peptides.
+        If the number of unique peptides is the same, then to the first 
+        accession. Default is FALSE.
+    }
 }
 
 \details{
