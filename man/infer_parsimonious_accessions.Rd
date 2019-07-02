@@ -15,7 +15,7 @@
 }
 
 \usage{
-    infer_parsimonious_accessions(object)
+    infer_parsimonious_accessions(object, unique_only=FALSE)
 }
 
 %- maybe also 'usage' for other objects documented here.

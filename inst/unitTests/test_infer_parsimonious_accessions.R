@@ -28,19 +28,27 @@ msnidObj$absParentMassErrorPPM <- abs(mass_measurement_error(msnidObj))
 # quick-and-dirty filter. The filter is too strong for the sake of saving time
 # at the minimal set of proteins inference step.
 msnidObj <- apply_filter(msnidObj, 'msmsScore > 12 & absParentMassErrorPPM < 2')
-msnidObj2 <- infer_parsimonious_accessions(msnidObj)
 
-test_infer_parsimonious_accessions_number <- function(){
-   checkEqualsNumeric(length(proteins(msnidObj2)), 551)
+# checking with razor peptide
+msnidObj.r <- infer_parsimonious_accessions(msnidObj, unique_only=FALSE)
+
+# checking unique peptides only
+msnidObj.u <- infer_parsimonious_accessions(msnidObj, unique_only=TRUE)
+
+test_infer_parsimonious_accessions_number.r <- function(){
+   checkEqualsNumeric(length(proteins(msnidObj.r)), 551)
+}
+test_infer_parsimonious_accessions_number.u <- function(){
+    checkEqualsNumeric(length(proteins(msnidObj.u)), 427)
 }
 
-# test_infer_parsimonious_accessions_hash <- function(){
-#    checkIdentical(digest(psms(msnidObj2)),'42c967304603b17ef667fae5b8d5657f')
-# }
-
-test_infer_parsimonious_accessions_hash <- function(){
-    checkIdentical(digest(psms(msnidObj2)$accession),
-                   '6a3566a95b2e49a0f966d22ed897a752')
+test_infer_parsimonious_accessions_hash.r <- function(){
+    checkIdentical(digest(psms(msnidObj.r)$accession),
+                   'e8ff9bbf36929ce49850733b3640edc8')
+}
+test_infer_parsimonious_accessions_hash.u <- function(){
+    checkIdentical(digest(psms(msnidObj.u)$accession),
+                   '2a375d3ec85d022aeba5d210bca55a53')
 }
 
 # Future challenges is to come up with tests that check inference that is
