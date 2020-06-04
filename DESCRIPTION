@@ -16,7 +16,8 @@ License: Artistic-2.0
 Depends: R (>= 2.10), Rcpp
 Imports: MSnbase (>= 1.12.1), mzID (>= 1.3.5), R.cache,
     foreach, doParallel, parallel, methods, iterators,
-    data.table, Biobase, ProtGenerics, reshape2, dplyr, mzR
-Suggests: BiocStyle, msmsTests, ggplot2, RUnit, BiocGenerics
+    data.table, Biobase, ProtGenerics, reshape2, dplyr, mzR,
+    BiocStyle, msmsTests, ggplot2, RUnit, BiocGenerics
+Suggests: 
 LazyData: yes
 biocViews: Proteomics, MassSpectrometry, ImmunoOncology
