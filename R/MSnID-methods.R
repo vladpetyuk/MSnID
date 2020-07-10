@@ -578,7 +578,7 @@ setAs("MSnID", "MSnSet",
 
 
 setMethod("infer_parsimonious_accessions", "MSnID",
-          definition=function(object, unique_only=FALSE)
+          definition=function(object, unique_only=FALSE, parsimony_map = NULL)
           {
               # # Old code for inferring accessions.
               # # It is too slow.
@@ -609,14 +609,63 @@ setMethod("infer_parsimonious_accessions", "MSnID",
               # order, so at least there is certainty which is first
               setorder(x, accession, pepSeq)
               if(unique_only){
-                  redundancy <- x[, .(num = length(accession)), by = pepSeq]
-                  non_redundant <- redundancy[num == 1]
-                  res <- non_redundant[,.(pepSeq)]
-                  setkey(res, pepSeq)
+                  # case 1: unique only + prioritized
+                  if (!is.null(parsimony_map)) {
+                      priveleged_proteins <- unique(parsimony_map$accession)
+                      # peptides mapping to priveleged proteins
+                      xp <- x %>%
+                          filter(accession %in% priveleged_proteins) %>%
+                          select(pepSeq) %>%
+                          distinct()
+                      # split by presence/absense of justified peptides
+                      x1 <- semi_join(x, xp)
+                      x2 <- anti_join(x, xp)
+                      
+                      dt <- data.table(x1)
+                      redundancy <- dt[, .(num = length(accession)), by = pepSeq]
+                      non_redundant <- redundancy[num == 1]
+                      res1 <- non_redundant[,.(pepSeq)]
+                      setkey(res1, pepSeq)
+                      
+                      dt <- data.table(x2)
+                      redundancy <- dt[, .(num = length(accession)), by = pepSeq]
+                      non_redundant <- redundancy[num == 1]
+                      res2 <- non_redundant[,.(pepSeq)]
+                      setkey(res2, pepSeq)
+                      
+                      res <- rbind(res1, res2)
+                  }
+                  # case 2: unique only + no prioritized
+                  else {
+                      redundancy <- x[, .(num = length(accession)), by = pepSeq]
+                      non_redundant <- redundancy[num == 1]
+                      res <- non_redundant[,.(pepSeq)]
+                      setkey(res, pepSeq)
+                  }
               }else{
-                  # razor
+                  # case 3: all peptides + prioritized
+                  if (!is.null(parsimony_map)) {
+                      priveleged_proteins <- unique(parsimony_map$accession)
+                      # peptides mapping to priveleged proteins
+                      xp <- x %>%
+                          filter(accession %in% priveleged_proteins) %>%
+                          select(pepSeq) %>%
+                          distinct()
+                      # split by presence/absense of justified peptides
+                      x1 <- semi_join(x, xp)
+                      x2 <- anti_join(x, xp)
+
+                      res1 <- filter(x1, accession %in% priveleged_proteins)
+                      res2 <- infer_acc(x2)
+                      
+                      res <- rbind(res1, res2)
+                  }
+                  
+                  # case 4: all peptides + no prioritized
+                  else {
                   res <- infer_acc(x) # this step may take awhile
                   setkey(res, pepSeq, accession)
+                  }
               }
               
               old_psms <- psms(object)

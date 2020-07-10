@@ -1,6 +1,6 @@
 
 setGeneric("infer_parsimonious_accessions",
-           function(object, unique_only=FALSE) 
+           function(object, unique_only=FALSE, parsimony_map = NULL) 
                standardGeneric("infer_parsimonious_accessions"))
 
 
