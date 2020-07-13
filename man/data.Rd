@@ -25,7 +25,7 @@ ftp.loc <- "ftp://PASS00308:PJ5348t@ftp.peptideatlas.org/MSGFPlus_Results/MZID_F
 download.file(ftp.loc, "c_elegans.mzid.gz")}
 
 \dontrun{
-## Script for generation of the example data:
+## Script for generation of the C. elegans example data:
 msnidObj <- MSnID(".")
 mzids <- system.file("extdata","c_elegans.mzid.gz",package="MSnID")
 msnidObj <- read_mzIDs(msnidObj, mzids)
