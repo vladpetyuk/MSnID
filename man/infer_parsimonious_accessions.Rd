@@ -31,12 +31,6 @@
         If the number of unique peptides is the same, then to the first 
         accession. Default is FALSE.
     }
-    \item{parsimony_map}{
-        This argument is only used for prioritized inference in 
-        phosphoproteomics. This is a data.frame containing parsimonious mapping 
-        of accessions and peptides from filtered global proteomics MS/MS data.
-        Default is NULL.
-    }
 }
 
 \details{
