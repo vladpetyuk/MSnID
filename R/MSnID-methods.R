@@ -634,3 +634,74 @@ setMethod("infer_parsimonious_accessions", "MSnID",
 )
 
 
+
+setMethod("report_mods", 
+          signature = signature("MSnID"),
+          definition = function(object)
+          {
+              mods <- psms(object)$modification
+              mod_masses <- lapply(mods, strsplit, "\\s\\(\\d+\\),?\\s?")
+              return(table(unlist(mod_masses)))
+          }
+)
+
+
+setMethod("add_mod_symbol", "MSnID",
+          definition=function(object, mod_mass, symbol)
+          {
+              .add_mod_symbol(object, mod_mass, symbol)
+          }
+)
+
+
+
+
+setMethod("map_mod_sites", "MSnID",
+          definition=function(object, fasta, prot_id_col, peptide_col, mod_char, 
+                              site_delimiter="lower")
+          {
+              ids <- psms(object)
+              
+              # test if decoys are in fasta
+              # if not, then add reversed sequences
+              # for now we'll support only reverse as decoys
+              decoy_acc <- apply_filter(object, "isDecoy")[[prot_id_col]]
+              if(length(decoy_acc) > 0 & !any(decoy_acc %in% names(fasta))){
+                  fasta_rev <- reverse(fasta)
+                  names(fasta_rev) <- paste0("XXX_",names(fasta))
+                  fasta <- c(fasta, fasta_rev)
+              }
+              
+              res <- .map_mod_sites(ids, 
+                                    fasta, 
+                                    prot_id_col, 
+                                    peptide_col, 
+                                    mod_char)
+              
+              # make site ID from prot_id_col (likely accession) and 
+              # SiteCollapsedFirst
+              if(site_delimiter == "lower"){
+                  res <- mutate(res, 
+                                SiteID = paste0(!!sym(prot_id_col), 
+                                                "-", 
+                                                gsub("([[:upper:]])(\\d+),?",
+                                                     "\\1\\2\\L\\1", 
+                                                     SiteCollapsedFirst, 
+                                                     perl = T)))
+              }else{
+                  res <- mutate(res, 
+                                SiteID = paste0(!!sym(prot_id_col), 
+                                                "-", 
+                                                gsub(",",
+                                                     site_delimiter,
+                                                     SiteCollapsedFirst)))
+              }
+              psms(object) <- res
+              return(object)
+          }
+)
+
+
+
+
+

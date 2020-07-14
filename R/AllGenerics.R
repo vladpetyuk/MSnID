@@ -1,4 +1,19 @@
 
+setGeneric("add_mod_symbol",
+           function(object, ...)
+               standardGeneric("add_mod_symbol"))
+
+
+setGeneric("report_mods",
+           function(object) 
+               standardGeneric("report_mods"))
+
+
+setGeneric("map_mod_sites",
+           function(object, ...) 
+               standardGeneric("map_mod_sites"))
+
+
 setGeneric("infer_parsimonious_accessions",
            function(object, unique_only=FALSE) 
                standardGeneric("infer_parsimonious_accessions"))
