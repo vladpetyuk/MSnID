@@ -578,56 +578,53 @@ setAs("MSnID", "MSnSet",
 
 
 setMethod("infer_parsimonious_accessions", "MSnID",
-          definition=function(object, unique_only=FALSE)
+          definition=function(object, unique_only=FALSE, prior=character(0))
           {
-              # # Old code for inferring accessions.
-              # # It is too slow.
-              # infer_acc <- function(x){
-              #     res <- list()
-              #     while(nrow(x) > 0){
-              #         top_prot <- names(which.max(table(x[['accession']])))
-              #         top_peps <- subset(x, accession == top_prot)
-              #         res <- c(res, list(top_peps))
-              #         x <- subset(x, !(pepSeq %in% top_peps[,"pepSeq"]))
-              #     }
-              #     return(Reduce(rbind,res))
-              # }
-
               infer_acc <- function(x){
                   res <- list()
                   while(nrow(x) > 0){
                       top_prot <- x[, .N, by=accession][which.max(N),,]$accession
                       top_peps <- subset(x, accession == top_prot)
+                      # top_peps <- x[accession == top_prot, c(1,2), with=FALSE] # slower
                       res <- c(res, list(top_peps))
                       x <- subset(x, !(pepSeq %in% top_peps[[1]]))
+                      # x <- x[!top_peps, on=.(pepSeq)] # slower
                   }
                   return(rbindlist(res, use.names=F, fill=FALSE, idcol=NULL))
               }
               
-              x <- unique(psms(object)[,c("pepSeq","accession")])
-              setDT(x)
-              # order, so at least there is certainty which is first
+              x <- unique(object@psms[,.(pepSeq, accession)])
               setorder(x, accession, pepSeq)
+              
               if(unique_only){
                   redundancy <- x[, .(num = length(accession)), by = pepSeq]
                   non_redundant <- redundancy[num == 1]
                   res <- non_redundant[,.(pepSeq)]
                   setkey(res, pepSeq)
-              }else{
-                  # razor
-                  res <- infer_acc(x) # this step may take awhile
+              }else{ # consider razor peptides as well
+                  
+                  # peptides from proteins justified by prior
+                  xp <- x[accession %in% prior][,.(pepSeq)]
+                  xp <- unique(xp)
+                  #
+                  x_prior <- x[xp, on=.(pepSeq)] # semi_join
+                  x_current <- x[!xp, on=.(pepSeq)] # anti_join
+                  
+                  # this removes other proteins mapped to 
+                  # peptides from prior justified proteins
+                  res_prior <- x_prior[accession %in% prior]
+                  # key step. the slowest
+                  res_current <- infer_acc(x_current)
+                  #
+                  res <- rbindlist(list(res_prior, res_current))
                   setkey(res, pepSeq, accession)
               }
               
               old_psms <- psms(object)
               setDT(old_psms)
               setkey(old_psms, pepSeq, accession)
-              new_psms <- old_psms[res] # semi-joint in data.table
+              new_psms <- old_psms[res] # semi_join
               psms(object) <- new_psms
-              
-              # razor_accessions <- unique(res$accession)
-              # filterString <- paste("accession %in% ", list(razor_accessions))
-              # object <- apply_filter(object, filterString)
               
               return(object)
           }

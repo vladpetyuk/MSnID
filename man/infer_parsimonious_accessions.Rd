@@ -31,6 +31,12 @@
         If the number of unique peptides is the same, then to the first 
         accession. Default is FALSE.
     }
+    \item{prior}{(character)
+        character vector with prior justified proteins/accessions.
+        If \code{unique_only == TRUE}, then \code{prior} argument is
+        ignored. Essentially evidence by presense of unique peptide supercedes
+        any prior. Default is \code{character(0)}, that is none.
+    }
 }
 
 \details{
