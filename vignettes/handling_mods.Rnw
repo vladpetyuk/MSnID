@@ -31,9 +31,9 @@ modification.
 
 \section{Quick Example}
 Currently here is only a quick example, that also can be found as 
-\code{?map_mod_sites}.
+% \code{?map\_mod\_sites}.
 
-<<>>=
+<<eval=FALSE>>=
 m <- MSnID(".")
 mzids <- system.file("extdata","phospho.mzid.gz",package="MSnID")
 m <- read_mzIDs(m, mzids)

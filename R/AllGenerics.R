@@ -1,21 +1,26 @@
 
 setGeneric("add_mod_symbol",
-           function(object, ...)
+           function(object, mod_mass, symbol)
                standardGeneric("add_mod_symbol"))
 
 
 setGeneric("report_mods",
-           function(object) 
+           function(object, ...) 
                standardGeneric("report_mods"))
 
 
 setGeneric("map_mod_sites",
-           function(object, ...) 
+           function(object,
+                    fasta,
+                    accession_col = "accession",
+                    peptide_mod_col = "peptide_mod",
+                    mod_char = "*",
+                    site_delimiter = "lower")
                standardGeneric("map_mod_sites"))
 
 
 setGeneric("infer_parsimonious_accessions",
-           function(object, unique_only=FALSE) 
+           function(object, unique_only=FALSE, prior=character(0)) 
                standardGeneric("infer_parsimonious_accessions"))
 
 

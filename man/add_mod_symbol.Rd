@@ -1,5 +1,6 @@
-\alias{add_mod_symbol}
 \name{add_mod_symbol}
+\alias{add_mod_symbol}
+\alias{add_mod_symbol,MSnID-method}
 \title{Annotates peptide sequences with modification symbols}
 
 \description{

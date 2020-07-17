@@ -1,5 +1,6 @@
-\alias{report_mods}
 \name{report_mods}
+\alias{report_mods}
+\alias{report_mods,MSnID-method}
 \title{Lists modification masses in the MSnID object}
 
 \description{
@@ -8,11 +9,17 @@ Parses out masses from the \code{modification} column and return them as
 }
 
 \usage{
-    report_mods(object)
+    report_mods(object, ...)
 }
 
 \arguments{
-    An instance of class "MSnID".
+    \item{object}{
+        An instance of class "MSnID".
+    }
+    \item{...}{
+        currently not used
+    }
+
 }
 
 \value{

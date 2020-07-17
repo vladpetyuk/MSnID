@@ -1,5 +1,6 @@
-\alias{map_mod_sites}
 \name{map_mod_sites}
+\alias{map_mod_sites}
+\alias{map_mod_sites,MSnID-method}
 \title{Maps the modifications to protein sequence}
 
 \description{
@@ -13,7 +14,8 @@ modification resulting in \{protein ID\}-\{aa\}\{aa position\}".
                   fasta, 
                   accession_col = "accession", 
                   peptide_mod_col = "peptide_mod", 
-                  symbol = "*")
+                  mod_char = "*",
+                  site_delimiter = "lower")
 }
 
 
@@ -30,14 +32,18 @@ modification resulting in \{protein ID\}-\{aa\}\{aa position\}".
         (string) Name of the column with accession/protein IDs in the 
         MSnID object. Default is "accession".
     }
-    \item{accession_col}{
+    \item{peptide_mod_col}{
         (string) Name of the column with modified peptide sequences in the 
         MSnID object. Default is "peptide_mod".
     }
-    \item{symbol}{
+    \item{mod_char}{
         (string) character that annotates the position of the modification.
         Default is "*".
-    }    
+    }
+    \item{site_delimiter}{
+        (string) either a single character or "lower" (default) meaning it will
+        be the same amino acid symbol, but in lower case
+    }
 }
 
 \value{
@@ -96,11 +102,12 @@ head(unique(subset(psms(m), select=c("modification", "peptide_mod"))))
 
 # read fasta for mapping modifications
 fst_path <- system.file("extdata","for_phospho.fasta.gz",package="MSnID")
+library(Biostrings)
 fst <- readAAStringSet(fst_path)
 # to ensure names are the same as in accessions(m)
 names(fst) <- sub("(^[^ ]*) .*$", "\\1", names(fst))
 # # mapping phosphosites
-m <- map_mod_sites(m, fst, "accession", "peptide_mod", "*")
+m <- map_mod_sites(m, fst, "accession", "peptide_mod", "*", "lower")
 
 head(unique(subset(psms(m), select=c("accession", "peptide_mod", "SiteID"))))
 

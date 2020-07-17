@@ -21,6 +21,8 @@ importFrom("parallel", "mclapply", "detectCores","makeCluster",
            "stopCluster","parLapply","clusterExport","clusterEvalQ")
 importClassesFrom("MSnbase", "MSnSet")
 importClassesFrom("Biobase", "AnnotatedDataFrame")
+importFrom("stats", "quantile","rnorm","optim", "median", "density")
+importFrom("Biostrings", "reverse", "AA_STANDARD")
 #-----------------------------------------------------------------------------
 export("MSnID")
 export("MSnIDFilter")

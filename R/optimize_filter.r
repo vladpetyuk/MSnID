@@ -37,7 +37,7 @@
     eg <- expand.grid(lapply(names(filterObj),
                                 function(arg)
                                     quantile(msnidObj[[arg]],
-                                                probs, na.rm=TRUE)))
+                                             probs, na.rm=TRUE)))
     colnames(eg) <- names(filterObj)
     return(eg)
 }

@@ -24,7 +24,7 @@
     \item{backend}{Package that is leveraged for parsing. 
                 Either 'mzID' or 'mzR' corresponding to
                 \code{\link[mzID]{mzID-package}} and
-                \code{\link[mzR]{mzR-package}} respectively. 
+                \code{\link[mzR]{mzR-class}} respectively. 
                 The 'mzR' parser is much faster, 
                 since it is based on C++ code. 'mzID' will be kept in the 
                 package for leagacy reasons. Note, the default is 'mzID'.}

@@ -1,4 +1,9 @@
 
+utils::globalVariables(c("i", "spectrumID", "name", "mass", "location", 
+                         "modification", "DatabaseAccess", 
+                         "DatabaseDescription", "DBseqLength"))
+
+
 .read_mzIDs.memoized <- function(mzids)
 {
     # Try to load cached data, if exists

@@ -1,16 +1,15 @@
 
 
-# object <- .map_PTM_sites(ids, 
-#                          fasta, 
-#                          prot_id_col, 
-#                          peptide_col, 
-#                          mod_char)
+utils::globalVariables(c(".", "TrimmedPeptide", "x",
+                         "ProtSeq", "CleanSeq", "PepLoc", "ModShift",
+                         "SiteLoc", "ModAAs", "SiteLoc", "ModAAs",
+                         "Site", "SiteCollapsed", "SiteCollapsedFirst"))
 
-
-# prot_id_col = "accession"
-# peptide_col = "peptide"
-
-.map_mod_sites <- function(ids, fasta, prot_id_col, peptide_col, mod_char){
+.map_mod_sites <- function(ids, 
+                           fasta, 
+                           accession_col, 
+                           peptide_mod_col, 
+                           mod_char){
     
     # check if fasta entry names are unique
     if(any(duplicated(names(fasta)))){
@@ -19,7 +18,7 @@
     }
     
     # check if there is at least some agreement in IDs
-    if(length(intersect(ids[[prot_id_col]], names(fasta))) == 0){
+    if(length(intersect(ids[[accession_col]], names(fasta))) == 0){
         message("There is zero overlap in protein IDs and FASTA entry names!\n")
         stop()
     }
@@ -27,9 +26,9 @@
     # check the characters
     # there should be nothing except the AAs and modification character
     # ids <- ids %>%
-    #    mutate_(TrimmedPeptide := sub(".\\.(.*)\\..", "\\1", peptide_col))
+    #    mutate_(TrimmedPeptide := sub(".\\.(.*)\\..", "\\1", peptide_mod_col))
     ids <- ids %>%
-        mutate(TrimmedPeptide = sub(".\\.(.*)\\..", "\\1", .[[peptide_col]]))
+        mutate(TrimmedPeptide = sub(".\\.(.*)\\..", "\\1", .[[peptide_mod_col]]))
     present_chars <- paste0(ids$TrimmedPeptide, collapse = '') %>% 
         strsplit(split='') %>% 
         `[[`(1) %>% 
@@ -70,9 +69,9 @@ The correspoding identifications will be removed.\n")
     # merger of identifications and FASTA
     res <- fasta %>%
         as.data.frame() %>%
-        rownames_to_column(prot_id_col) %>%
+        rownames_to_column(accession_col) %>%
         rename(ProtSeq = x) %>%
-        inner_join(ids, ., by = prot_id_col)
+        inner_join(ids, ., by = accession_col)
     
     # the core part
     res <- res %>%
