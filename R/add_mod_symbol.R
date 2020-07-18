@@ -35,13 +35,14 @@ rec_insert <- function(x, y, s){
         prior_mod_pos <- lapply(pep, gregexpr, pattern = "[^ARNDCQEGHILKMFPSTWYV.-]")
         prior_mod_pos <- lapply(prior_mod_pos, `[[`, 1)
         prior_mod_pos <- lapply(prior_mod_pos, as.numeric)
-        prior_mod_pos <- lapply(prior_mod_pos, function(..) .. - seq_along(..)) # back to AA indÏ
+        prior_mod_pos <- lapply(prior_mod_pos, function(..) ifelse(.. < 0, NA, ..))
+        prior_mod_pos <- lapply(prior_mod_pos, function(..) .. - seq_along(..)) # back to AA ind
         
         for(i in seq_along(mod_pos)){
             y <- mod_pos[[i]]
             d <- prior_mod_pos[[i]]
             for(j in seq_along(y)){
-                shift <- sum(y[j] >= d)
+                shift <- sum(y[j] >= d, na.rm = TRUE)
                 y[j] <- y[j] + shift
             }
             mod_pos[[i]] <- y
