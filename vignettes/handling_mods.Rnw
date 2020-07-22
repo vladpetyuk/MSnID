@@ -10,6 +10,13 @@ BiocStyle::latex(use.unsrturl=FALSE)
 @
 
 
+<<libs, echo=FALSE>>=
+library(MSnID)
+library(xtable)
+library(dplyr)
+library(Biostrings)
+@
+
 \title{Handling Modifications with \Rpackage{MSnID}}
 \author{Vladislav A. Petyuk}
 
@@ -26,43 +33,152 @@ This vignette describes handling modifications of the peptides. Modifications
 can be biologically-relevant and introduced after protein translation, thus 
 \underline{p}ost-\underline{t}ranlational \underline{m}odifications or PTMs.
 Modification can also be introduced as artifact during sample processing.
-Here we call any modification, be that PTM or sample preparation artifact, as
-modification.
+Here we use more general term - modification, that encompasses both PTMs,
+artifacts and intential modifications during the sample preparation.
 
-\section{Quick Example}
-Currently here is only a quick example, that also can be found as 
-% \code{?map\_mod\_sites}.
-
-<<eval=FALSE>>=
+\section{Reading and Brief Info on Present Mods}
+<<>>=
 m <- MSnID(".")
 mzids <- system.file("extdata","phospho.mzid.gz",package="MSnID")
 m <- read_mzIDs(m, mzids)
+@
 
+Method \Rcode{report\_mods} returns the table with masses and their counts
+within the dataset. This is a quick way to get insight on what is present.
+The other useful piece of information is the exact masses of modifications.
+In the later steps we will be using them to encode with characters, typically
+asterisk, which is a rather common representation of modified peptides.
+<<>>=
 # to know the present mod masses
 report_mods(m)
+@
 
-# TMT modification
-m <- add_mod_symbol(m, mod_mass="229.1629", symbol="#")
-# alkylation
-m <- add_mod_symbol(m, mod_mass="57.021463735", symbol="^")
-# phosphorylation
+\section{Encoding Mods with Characters}
+A common way to denote the position and type of modificaton is with a
+non-alhanumeric character character. E.g. X.XXXX*XXXX.X means the
+modification at 4th residue. Typically it is most interest to map
+modifications that were dynamic in the MS/MS search. In this example
+TMT (229.1629) and cystein alkylation (57.021463735) are static modifications.
+The 79.966330925 is dynamic (that is may or maynot be present)
+phosphorylation.
+
+Note, \Rcode{add\_mod\_symbol} added \texttt{peptide\_mod} column.
+<<>>=
 m <- add_mod_symbol(m, mod_mass="79.966330925", symbol="*")
+x <- psms(m) %>% 
+    distinct(modification, peptide, peptide_mod)
+@
 
-# show the mapping
-head(unique(subset(psms(m), select=c("modification", "peptide_mod"))))
+Sample of the table:
 
-# read fasta for mapping modifications
+<<results=tex, echo=FALSE>>=
+sel_idx <- c(1,6,10,13,19)
+x <- x %>%
+  `[`(sel_idx,) %>%
+    xtable()
+align(x) <- "lp{1.8in}p{1.8in}p{1.8in}"
+print(x,
+      include.rownames = FALSE,
+      size="\\fontsize{8pt}{6pt}\\selectfont",
+      add.to.row = list(pos = as.list(seq_along(sel_idx)), 
+                        command = rep("\\\\[3pt]",length(sel_idx))),
+      floating = FALSE)
+@
+
+\\
+
+We can map additional modifications. Althogh typically, a given study
+focuses on one PTM at a time. Nonetheless:
+
+<<results=tex>>=
+m <- add_mod_symbol(m, mod_mass="229.1629", symbol="#")
+m <- add_mod_symbol(m, mod_mass="57.021463735", symbol="^")
+x <- psms(m) %>% 
+    distinct(modification, peptide, peptide_mod)
+@
+
+Sample of the table:
+
+<<results=tex, echo=FALSE>>=
+x <- x %>% 
+    `[`(sel_idx,) %>%
+    xtable()
+align(x) <- "lp{1.8in}p{1.8in}p{1.8in}"
+print(x,
+      include.rownames = FALSE,
+      size="\\fontsize{8pt}{6pt}\\selectfont",
+      add.to.row = list(pos = as.list(seq_along(sel_idx)), 
+                        command = rep("\\\\[3pt]",length(sel_idx))),
+      floating = FALSE)
+@
+
+
+\section{Mapping Sites to Protein Sequence}
+
+Somewhat conventional form of PTM notation (or non-synonymous mutations) 
+is gene/protein ID followed by AA code in upper case, 
+position in the sequence and original AA shows as low case.
+For example, phosphoryation of serine at position 473 of AKT1 would look like
+AKT1-S473s. 
+
+Besides \Robject{MSnID} object, the key component to mapping the modifications
+is the FASTA file with protein sequences.
+<<>>=
 fst_path <- system.file("extdata","for_phospho.fasta.gz",package="MSnID")
 fst <- readAAStringSet(fst_path)
-# to ensure names are the same as in accessions(m)
+@
+
+
+When we link accession IDs with FASTA entry names, obviously they need to be
+in the same format. So in this case we have to trip the names in FASTA.
+<<>>=
 names(fst) <- sub("(^[^ ]*) .*$", "\1", names(fst))
-# # mapping phosphosites
-m <- map_mod_sites(m, fst, "accession", "peptide_mod", "*")
+@
 
-head(unique(subset(psms(m), select=c("accession", "peptide_mod", "SiteID"))))
+The core method for mapping modification sites. The warning message
+it gives about extra characters in peptide sequences is about 
+"\#" and "\string^" we used to denote TMT modification and alkylation. 
+They are ignored during mapping.
+<<>>=
+m <- map_mod_sites(m, fst, 
+                   accession_col = "accession", 
+                   peptide_mod_col = "peptide_mod", 
+                   mod_char = "*",
+                   site_delimiter = "lower")
 
-# clean-up cache
+x <- psms(m) %>% 
+  distinct(peptide_mod, SiteID)
+@
+
+<<results=tex, echo=FALSE>>=
+x <- x %>% 
+    `[`(sel_idx,) %>%
+    xtable()
+align(x) <- "lp{1.8in}p{3.6in}"
+print(x,
+      include.rownames = FALSE,
+      size="\\fontsize{8pt}{6pt}\\selectfont",
+      add.to.row = list(pos = as.list(seq_along(sel_idx)), 
+                        command = rep("\\\\[3pt]",length(sel_idx))),
+      floating = FALSE)
+@
+
+
+<<echo=FALSE>>=
 unlink(".Rcache", recursive=TRUE)
 @
 
 \end{document}
+
+
+
+
+
+
+
+
+
+
+
+
+
