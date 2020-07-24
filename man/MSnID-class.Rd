@@ -14,7 +14,9 @@
 \alias{$<-,MSnID-method}
 \alias{[[,MSnID-method}
 \alias{[[,MSnID,ANY,ANY-method}
-\alias{[[<-,MSnID-method}
+
+\alias{[[<-,MSnID,ANY,ANY,ANY-method}
+
 \alias{assess_missed_cleavages,MSnID-method}
 \alias{assess_termini,MSnID-method}
 \alias{correct_peak_selection,MSnID-method}
