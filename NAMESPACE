@@ -1,3 +1,4 @@
+#temp# importMethodsFrom("AnnotationDbi", "select")
 import("Rcpp")
 import("R.cache")
 import("foreach")
@@ -21,8 +22,12 @@ importFrom("parallel", "mclapply", "detectCores","makeCluster",
            "stopCluster","parLapply","clusterExport","clusterEvalQ")
 importClassesFrom("MSnbase", "MSnSet")
 importClassesFrom("Biobase", "AnnotatedDataFrame")
-importFrom("stats", "quantile","rnorm","optim", "median", "density")
+importFrom("stats", "quantile","rnorm","optim", "median", "density", "complete.cases")
 importFrom("Biostrings", "reverse", "AA_STANDARD")
+#
+importFrom("AnnotationHub", "AnnotationHub")
+#temp# importClassesFrom("AnnotationHub", "AnnotationHub")
+importFrom("AnnotationHub", "query")
 #-----------------------------------------------------------------------------
 export("MSnID")
 export("MSnIDFilter")
@@ -52,3 +57,4 @@ exportMethods("infer_parsimonious_accessions")
 exportMethods("report_mods")
 exportMethods("add_mod_symbol")
 exportMethods("map_mod_sites")
+export("fetch_conversion_table")
