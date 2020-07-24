@@ -6,7 +6,9 @@ import("doParallel")
 import("methods")
 import("iterators")
 import("data.table")
-importFrom("dplyr","group_by","summarise","select","%>%","inner_join","left_join","rename","mutate","filter")
+importFrom("dplyr","group_by","summarise","select","%>%","inner_join",
+           "left_join","rename","mutate","filter","group_by_at", "distinct", 
+           "top_n","pull")
 importFrom("tibble", "rownames_to_column")
 importFrom("stringr", "str_sub", "str_replace_all","str_locate_all", "str_detect", "str_length")
 importFrom("purrr", "map", "map2", "map_chr")
@@ -58,3 +60,5 @@ exportMethods("report_mods")
 exportMethods("add_mod_symbol")
 exportMethods("map_mod_sites")
 export("fetch_conversion_table")
+export("remap_fasta_entry_names")
+
