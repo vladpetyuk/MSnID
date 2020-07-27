@@ -25,7 +25,8 @@ importFrom("parallel", "mclapply", "detectCores","makeCluster",
 importClassesFrom("MSnbase", "MSnSet")
 importClassesFrom("Biobase", "AnnotatedDataFrame")
 importFrom("stats", "quantile","rnorm","optim", "median", "density", "complete.cases")
-importFrom("Biostrings", "reverse", "AA_STANDARD")
+importFrom("Biostrings", "readAAStringSet", "width", "writeXStringSet", 
+           "reverse", "AA_STANDARD")
 #
 importFrom("AnnotationHub", "AnnotationHub")
 #temp# importClassesFrom("AnnotationHub", "AnnotationHub")
@@ -61,4 +62,5 @@ exportMethods("add_mod_symbol")
 exportMethods("map_mod_sites")
 export("fetch_conversion_table")
 export("remap_fasta_entry_names")
+export("remap_accessions")
 
