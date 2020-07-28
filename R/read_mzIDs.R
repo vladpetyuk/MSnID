@@ -60,20 +60,21 @@ factor_to_str_converter <- function(df){
     x.psms <- psms(mzRidentObj) %>% factor_to_str_converter
     x.scor <- score(mzRidentObj) %>% factor_to_str_converter
     x.mods <- modifications(mzRidentObj) %>% factor_to_str_converter
-    x.mods <- group_by(x.mods, spectrumID, sequence, name) %>%
+    x.mods <- group_by(x.mods, spectrumID, sequence, peptide_ref) %>%
         summarise(modification = paste(mass,' (',location,')',sep='',collapse=', ')) %>%
-        select(spectrumID,sequence,modification)
+        select(spectrumID,sequence,peptide_ref,modification)
     #' merging
     stopifnot(all(as.character(x.psms$spectrumID) == as.character(x.scor$spectrumID)))
     x <- cbind(x.psms, x.scor[,setdiff(colnames(x.scor),'spectrumID')])
-    x <- left_join(x, x.mods, by=c("spectrumID", "sequence"))
+    x <- left_join(x, x.mods, by=c("spectrumID", "sequence", "peptide_ref"))
     x$modified <- ifelse(is.na(x$modification), FALSE, TRUE)
     x$spectrumFile <- fileName(mzRidentObj) # very redundant. not good
     x <- rename(x,
                 accession = DatabaseAccess,
                 description = DatabaseDescription,
                 length = DBseqLength,
-                pepSeq = sequence)
+                pepSeq = sequence,
+                peptide_ref = peptide_ref)
     x <- data.table(x, safeNames=FALSE)
     return(x)
 }
