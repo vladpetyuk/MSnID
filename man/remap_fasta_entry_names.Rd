@@ -11,7 +11,7 @@ is also a path to a new FASTA file with updated entry names.
 \usage{
 remap_fasta_entry_names(path_to_FASTA,
                         conversion_table,
-                        fasta_entry_name_pttrn=c("\\\\|([^|-]+)(-\\\\d+)?\\\\|",
+                        extraction_pttrn=c("\\\\|([^|-]+)(-\\\\d+)?\\\\|",
                                                  "^([A-Z]P_\\\\d+)",
                                                  "^(ENS[A-Z0-9]+)"))
 }
@@ -24,7 +24,7 @@ remap_fasta_entry_names(path_to_FASTA,
         (data.frame) first column in the data frame corresponds to
         identifiers in the FASTA file. Second column is the new identifier.
     }
-    \item{fasta_entry_name_pttrn}{
+    \item{extraction_pttrn}{
         (string) regex pattern that extract protein identifier from
         FASTA entry name as first group (that is \code{"\\\\1"}).
         The most common patterns are the one corresponding to

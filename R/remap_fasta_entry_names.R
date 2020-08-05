@@ -3,7 +3,7 @@ utils::globalVariables("seq_length")
 
 remap_fasta_entry_names <- function(path_to_FASTA,
                                     conversion_table,
-                                    fasta_entry_name_pttrn=c("\\|([^|-]+)(-\\d+)?\\|","^([A-Z]P_\\d+)","^(ENS[A-Z0-9]+)")){
+                                    extraction_pttrn=c("\\|([^|-]+)(-\\d+)?\\|","^([A-Z]P_\\d+)","^(ENS[A-Z0-9]+)")){
     
     is_compressed <- FALSE
     if(grepl("[.]gz$", path_to_FASTA)){
@@ -13,8 +13,8 @@ remap_fasta_entry_names <- function(path_to_FASTA,
     }
     
     mySequences <- readAAStringSet(path_to_FASTA)
-    fasta_entry_name_pttrn <- paste0(".+?", fasta_entry_name_pttrn, ".+?")
-    names(mySequences) <- sub(fasta_entry_name_pttrn, "\\1", names(mySequences))
+    extraction_pttrn <- paste0(".*", extraction_pttrn, ".*")
+    names(mySequences) <- sub(extraction_pttrn, "\\1", names(mySequences))
     prot_lengths <- data.frame(seq_name = names(mySequences),
                                seq_length = width(mySequences),
                                stringsAsFactors = FALSE)

@@ -33,7 +33,10 @@ setMethod("remap_accessions", "MSnID",
     extraction_pttrn <- paste0(".*", extraction_pttrn, ".*")
     object$accession <- sub(extraction_pttrn, "\\1", object$accession)
     
-    if(prop.table(table(object$accession %in% names(conv_vec)))['FALSE'] > 0.5){
+    # checking that the conversion table covers the accessions
+    cvrg <- object$accession %in% names(conv_vec)
+    cvrg <- factor(cvrg, levels = c(TRUE, FALSE))
+    if(prop.table(table(cvrg))['FALSE'] > 0.5){
         stop("Majority of accessions not in the conversion_table!")
     }
     
