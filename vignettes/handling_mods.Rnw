@@ -164,6 +164,87 @@ print(x,
 @
 
 
+
+\section{Re-Doing Mapping with Gene IDs}
+
+The most commont (human readable and somewhat comprehensible) identifier of
+proteins and corresponding genes is gene symbol. For example,
+\textbf{sp|P84996|ALEX\_HUMAN} UniProt ID corresponds to
+\textbf{GNAS} gene symbol. In this section we'll remap UniProt IDs to gene
+symbols and report Site IDs in a more human readable way.
+
+% remap_accessions
+% remap_fasta_entry_names
+% fetch_conversion_table
+
+First, we'll download a table converting from one ID to another.
+There are multiple ways how one can get this type of table. In this example
+we implicitely use \Rpackage{AnnotationHub} package.
+<<>>=
+conv_tab <- fetch_conversion_table("Homo sapiens", "UNIPROT", "SYMBOL")
+head(conv_tab)
+@
+
+Re-mapping accessions from IDs indicated in the first columns of the 
+\Robject{conv\_tab} to the second. The accessions in the \Robject{MSnID} object
+may not be in exactly in the same form as in the database used to fetch
+\Robject{conv\_tab} conversion table. Thus, there is the 
+\Rcode{extraction\_pttrn}
+argument. It extracts the first matching group \verb_"\\1"_ as the proper ID.
+There are three suggested extraction patterns for UniProt, RefSeq and ENSEMBL.
+In case the accession is more complicated than that, user can provide a custom
+extraction pattern.
+<<>>=
+head(accessions(m))
+m <- remap_accessions(m, conv_tab, extraction_pttrn = "\\|([^|-]+)(-\\d+)?\\|")
+head(accessions(m))
+@
+
+Since we updated the accessions in the \Robject{MSnID} object, we need
+to provide FASTA file with corresponding entry names if we want to map 
+the PTM sites. If such FASTA file isn't readily available, which is very
+likely if the \Robject{MSnID} object accessions converted to gene symbols.
+Entry names can be updated using the same conversion table.
+<<>>=
+fst_path <- system.file("extdata","for_phospho.fasta.gz",package="MSnID")
+fst_path_2 <- remap_fasta_entry_names(fst_path, conv_tab, "\\|([^|-]+)(-\\d+)?\\|")
+
+library(Biostrings)
+readAAStringSet(fst_path)
+readAAStringSet(fst_path_2)
+@
+
+
+Now we can execute the same remapping, but using gene symbols as protein IDs.
+
+<<>>=
+fst <- readAAStringSet(fst_path_2)
+m <- map_mod_sites(m, fst, 
+                   accession_col = "accession", 
+                   peptide_mod_col = "peptide_mod", 
+                   mod_char = "*",
+                   site_delimiter = "lower")
+
+x <- psms(m) %>% 
+  distinct(peptide_mod, SiteID)
+@
+
+<<results=tex, echo=FALSE>>=
+x <- x %>% 
+    `[`(sel_idx,) %>%
+    xtable()
+align(x) <- "lp{1.8in}p{3.6in}"
+print(x,
+      include.rownames = FALSE,
+      size="\\fontsize{8pt}{6pt}\\selectfont",
+      add.to.row = list(pos = as.list(seq_along(sel_idx)), 
+                        command = rep("\\\\[3pt]",length(sel_idx))),
+      floating = FALSE)
+@
+
+
+
+
 <<echo=FALSE>>=
 unlink(".Rcache", recursive=TRUE)
 @
