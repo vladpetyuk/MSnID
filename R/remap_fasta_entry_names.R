@@ -3,7 +3,9 @@ utils::globalVariables("seq_length")
 
 remap_fasta_entry_names <- function(path_to_FASTA,
                                     conversion_table,
-                                    extraction_pttrn=c("\\|([^|-]+)(-\\d+)?\\|","^([A-Z]P_\\d+)","^(ENS[A-Z0-9]+)")){
+                                    extraction_pttrn=c("\\|([^|-]+)(-\\d+)?\\|",
+                                                       "([A-Z]P_\\d+)",
+                                                       "(ENS[A-Z0-9]+)")){
     
     is_compressed <- FALSE
     if(grepl("[.]gz$", path_to_FASTA)){

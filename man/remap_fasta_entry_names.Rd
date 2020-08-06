@@ -12,8 +12,8 @@ is also a path to a new FASTA file with updated entry names.
 remap_fasta_entry_names(path_to_FASTA,
                         conversion_table,
                         extraction_pttrn=c("\\\\|([^|-]+)(-\\\\d+)?\\\\|",
-                                                 "^([A-Z]P_\\\\d+)",
-                                                 "^(ENS[A-Z0-9]+)"))
+                                                 "([A-Z]P_\\\\d+)",
+                                                 "(ENS[A-Z0-9]+)"))
 }
 
 \arguments{

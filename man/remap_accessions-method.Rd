@@ -12,8 +12,8 @@
     remap_accessions(object, 
                      conversion_table, 
                      extraction_pttrn=c("\\\\|([^|-]+)(-\\\\d+)?\\\\|",
-                                        "^([A-Z]P_\\\\d+)",
-                                        "^(ENS[A-Z0-9]+)"), 
+                                        "([A-Z]P_\\\\d+)",
+                                        "(ENS[A-Z0-9]+)"), 
                      path_to_FASTA=NULL)
 }
 

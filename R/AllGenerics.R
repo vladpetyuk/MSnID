@@ -3,8 +3,8 @@ setGeneric("remap_accessions",
            function(object, 
                     conversion_table, 
                     extraction_pttrn=c("\\|([^|-]+)(-\\d+)?\\|",
-                                       "^([A-Z]P_\\d+)",
-                                       "^(ENS[A-Z0-9]+)"), 
+                                       "([A-Z]P_\\d+)",
+                                       "(ENS[A-Z0-9]+)"), 
                     path_to_FASTA=NULL)
                standardGeneric("remap_accessions"))
 
