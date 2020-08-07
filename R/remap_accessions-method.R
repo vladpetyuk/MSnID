@@ -42,6 +42,9 @@ setMethod("remap_accessions", "MSnID",
     
     object$accession <- conv_vec[object$accession]
     
+    # get rid of entries without annotation
+    object <- apply_filter(object, "!is.na(accession)")
+    
     # make sure decoy accessions start with XXX
     object$accession <- ifelse(object$isDecoy,
                               paste0("XXX_", object$accession),
