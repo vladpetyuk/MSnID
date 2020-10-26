@@ -82,7 +82,7 @@ setGeneric("recalibrate",
 setGeneric("optimize_filter",
             function(filterObj, msnidObj, 
                      fdr.max, method, level, n.iter, mc.cores=NULL)
-                stadardGeneric("optimize_filter"))
+                standardGeneric("optimize_filter"))
 
 setGeneric("psms<-",
             function(object, value) standardGeneric("psms<-"))
