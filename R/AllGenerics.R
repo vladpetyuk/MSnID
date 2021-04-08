@@ -27,6 +27,10 @@ setGeneric("map_mod_sites",
                     site_delimiter = "lower")
                standardGeneric("map_mod_sites"))
 
+setGeneric("map_flanking_sequences",
+           function(object, fasta)
+             standardGeneric("map_flanking_sequences"))
+
 
 setGeneric("infer_parsimonious_accessions",
            function(object, unique_only=FALSE, prior=character(0)) 
