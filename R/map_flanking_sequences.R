@@ -1,28 +1,25 @@
 
 
-utils::globalVariables(c(".", "TrimmedPeptide", "x",
-                         "ProtSeq", "CleanSeq", "PepLoc", "ModShift",
-                         "SiteLoc", "ModAAs", "SiteLoc", "ModAAs",
-                         "Site", "SiteCollapsed", "SiteCollapsedFirst"))
-
-
-.map_flanking_sequences <- function (msnid, fasta, radius=7L, collapse="|") {
+.map_flanking_sequences <- function (ids, fasta,
+                                     accession_col="accession",
+                                     site_loc_col="SiteLoc",
+                                     radius=7L,
+                                     collapse="|") {
     
-    if (!("SiteID" %in% names(msnid))) {
+    if (!("SiteID" %in% names(ids))) {
         stop("No SiteID found. Call map_mod_sites.")
     }
     
-    x <- psms(msnid) %>%
-        select(accession, SiteLoc) %>%
+    x <- ids %>%
+        select(accession_col, site_loc_col) %>%
         distinct()
     
     x <- fasta %>%
         as.data.frame() %>%
-        rownames_to_column("accession") %>%
-        mutate(accession = sub("^(.P_\\d+\\.\\d+)?\\s.*", "\\1", accession)) %>%
+        rownames_to_column(accession_col) %>%
         rename(ProtSeq = x) %>%
         mutate(ProtSeqWidth = nchar(ProtSeq)) %>%
-        inner_join(x, ., by="accession")
+        inner_join(x, ., by=accession_col)
     
     
     f <- function(ProtSeq_i, SiteLoc_i) {
@@ -56,12 +53,11 @@ utils::globalVariables(c(".", "TrimmedPeptide", "x",
     x$flankingSequence <-  map2(x$ProtSeq, x$SiteLoc, f)
     x$flankingSequence <- as.character(x$flankingSequence)
     
-    msnid@psms <- psms(msnid) %>%
-        mutate(flankingSequence=NULL) %>%
-        left_join(x, by=c("accession", "SiteLoc")) %>% 
-        data.table()
+    x <- x %>% select(accession_col, site_loc_col, flankingSequence)
     
-    return(msnid)
+    x <- inner_join(ids, x, by=c(accession_col, site_loc_col))
+    
+    return(x)
 }
 
 

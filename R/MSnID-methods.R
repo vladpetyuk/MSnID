@@ -703,7 +703,11 @@ setMethod("map_mod_sites", "MSnID",
 
 setMethod("map_flanking_sequences", "MSnID",
           definition=function(object, 
-                              fasta)
+                              fasta,
+                              accession_col="accession",
+                              site_loc_col="SiteLoc",
+                              radius=7L,
+                              collapse="|")
           {
               ids <- psms(object)
               
@@ -714,7 +718,9 @@ setMethod("map_flanking_sequences", "MSnID",
                   fasta <- c(fasta, fasta_rev)
               }
               
-              res <- .map_flanking_sequences(ids, fasta)
+              res <- .map_flanking_sequences(ids, fasta,
+                                             accession_col, site_loc_col,
+                                             radius, collapse)
               
               psms(object) <- res
               return(object)

@@ -28,7 +28,11 @@ setGeneric("map_mod_sites",
                standardGeneric("map_mod_sites"))
 
 setGeneric("map_flanking_sequences",
-           function(object, fasta)
+           function(object, fasta,
+                    accession_col="accession",
+                    site_loc_col="SiteLoc",
+                    radius=7L,
+                    collapse="|")
              standardGeneric("map_flanking_sequences"))
 
 setGeneric("compute_accession_coverage",

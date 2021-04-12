@@ -11,6 +11,8 @@ protein sequence FASTA, the method maps the 7 amino acids to the left and right 
 \usage{
     map_flanking_sequences(object,
                            fasta,
+                           accession_col="accession",
+                           site_loc_col="SiteLoc",
                            radius=7L,
                            collapse="|")
 }
@@ -24,6 +26,12 @@ protein sequence FASTA, the method maps the 7 amino acids to the left and right 
         (AAStringSet object) Protein sequences read from a FASTA file.
         Names must match protein/accesison IDs in the accesson column
         of the MSnID object.
+    }
+    \item{accession_col}{
+        (character) Name of accession column.
+    }
+    \item{site_loc_col}{
+        (character) Name of column containing site locations.
     }
     \item{radius}{
         (integer) How many amino acids to map to left and right of the PTM.
