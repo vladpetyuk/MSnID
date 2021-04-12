@@ -31,6 +31,13 @@ setGeneric("map_flanking_sequences",
            function(object, fasta)
              standardGeneric("map_flanking_sequences"))
 
+setGeneric("compute_accession_coverage",
+           function(object,
+                    fasta,
+                    accession_col="accession",
+                    pepSeq_col="pepSeq")
+             standardGeneric("compute_accession_coverage"))
+
 
 setGeneric("infer_parsimonious_accessions",
            function(object, unique_only=FALSE, prior=character(0)) 
