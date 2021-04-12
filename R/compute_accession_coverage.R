@@ -1,8 +1,5 @@
 
 
-
-#' @export
-#' @rdname motrpac_bic_output
 .compute_accession_coverage <- function(object,
                                       fasta,
                                       accession_col,
