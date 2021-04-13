@@ -28,15 +28,16 @@
     
     # main loop
     irl <- IRangesList()
-    for(i in 1:nrow(x)) {
-      mtch <- regexpr(x$pepSeq[i], accAAstring)
+    for(j in 1:nrow(x)) {
+      pepSeq_j = x[[pepSeq_col]][j]
+      mtch <- regexpr(pepSeq_j, accAAstring)
       start <- as.numeric(mtch)
       width <- attr(mtch, "match.length")
-      tgt <- IRanges(start=start, width=width, names=x$pepSeq[i])
-      irl[[i]] <- tgt
+      tgt <- IRanges(start=start, width=width, names=pepSeq_j)
+      irl[[j]] <- tgt
     }
     
-    fullAACoverage <- sum(width(reduce(unlist(irl))))
+    fullAACoverage <- sum(IRanges::width(reduce(unlist(irl))))
     percentAACoverage <- 100*fullAACoverage/length(accAAstring)
     return(percentAACoverage)
   }
@@ -54,7 +55,7 @@
                                 ids, fasta)
   res$percentAACoverage <- as.numeric(res$percentAACoverage)
   
-  res <- inner_join(object, res)
+  res <- inner_join(object, res, by=accession_col)
   
   return(res)
 }
