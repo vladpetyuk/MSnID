@@ -1,7 +1,7 @@
-\name{map_flanking_sequences}
-\alias{map_flanking_sequences}
-\alias{map_flanking_sequences,MSnID-method}
-\title{Maps +/-7 amino acids to the PTM}
+\name{extract_sequence_window}
+\alias{extract_sequence_window}
+\alias{extract_sequence_window,MSnID-method}
+\title{Extracts +/-7 amino acids to the PTM}
 
 \description{
 Given the peptide sequence with modification X.XXXX*XXXX.X and provided
@@ -9,7 +9,7 @@ protein sequence FASTA, the method maps the 7 amino acids to the left and right 
 }
 
 \usage{
-    map_flanking_sequences(object,
+    extract_sequence_window(object,
                            fasta,
                            accession_col="accession",
                            site_loc_col="SiteLoc",
@@ -42,7 +42,7 @@ protein sequence FASTA, the method maps the 7 amino acids to the left and right 
 }
 
 \value{
-    MSnID object with an extra column \code{flankingSequence} giving the neighborhood of each PTM.
+    MSnID object with an extra column \code{sequenceWindow} giving the neighborhood of each PTM.
 }
 
 \author{
@@ -77,10 +77,10 @@ names(fst) <- sub("(^[^ ]*) .*$", "\\1", names(fst))
 # # mapping phosphosites
 m <- map_mod_sites(m, fst, "accession", "peptide_mod", "*", "lower")
 
-# # mapping flanking sequences
-m <- map_flanking_sequences(m, fst)
+# # mapping +/-7 amino acids to the PTm
+m <- extract_sequence_window(m, fst)
 
-head(unique(subset(psms(m), select=c("accession", "peptide_mod", "flankingSequence"))))
+head(unique(subset(psms(m), select=c("accession", "peptide", "sequence_window"))))
 
 # clean-up cache
 unlink(".Rcache", recursive=TRUE)

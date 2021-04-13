@@ -701,7 +701,7 @@ setMethod("map_mod_sites", "MSnID",
 )
 
 
-setMethod("map_flanking_sequences", "MSnID",
+setMethod("extract_sequence_window", "MSnID",
           definition=function(object, 
                               fasta,
                               accession_col="accession",
@@ -718,7 +718,7 @@ setMethod("map_flanking_sequences", "MSnID",
                   fasta <- c(fasta, fasta_rev)
               }
               
-              res <- .map_flanking_sequences(ids, fasta,
+              res <- .extract_sequence_window(ids, fasta,
                                              accession_col, site_loc_col,
                                              radius, collapse)
               

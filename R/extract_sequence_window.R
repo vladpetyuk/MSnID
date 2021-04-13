@@ -1,6 +1,6 @@
 
 
-.map_flanking_sequences <- function (ids, fasta,
+.extract_sequence_window <- function (ids, fasta,
                                      accession_col="accession",
                                      site_loc_col="SiteLoc",
                                      radius=7L,
@@ -23,7 +23,7 @@
     
     
     f <- function(ProtSeq_i, SiteLoc_i) {
-        flankingSequences <- c()
+        sequenceWindows <- c()
         # take first occurence of site
         for (k in unlist(SiteLoc_i[[1]])) {
             # get 7 amino acids to the left
@@ -41,19 +41,19 @@
             # turn phosphorylated amino acid to lowercase
             mod_aa <- tolower(substr(ProtSeq_i, k, k))
             # paste together -7 AA, the modified AA, and +7 AA.
-            flank <- paste0(site_left, tolower(mod_aa), site_right)
+            window <- paste0(site_left, tolower(mod_aa), site_right)
             # add to list
-            flankingSequences <- c(flankingSequences, flank)
+            sequenceWindows <- c(sequenceWindows, window)
         }
-        flankingSequences <- paste(flankingSequences, collapse=collapse)
-        return(flankingSequences)
+        sequenceWindows <- paste(sequenceWindows, collapse=collapse)
+        return(sequenceWindows)
     }
     
     
-    x$flankingSequence <-  map2(x$ProtSeq, x$SiteLoc, f)
-    x$flankingSequence <- as.character(x$flankingSequence)
+    x$sequenceWindow <-  map2(x$ProtSeq, x[[site_loc_col]], f)
+    x$sequenceWindow <- as.character(x$sequenceWindow)
     
-    x <- x %>% select(accession_col, site_loc_col, flankingSequence)
+    x <- x %>% select(accession_col, site_loc_col, sequenceWindow)
     
     x <- inner_join(ids, x, by=c(accession_col, site_loc_col))
     
