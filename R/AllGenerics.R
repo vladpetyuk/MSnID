@@ -27,6 +27,21 @@ setGeneric("map_mod_sites",
                     site_delimiter = "lower")
                standardGeneric("map_mod_sites"))
 
+setGeneric("extract_sequence_window",
+           function(object, fasta,
+                    accession_col="accession",
+                    site_loc_col="SiteLoc",
+                    radius=7L,
+                    collapse="|")
+             standardGeneric("extract_sequence_window"))
+
+setGeneric("compute_accession_coverage",
+           function(object,
+                    fasta,
+                    accession_col="accession",
+                    pepSeq_col="pepSeq")
+             standardGeneric("compute_accession_coverage"))
+
 
 setGeneric("infer_parsimonious_accessions",
            function(object, unique_only=FALSE, prior=character(0)) 
@@ -82,7 +97,7 @@ setGeneric("recalibrate",
 setGeneric("optimize_filter",
             function(filterObj, msnidObj, 
                      fdr.max, method, level, n.iter, mc.cores=NULL)
-                stadardGeneric("optimize_filter"))
+                standardGeneric("optimize_filter"))
 
 setGeneric("psms<-",
             function(object, value) standardGeneric("psms<-"))

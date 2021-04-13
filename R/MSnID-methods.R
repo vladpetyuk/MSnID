@@ -701,6 +701,51 @@ setMethod("map_mod_sites", "MSnID",
 )
 
 
+setMethod("extract_sequence_window", "MSnID",
+          definition=function(object, 
+                              fasta,
+                              accession_col="accession",
+                              site_loc_col="SiteLoc",
+                              radius=7L,
+                              collapse="|")
+          {
+              ids <- psms(object)
+              
+              decoy_acc <- apply_filter(object, "isDecoy")[[accession_col]]
+              if(length(decoy_acc) > 0 & !any(decoy_acc %in% names(fasta))){
+                  fasta_rev <- reverse(fasta)
+                  names(fasta_rev) <- paste0("XXX_",names(fasta))
+                  fasta <- c(fasta, fasta_rev)
+              }
+              
+              res <- .extract_sequence_window(ids, fasta,
+                                             accession_col, site_loc_col,
+                                             radius, collapse)
+              
+              psms(object) <- res
+              return(object)
+          }
+)
+
+setMethod("compute_accession_coverage", "MSnID",
+          definition=function(object, 
+                              fasta,
+                              accession_col="accession",
+                              pepSeq_col="pepSeq")
+          {
+              
+              ids <- psms(object)
+              
+              res <- .compute_accession_coverage(ids, fasta,
+                                                 accession_col, pepSeq_col)
+              
+              psms(object) <- res
+              return(object)
+          }
+)
+
+
+
 
 
 
