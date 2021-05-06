@@ -21,7 +21,7 @@ library(Biostrings)
 \author{Vladislav A. Petyuk}
 
 \begin{document}
-\SweaveOpts{concordance=TRUE, eval=TRUE, prefix.string=graphics}
+\SweaveOpts{concordance=TRUE}
 
 \maketitle
 \tableofcontents
