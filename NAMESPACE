@@ -10,6 +10,7 @@ importFrom("dplyr","group_by","summarise","select","%>%","inner_join",
            "left_join","rename","mutate","filter","group_by_at", "distinct", 
            "top_n","pull")
 importFrom("tibble", "rownames_to_column")
+importFrom("stringi", "stri_reverse")
 importFrom("stringr", "str_sub", "str_replace_all","str_locate_all", "str_detect", "str_length")
 importFrom("IRanges", "IRanges", "IRangesList", "width", "reduce")
 importFrom("purrr", "map", "map2", "map_chr")
@@ -63,8 +64,8 @@ exportMethods("add_mod_symbol")
 exportMethods("extract_sequence_window")
 exportMethods("compute_accession_coverage")
 exportMethods("map_mod_sites")
+exportMethods("map_peptide_position")
 export("fetch_conversion_table")
 export("remap_fasta_entry_names")
 export("remap_accessions")
-export("map_peptide_position")
 

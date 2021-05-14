@@ -651,6 +651,66 @@ setMethod("add_mod_symbol", "MSnID",
 )
 
 
+# setMethod("map_mod_sites", "MSnID",
+#           definition=function(object, 
+#                               fasta, 
+#                               accession_col = "accession", 
+#                               peptide_mod_col = "peptide_mod", 
+#                               mod_char = "*", 
+#                               site_delimiter = "lower")
+#           {
+#               ids <- psms(object)
+#               
+#               # test if decoys are in fasta
+#               # if not, then add reversed sequences
+#               # for now we'll support only reverse as decoys
+#               decoy_acc <- apply_filter(object, "isDecoy")[[accession_col]]
+#               if(length(decoy_acc) > 0 & !any(decoy_acc %in% names(fasta))){
+#                   fasta_rev <- reverse(fasta)
+#                   names(fasta_rev) <- paste0("XXX_",names(fasta))
+#                   fasta <- c(fasta, fasta_rev)
+#               }
+#               
+#               res <- .map_mod_sites(ids, 
+#                                     fasta, 
+#                                     accession_col, 
+#                                     peptide_mod_col, 
+#                                     mod_char)
+#               
+#               # make site ID from accession_col and 
+#               # SiteCollapsedFirst
+#               if(site_delimiter == "lower"){
+#                   res <- mutate(res, 
+#                                 SiteID = paste0(!!sym(accession_col), 
+#                                                 "-", 
+#                                                 gsub("([[:upper:]])(\\d+),?",
+#                                                      "\\1\\2\\L\\1", 
+#                                                      SiteCollapsedFirst, 
+#                                                      perl = T)))
+#               }else{
+#                   res <- mutate(res, 
+#                                 SiteID = paste0(!!sym(accession_col), 
+#                                                 "-", 
+#                                                 gsub(",",
+#                                                      site_delimiter,
+#                                                      SiteCollapsedFirst)))
+#               }
+#               psms(object) <- res
+#               return(object)
+#           }
+# )
+
+
+
+
+
+
+
+
+
+
+
+
 setMethod("map_mod_sites", "MSnID",
           definition=function(object, 
                               fasta, 
@@ -659,46 +719,33 @@ setMethod("map_mod_sites", "MSnID",
                               mod_char = "*", 
                               site_delimiter = "lower")
           {
-              ids <- psms(object)
-              
-              # test if decoys are in fasta
-              # if not, then add reversed sequences
-              # for now we'll support only reverse as decoys
-              decoy_acc <- apply_filter(object, "isDecoy")[[accession_col]]
-              if(length(decoy_acc) > 0 & !any(decoy_acc %in% names(fasta))){
-                  fasta_rev <- reverse(fasta)
-                  names(fasta_rev) <- paste0("XXX_",names(fasta))
-                  fasta <- c(fasta, fasta_rev)
-              }
-              
-              res <- .map_mod_sites(ids, 
-                                    fasta, 
-                                    accession_col, 
-                                    peptide_mod_col, 
-                                    mod_char)
-              
-              # make site ID from accession_col and 
-              # SiteCollapsedFirst
-              if(site_delimiter == "lower"){
-                  res <- mutate(res, 
-                                SiteID = paste0(!!sym(accession_col), 
-                                                "-", 
-                                                gsub("([[:upper:]])(\\d+),?",
-                                                     "\\1\\2\\L\\1", 
-                                                     SiteCollapsedFirst, 
-                                                     perl = T)))
-              }else{
-                  res <- mutate(res, 
-                                SiteID = paste0(!!sym(accession_col), 
-                                                "-", 
-                                                gsub(",",
-                                                     site_delimiter,
-                                                     SiteCollapsedFirst)))
-              }
-              psms(object) <- res
+              object <- .map_mod_sites(object, 
+                                       fasta, 
+                                       accession_col, 
+                                       peptide_mod_col,
+                                       mod_char,
+                                       site_delimiter)
               return(object)
           }
 )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 setMethod("map_peptide_position", "MSnID",
