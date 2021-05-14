@@ -66,4 +66,5 @@ exportMethods("map_mod_sites")
 export("fetch_conversion_table")
 export("remap_fasta_entry_names")
 export("remap_accessions")
+export("map_peptide_position")
 

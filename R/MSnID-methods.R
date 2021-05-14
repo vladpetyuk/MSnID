@@ -701,6 +701,17 @@ setMethod("map_mod_sites", "MSnID",
 )
 
 
+setMethod("map_peptide_position", "MSnID",
+          definition=function(object, 
+                              fasta, 
+                              accession_col = "accession")
+          {
+              object <- .map_peptide_position(object, fasta, accession_col)
+              return(object)
+          }
+)
+
+
 setMethod("extract_sequence_window", "MSnID",
           definition=function(object, 
                               fasta,

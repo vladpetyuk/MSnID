@@ -27,6 +27,14 @@ setGeneric("map_mod_sites",
                     site_delimiter = "lower")
                standardGeneric("map_mod_sites"))
 
+
+setGeneric("map_peptide_position",
+           function(object,
+                    fasta,
+                    accession_col = "accession")
+               standardGeneric("map_peptide_position"))
+
+
 setGeneric("extract_sequence_window",
            function(object, fasta,
                     accession_col="accession",
