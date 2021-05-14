@@ -792,12 +792,12 @@ setMethod("compute_accession_coverage", "MSnID",
                               pepSeq_col="pepSeq")
           {
               
-              ids <- psms(object)
+              # ids <- psms(object)
               
-              res <- .compute_accession_coverage(ids, fasta,
+              object <- .compute_accession_coverage(object, fasta,
                                                  accession_col, pepSeq_col)
               
-              psms(object) <- res
+              # psms(object) <- res
               return(object)
           }
 )

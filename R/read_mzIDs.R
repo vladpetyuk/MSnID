@@ -1,7 +1,7 @@
 
 utils::globalVariables(c("i", "spectrumID", "name", "mass", "location", 
                          "modification", "DatabaseAccess", 
-                         "DatabaseDescription", "DBseqLength"))
+                         "DatabaseDescription", "DBseqLength", "peptideRef"))
 
 
 .read_mzIDs.memoized <- function(mzids)

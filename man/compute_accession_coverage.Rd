@@ -51,6 +51,8 @@ fst_path <- system.file("extdata","for_phospho.fasta.gz",package="MSnID")
 library(Biostrings)
 fst <- readAAStringSet(fst_path)
 
+# remove decoy because they are not in this small fasta file
+m <- apply_filter(m, "!isDecoy")
 # compute accession coverage
 m <- compute_accession_coverage(m, fst)
 

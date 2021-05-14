@@ -1,5 +1,6 @@
 
 utils::globalVariables(c(".", "trimmedPeptide", "x",
+                         "First_AA", "Last_AA",
                          "ProtSeq", "cleanSeq", "PepLoc", "ModShift",
                          "SiteLoc", "ModAAs", "SiteLoc", "ModAAs",
                          "Site", "SiteCollapsed", "SiteCollapsedFirst"))

@@ -80,7 +80,7 @@ m <- map_mod_sites(m, fst, "accession", "peptide_mod", "*", "lower")
 # # mapping +/-7 amino acids to the PTm
 m <- extract_sequence_window(m, fst)
 
-head(unique(subset(psms(m), select=c("accession", "peptide", "sequence_window"))))
+head(unique(subset(psms(m), select=c("accession", "peptide", "sequenceWindow"))))
 
 # clean-up cache
 unlink(".Rcache", recursive=TRUE)

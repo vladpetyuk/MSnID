@@ -147,11 +147,11 @@ Those extra characters will be removed from mapping.")
     
     # check if there are peptides without mods
     mod_char_pttrn <- paste0("[\\", mod_char, "]")
-    if(any(!str_detect(ids$TrimmedPeptide, mod_char_pttrn))){
+    if(any(!str_detect(ids$trimmedPeptide, mod_char_pttrn))){
         message("Peptides with no modifications in question were detected.
 The correspoding identifications will be removed.\n")
         ids <- ids %>%
-            filter(str_detect(TrimmedPeptide, mod_char_pttrn))
+            filter(str_detect(trimmedPeptide, mod_char_pttrn))
     }
     
     

@@ -1,3 +1,8 @@
+utils::globalVariables(c(".", "trimmedPeptide", "x",
+                         "ProtSeq", "CleanSeq", "PepLoc", "ModShift",
+                         "SiteLoc", "ModAAs", "SiteLoc", "ModAAs",
+                         "Site", "SiteCollapsed", "SiteCollapsedFirst",
+                         "sequenceWindow"))
 
 
 .extract_sequence_window <- function (ids, fasta,
