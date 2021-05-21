@@ -95,8 +95,8 @@ utils::globalVariables(c(".", "trimmedPeptide", "x",
                                cleanSeq, 
                                ~ as.numeric(str_locate_all(.x, .y)[[1]][,1])),
                Last_AA = map2(First_AA, nchar(cleanSeq) - 1, `+`),
-               First_AA_First = map(First_AA, ~ .[1]),
-               Last_AA_First = map(Last_AA, ~ .[1]))
+               First_AA_First = map(First_AA, ~ .[1]) %>% as.numeric(),
+               Last_AA_First = map(Last_AA, ~ .[1]) %>% as.numeric())
     
     # drop Protein Sequences
     res <- res %>%
