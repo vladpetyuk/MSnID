@@ -85,7 +85,8 @@ head(unique(subset(psms(m2), select=c("accession",
                                       "First_AA",
                                       "First_AA_First",
                                       "Last_AA",
-                                      "Last_AA_First"))))
+                                      "Last_AA_First",
+                                      "ProtLen"))))
 
 # clean-up cache
 unlink(".Rcache", recursive=TRUE)

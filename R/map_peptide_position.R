@@ -86,6 +86,7 @@ utils::globalVariables(c(".", "trimmedPeptide", "x",
         as.data.frame() %>%
         rownames_to_column(accession_col) %>%
         dplyr::rename(ProtSeq = x) %>%
+        mutate(ProtLen = str_length(ProtSeq)) %>%
         inner_join(x, ., by = accession_col)
     
     # locating peptide within protein
