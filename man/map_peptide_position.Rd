@@ -5,7 +5,7 @@
 
 \description{
 The method maps the location of the 
-modification resulting in \{protein ID\}-\{aa\}\{aa position\}".
+modification resulting in \{protein ID\}-\{aa\}\{aa position\}.
 }
 
 \usage{

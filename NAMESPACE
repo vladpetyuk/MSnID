@@ -6,12 +6,16 @@ import("doParallel")
 import("methods")
 import("iterators")
 import("data.table")
-importFrom("dplyr","group_by","summarise","select","%>%","inner_join",
-           "left_join","rename","mutate","filter","group_by_at", "distinct", 
-           "top_n","pull")
+importFrom("dplyr", "group_by", "summarise", "select", "%>%", "inner_join",
+           "left_join", "rename", "mutate", "filter", "group_by_at", "distinct", 
+           "top_n", "pull", "tally", "ungroup", "arrange")
 importFrom("tibble", "rownames_to_column")
 importFrom("stringi", "stri_reverse")
-importFrom("stringr", "str_sub", "str_replace_all","str_locate_all", "str_detect", "str_length")
+importFrom("stringr", "str_sub", "str_replace_all","str_locate_all", 
+           "str_detect", "str_length")
+importFrom("ggplot2", "ggplot", "aes", "geom_rect", "scale_fill_viridis_c",
+           "ggtitle", "ggsave", "ylab", "xlab", "theme_classic", "theme",
+           "scale_x_continuous", "element_blank", "element_text", "ylim")
 importFrom("IRanges", "IRanges", "IRangesList", "width", "reduce")
 importFrom("purrr", "map", "map2", "map_chr")
 importFrom("reshape2", "acast")

@@ -108,7 +108,6 @@ utils::globalVariables(c(".", "trimmedPeptide", "x",
 
 
 
-
 .map_mod_sites <- function(object, 
                            fasta,
                            accession_col, 

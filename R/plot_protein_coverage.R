@@ -1,6 +1,17 @@
 
 
-.plot_protein_coverage <- function(object, accession, save_plot = TRUE){
+
+utils::globalVariables(c("Last_AA_First",
+                         "First_AA_First",
+                         "ProtLen",
+                         "Length",
+                         "n",
+                         "ymin",
+                         "ymax"))
+
+
+
+.plot_protein_coverage <- function(object, accession, save_plot = FALSE, ...){
     
     x <- psms(object) %>%
         select(-c(First_AA, Last_AA)) %>%
@@ -83,3 +94,8 @@
         return(p)
     }
 }
+
+
+
+
+

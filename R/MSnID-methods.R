@@ -811,9 +811,9 @@ setMethod("compute_accession_coverage", "MSnID",
 
 setMethod("plot_protein_coverage",
           signature(object="MSnID", accession="character"),
-          definition = function(object, accession)
+          definition = function(object, accession, ...)
           {
-              .plot_protein_coverage(object, accession)
+              .plot_protein_coverage(object, accession, ...)
           }
 )
 

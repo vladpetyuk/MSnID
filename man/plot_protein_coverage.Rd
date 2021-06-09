@@ -1,6 +1,6 @@
 \name{plot_protein_coverage}
 \alias{plot_protein_coverage}
-\alias{plot_protein_coverage,MSnID-method}
+\alias{plot_protein_coverage,MSnID,character-method}
 \title{Shows the peptide location(s) on the protein sequence}
 
 \description{
@@ -10,7 +10,8 @@ Shows the peptide location(s) on the protein sequence.
 \usage{
     plot_protein_coverage(object, 
                           accession, 
-                          save_plot = FALSE)
+                          %save_plot = FALSE,
+                          ...)
 }
 
 
@@ -21,9 +22,12 @@ Shows the peptide location(s) on the protein sequence.
     \item{accession}{
         (string) accession name.
     }
-    \item{save_plot}{
-        (boolean) if TRUE, the plot is saved as png file.
+    \item{...}{
+        Used for passing save_plot. If TRUE, then image is saved as a PNG file.
     }
+%    \item{save_plot}{
+%        (boolean) if TRUE, the plot is saved as png file.
+%    }
 }
 
 \value{
